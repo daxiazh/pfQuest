@@ -1,0 +1,16 @@
+## Interface: 11200
+## Title: |cff33ffcc[任务]|cffffffffpfQuest|cffff1450[4.17]
+## Title-zhCN: |cff33ffcc[任务]|cffffffffpfQuest|cffff1450[4.17]
+## Author: Shagu, Wind, Sunelegy, 呲不鸟
+## Notes: |cff33ffccpf|cffffffffQuest|R 由|cff33ffccWind|R&|cff33ffcc呲不鸟|R&|cff33ffccSunelegy|R修改汉化。|N本插件完全免费，请勿在第三方购买！
+## Notes-zhCN: |cff33ffccpf|cffffffffQuest|R 由|cff33ffccWind|R&|cff33ffcc呲不鸟|R&|cff33ffccSunelegy|R修改汉化。|N本插件完全免费，请勿在第三方购买！
+## Notes-ruRU: Облегченный помощник заданий и база данных
+## Version: 7.0.1
+## OptionalDeps: pfUI
+## SavedVariables: pfQuest_questcache
+## SavedVariablesPerCharacter: pfQuest_config, pfBrowser_fav, pfQuest_history, pfQuest_colors, pfQuest_server
+
+init\data.xml
+init\enUS.xml
+init\zhCN.xml
+init\addon.xml
