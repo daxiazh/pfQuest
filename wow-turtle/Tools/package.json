@@ -1,0 +1,18 @@
+{
+  "name": "pfquest-data-merger",
+  "version": "1.0.0",
+  "description": "Merge pfQuest base data with Turtle WoW custom data and extract valid quest IDs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "merge": "node quest-merger.js",
+    "test": "node test.js"
+  },
+  "keywords": ["wow", "turtle-wow", "pfquest", "data-merger"],
+  "author": "pfQuest Tools",
+  "license": "MIT",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7"
+  }
+}
