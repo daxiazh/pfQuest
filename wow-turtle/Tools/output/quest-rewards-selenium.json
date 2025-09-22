@@ -1,0 +1,72 @@
+{
+  "timestamp": "2025-09-22T13:41:46.431Z",
+  "stats": {
+    "totalQuests": 1,
+    "questsWithRewards": 1,
+    "totalRewardItems": 3,
+    "processedItems": 3,
+    "errors": 0
+  },
+  "questRewards": {
+    "41188": {
+      "questId": 41188,
+      "title": "Provisions for Refugees - Quests",
+      "rewardItems": [
+        {
+          "itemId": 41118,
+          "name": "Young Thalassian Boar Flank",
+          "quantity": 1
+        },
+        {
+          "itemId": 41103,
+          "name": "Refugee's Bracers",
+          "quantity": 1
+        },
+        {
+          "itemId": 41104,
+          "name": "Ranger Training Gloves",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 190,
+      "money": 0,
+      "reputation": []
+    }
+  },
+  "itemDetails": {
+    "41103": {
+      "itemId": 41103,
+      "name": "Refugee's Bracers - Items",
+      "type": "3,",
+      "subtype": "",
+      "quality": "Poor",
+      "level": 0,
+      "requiredLevel": 0,
+      "slot": "",
+      "stats": []
+    },
+    "41104": {
+      "itemId": 41104,
+      "name": "Ranger Training Gloves - Items",
+      "type": "3,",
+      "subtype": "",
+      "quality": "Poor",
+      "level": 0,
+      "requiredLevel": 0,
+      "slot": "",
+      "stats": []
+    },
+    "41118": {
+      "itemId": 41118,
+      "name": "Young Thalassian Boar Flank - Items",
+      "type": "3,",
+      "subtype": "",
+      "quality": "Common",
+      "level": 0,
+      "requiredLevel": 0,
+      "slot": "",
+      "stats": []
+    }
+  }
+}

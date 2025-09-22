@@ -6,12 +6,18 @@
   "scripts": {
     "start": "node index.js",
     "merge": "node quest-merger.js",
+    "scrape": "node scrape-quest-rewards-selenium.js",
+    "scrape-debug": "node scrape-quest-rewards-selenium.js --debug",
+    "scrape-sample": "node scrape-quest-rewards-selenium.js -c 5",
+    "scrape-headless": "node scrape-quest-rewards-selenium.js --headless -c 10",
     "test": "node test.js"
   },
   "keywords": ["wow", "turtle-wow", "pfquest", "data-merger"],
   "author": "pfQuest Tools",
   "license": "MIT",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "selenium-webdriver": "^4.15.0",
     "fs": "^0.0.1-security",
     "path": "^0.12.7"
   }

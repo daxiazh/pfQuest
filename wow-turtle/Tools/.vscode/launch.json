@@ -1,0 +1,57 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "调试任务数据合并器",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/index.js",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "name": "调试 Selenium 任务抓取器",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/scrape-quest-rewards-selenium.js",
+            "args": ["--debug", "41188"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "name": "调试 Selenium 指定任务",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/scrape-quest-rewards-selenium.js",
+            "args": ["--debug", "${input:questId}"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        }
+    ],
+    "inputs": [
+        {
+            "id": "questId",
+            "description": "输入要调试的任务ID",
+            "default": "41188",
+            "type": "promptString"
+        }
+    ]
+}
