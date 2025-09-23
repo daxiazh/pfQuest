@@ -647,10 +647,16 @@ class SeleniumQuestRewardScraper {
     parseNonEquipmentItem(tooltipElement, item, itemId) {
         const tooltipText = tooltipElement.text();
         
-        // 检查是否是配方/技能书类型
-        const isRecipe = tooltipText.includes('Requires ') && tooltipText.includes('Use:');
-        const isConsumable = tooltipText.includes('Use:') && !isRecipe;
+        // 检查是否是任务相关物品（优先检查）
         const isQuestItem = tooltipText.includes('Quest Item');
+        const isQuestStarter = tooltipText.includes('This Item Begins a Quest') ||
+                              tooltipText.includes('Right Click to begin a quest') ||
+                              tooltipText.includes('Starts a quest') ||
+                              tooltipText.includes('Begin Quest');
+        
+        // 检查是否是配方/技能书类型
+        const isRecipe = tooltipText.includes('Requires ') && tooltipText.includes('Use:') && !isQuestItem && !isQuestStarter;
+        const isConsumable = tooltipText.includes('Use:') && !isRecipe && !isQuestItem && !isQuestStarter;
         
         // 检查是否是容器类型（背包、箭袋等）
         const bagMatch = tooltipText.match(/(\d+)\s+Slot\s+(Bag|Quiver)/i);
@@ -706,10 +712,11 @@ class SeleniumQuestRewardScraper {
             item.type = 'Consumable';
             item.subtype = '';
             item.slot = '';
-        } else if (isQuestItem) {
+        } else if (isQuestItem || isQuestStarter) {
             item.type = 'Quest';
-            item.subtype = '';
+            item.subtype = isQuestStarter ? 'Quest Starter' : 'Quest Item';
             item.slot = '';
+            console.log(`  ℹ️ 检测到任务物品: ${isQuestStarter ? '任务起始物品' : '任务物品'}`);
         } else if (isContainer) {
             item.type = 'Container';
             item.subtype = bagMatch ? bagMatch[2] : 'Bag'; // Bag 或 Quiver
