@@ -13,7 +13,7 @@ class SeleniumQuestRewardScraper {
     constructor(outputPath = null) {
         this.baseQuestUrl = 'https://database.turtle-wow.org/?quest=';
         this.baseItemUrl = 'https://database.turtle-wow.org/?item=';
-        this.delay = 2000; // 请求间隔（毫秒）
+        this.delay = 500; // 请求间隔（毫秒）
         this.driver = null;
         this.outputPath = outputPath; // 输出文件路径，用于增量处理
         this.progressFile = null; // 进度文件路径
@@ -53,7 +53,12 @@ class SeleniumQuestRewardScraper {
             ['Trinket', 'Miscellaneous'],
             ['Held In Off-Hand', 'Miscellaneous'],
             ['Off Hand', 'Miscellaneous'],
-            ['Ranged', 'Weapon']
+            ['Ranged', 'Weapon'],
+            ['Shirt', 'Armor'],  // 衬衫类型装备
+            ['Tabard', 'Armor'],  // 战袍类型装备
+            ['Finger', 'Armor'],  // 戒指类型装备
+            ['Neck', 'Armor'],   // 项链类型装备
+            ['Back', 'Armor']    // 披风类型装备
         ]);
         
         this.results = {
@@ -276,7 +281,7 @@ class SeleniumQuestRewardScraper {
                 }
                 
                 // 额外等待，确保动态内容加载
-                await this.sleep(2000);
+                await this.sleep(1000);
                 
                 // 获取页面HTML源码
                 const html = await this.driver.getPageSource();
@@ -475,7 +480,8 @@ class SeleniumQuestRewardScraper {
             requiredLevel: 0,
             slot: '',
             armor: 0,
-            durability: ''
+            durability: '',
+            containerSlots: 0 // 容器槽位数量，非容器物品为0
         };
 
         if (this.ignoredItemsSet.has(itemId)) {
@@ -560,6 +566,7 @@ class SeleniumQuestRewardScraper {
             console.log(`   - 品质: ${item.quality}`);
             console.log(`   - 等级: ${item.level}`);
             if (item.armor > 0) console.log(`   - 护甲: ${item.armor}`);
+            if (item.containerSlots > 0) console.log(`   - 容器大小: ${item.containerSlots}格`);
 
         } catch (error) {
             console.error(`解析物品 ${itemId} 失败: ${error.message}`);
@@ -582,21 +589,29 @@ class SeleniumQuestRewardScraper {
         const slotTypeTable = tooltipElement.find('table[width="100%"]').first();
         
         if (slotTypeTable.length > 0) {
-            // 找到了装备位置类型表格，这是装备
+            // 检查表格内容是否有实际的装备信息
             const slotElement = slotTypeTable.find('td').first();
             const typeElement = slotTypeTable.find('th').first();
             
-            if (slotElement.length > 0) {
-                item.slot = slotElement.text().trim();
+            const slotText = slotElement.length > 0 ? slotElement.text().trim() : '';
+            const typeText = typeElement.length > 0 ? typeElement.text().trim() : '';
+            
+            // 如果表格存在但内容为空，说明这不是装备，是材料等其他物品
+            if (!slotText && !typeText) {
+                console.log(`  ℹ️ 发现空的装备位置表格，判断为非装备物品`);
+                this.parseNonEquipmentItem(tooltipElement, item, itemId);
+                return;
             }
             
-            if (typeElement.length > 0) {
-                const subtypeText = typeElement.text().trim();
-                if (subtypeText) {
-                    item.subtype = subtypeText;
-                    // 根据子类型推断主类型 - 使用 Map 优化查找
-                    item.type = this.subtypeToTypeMap.get(item.subtype) || 'Unknown';
-                }
+            // 有实际内容，这是装备
+            if (slotText) {
+                item.slot = slotText;
+            }
+            
+            if (typeText) {
+                item.subtype = typeText;
+                // 根据子类型推断主类型 - 使用 Map 优化查找
+                item.type = this.subtypeToTypeMap.get(item.subtype) || 'Unknown';
             }
             
             // 处理特殊装备位置（如饰品、副手装备等）
@@ -612,7 +627,7 @@ class SeleniumQuestRewardScraper {
                 }
             }
             
-            // 对于普通装备，如果没有解析到装备位置，抛出异常
+            // 对于装备，如果没有解析到装备位置，抛出异常
             if (!item.slot) {
                 throw new Error(`物品 ${itemId}: 装备缺少位置信息`);
             }
@@ -637,6 +652,52 @@ class SeleniumQuestRewardScraper {
         const isConsumable = tooltipText.includes('Use:') && !isRecipe;
         const isQuestItem = tooltipText.includes('Quest Item');
         
+        // 检查是否是容器类型（背包、箭袋等）
+        const bagMatch = tooltipText.match(/(\d+)\s+Slot\s+(Bag|Quiver)/i);
+        const isContainer = bagMatch || 
+                           tooltipText.includes('Slot Bag') || 
+                           tooltipText.includes('Quiver') ||
+                           tooltipText.includes('Container');
+        
+        // 检查是否是特殊职业物品类型
+        const isTotem = tooltipText.includes('Totem') || item.name.includes('Totem');
+        const isLibram = tooltipText.includes('Libram') || item.name.includes('Libram');
+        const isIdol = tooltipText.includes('Idol') || item.name.includes('Idol');
+        const isSigil = tooltipText.includes('Sigil') || item.name.includes('Sigil');
+        const isClassItem = isTotem || isLibram || isIdol || isSigil;
+        
+        // 检查是否是制造材料（通过物品名称模式识别）
+        const isTradeMaterial = item.name.includes('Bar') ||       // 锭（如Silver Bar）
+                               item.name.includes('Ore') ||       // 矿石
+                               item.name.includes('Ingot') ||     // 铸锭
+                               item.name.includes('Leather') ||   // 皮革
+                               item.name.includes('Cloth') ||     // 布料
+                               item.name.includes('Thread') ||    // 线
+                               item.name.includes('Oil') ||       // 油
+                               item.name.includes('Essence') ||   // 精华
+                               item.name.includes('Dust') ||      // 尘埃
+                               item.name.includes('Shard') ||     // 碎片
+                               item.name.includes('Crystal') ||   // 水晶
+                               item.name.includes('Gem') ||       // 宝石
+                               item.name.includes('Stone') ||     // 石头
+                               item.name.includes('Herb') ||      // 草药
+                               item.name.includes('Root') ||      // 根茎
+                               item.name.includes('Petal') ||     // 花瓣
+                               item.name.includes('Seed') ||      // 种子
+                               item.name.includes('leaf') ||      // 叶子（如Silverleaf）
+                               item.name.includes('Bloom') ||     // 花朵
+                               item.name.includes('Moss') ||      // 苔藓
+                               item.name.includes('Scale') ||     // 鳞片
+                               item.name.includes('Hide') ||      // 兽皮
+                               item.name.includes('Bone') ||      // 骨头
+                               item.name.includes('Fang') ||      // 尖牙
+                               item.name.includes('Claw') ||      // 爪子
+                               item.name.includes('Feather') ||   // 羽毛
+                               item.name.includes('Silk') ||      // 丝绸
+                               item.name.includes('Wool') ||      // 羊毛
+                               item.name.includes('Cotton') ||    // 棉花
+                               item.name.includes('Linen');       // 亚麻
+        
         if (isRecipe) {
             item.type = 'Recipe';
             item.subtype = '';
@@ -649,9 +710,52 @@ class SeleniumQuestRewardScraper {
             item.type = 'Quest';
             item.subtype = '';
             item.slot = '';
+        } else if (isContainer) {
+            item.type = 'Container';
+            item.subtype = bagMatch ? bagMatch[2] : 'Bag'; // Bag 或 Quiver
+            item.slot = '';
+            
+            // 提取容器大小信息
+            if (bagMatch) {
+                item.containerSlots = parseInt(bagMatch[1]);
+                console.log(`  ℹ️ 检测到容器: ${item.containerSlots}格${item.subtype}`);
+            } else {
+                console.log(`  ℹ️ 检测到容器类型: ${item.subtype}`);
+            }
+        } else if (isClassItem) {
+            item.type = 'Miscellaneous';
+            item.slot = '';
+            
+            // 设置具体的子类型
+            if (isTotem) {
+                item.subtype = 'Totem';
+                console.log(`  ℹ️ 检测到图腾类型物品`);
+            } else if (isLibram) {
+                item.subtype = 'Libram';
+                console.log(`  ℹ️ 检测到圣契类型物品`);
+            } else if (isIdol) {
+                item.subtype = 'Idol';
+                console.log(`  ℹ️ 检测到神像类型物品`);
+            } else if (isSigil) {
+                item.subtype = 'Sigil';
+                console.log(`  ℹ️ 检测到符印类型物品`);
+            }
+        } else if (isTradeMaterial) {
+            item.type = 'Trade Goods';
+            item.subtype = 'Material';
+            item.slot = '';
+            console.log(`  ℹ️ 检测到制造材料: ${item.name}`);
         } else {
-            // 如果无法识别物品类型，抛出异常
-            throw new Error(`物品 ${itemId}: 无法识别的物品类型`);
+            // 对于其他无法明确分类的物品，如果有基本信息就归为杂项
+            if (item.name && item.name.trim().length > 0) {
+                item.type = 'Miscellaneous';
+                item.subtype = 'Other';
+                item.slot = '';
+                console.log(`  ℹ️ 未明确分类的物品，归为杂项类型`);
+            } else {
+                // 如果连基本信息都没有，则抛出异常
+                throw new Error(`物品 ${itemId}: 无法识别的物品类型，缺少有效信息`);
+            }
         }
     }
 
@@ -671,7 +775,7 @@ class SeleniumQuestRewardScraper {
             return null;
         }
 
-        await this.sleep(this.delay);
+        // await this.sleep(this.delay);
         return this.parseQuestRewards(html, questId);
     }
 

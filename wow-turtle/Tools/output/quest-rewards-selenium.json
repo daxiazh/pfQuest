@@ -1,13 +1,13 @@
 {
-  "timestamp": "2025-09-23T06:42:56.988Z",
+  "timestamp": "2025-09-23T08:58:40.152Z",
   "stats": {
     "totalQuests": 6500,
-    "questsWithRewards": 21,
-    "totalRewardItems": 45,
-    "processedItems": 45,
+    "questsWithRewards": 6,
+    "totalRewardItems": 12,
+    "processedItems": 12,
     "errors": 0,
-    "networkRetries": 0,
-    "resumedFromQuestId": 3
+    "networkRetries": 1,
+    "resumedFromQuestId": 149
   },
   "questRewards": {
     "4": {
@@ -656,6 +656,1098 @@
       "choiceItems": [],
       "experience": 2100,
       "reputation": []
+    },
+    "58": {
+      "questId": 58,
+      "title": "The Night Watch",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 3604,
+          "name": "Bandolier of the Night Watch",
+          "quantity": 1
+        },
+        {
+          "itemId": 3605,
+          "name": "Quiver of the Night Watch",
+          "quantity": 1
+        },
+        {
+          "itemId": 1729,
+          "name": "Gunnysack of the Night Watch",
+          "quantity": 1
+        }
+      ],
+      "experience": 2450,
+      "reputation": []
+    },
+    "59": {
+      "questId": 59,
+      "title": "Cloth and Leather Armor",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 1171,
+          "name": "Well-stitched Robe",
+          "quantity": 1
+        },
+        {
+          "itemId": 2237,
+          "name": "Patched Pants",
+          "quantity": 1
+        }
+      ],
+      "experience": 210,
+      "reputation": []
+    },
+    "60": {
+      "questId": 60,
+      "title": "Kobold Candles",
+      "rewardItems": [
+        {
+          "itemId": 1434,
+          "name": "Glowing Wax Stick",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 475,
+      "reputation": []
+    },
+    "61": {
+      "questId": 61,
+      "title": "Shipment to Stormwind",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 1178,
+          "name": "Explosive Rocket",
+          "quantity": 1
+        },
+        {
+          "itemId": 1177,
+          "name": "Oil of Olaf",
+          "quantity": 1
+        },
+        {
+          "itemId": 2454,
+          "name": "Elixir of Lion's Strength",
+          "quantity": 1
+        }
+      ],
+      "experience": 790,
+      "reputation": []
+    },
+    "62": {
+      "questId": 62,
+      "title": "The Fargodeep Mine",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 475,
+      "reputation": []
+    },
+    "63": {
+      "questId": 63,
+      "title": "Call of Water",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1400,
+      "reputation": []
+    },
+    "64": {
+      "questId": 64,
+      "title": "The Forgotten Heirloom",
+      "rewardItems": [
+        {
+          "itemId": 4541,
+          "name": "Freshly Baked Bread",
+          "quantity": 1
+        },
+        {
+          "itemId": 1179,
+          "name": "Ice Cold Milk",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 910,
+      "reputation": []
+    },
+    "65": {
+      "questId": 65,
+      "title": "The Defias Brotherhood",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1350,
+      "reputation": []
+    },
+    "66": {
+      "questId": 66,
+      "title": "The Legend of Stalvan",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 230,
+      "reputation": []
+    },
+    "67": {
+      "questId": 67,
+      "title": "The Legend of Stalvan",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1150,
+      "reputation": []
+    },
+    "68": {
+      "questId": 68,
+      "title": "The Legend of Stalvan",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1700,
+      "reputation": []
+    },
+    "69": {
+      "questId": 69,
+      "title": "The Legend of Stalvan",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 570,
+      "reputation": []
+    },
+    "70": {
+      "questId": 70,
+      "title": "The Legend of Stalvan",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1700,
+      "reputation": []
+    },
+    "71": {
+      "questId": 71,
+      "title": "Report to Thomas",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 210,
+      "reputation": []
+    },
+    "72": {
+      "questId": 72,
+      "title": "The Legend of Stalvan",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 230,
+      "reputation": []
+    },
+    "74": {
+      "questId": 74,
+      "title": "The Legend of Stalvan",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1150,
+      "reputation": []
+    },
+    "75": {
+      "questId": 75,
+      "title": "The Legend of Stalvan",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1150,
+      "reputation": []
+    },
+    "76": {
+      "questId": 76,
+      "title": "The Jasperlode Mine",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 840,
+      "reputation": []
+    },
+    "77": {
+      "questId": 77,
+      "title": "A Sticky Situation",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 4400,
+      "reputation": []
+    },
+    "78": {
+      "questId": 78,
+      "title": "The Legend of Stalvan",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 570,
+      "reputation": []
+    },
+    "83": {
+      "questId": 83,
+      "title": "Red Linen Goods",
+      "rewardItems": [
+        {
+          "itemId": 2575,
+          "name": "Red Linen Shirt",
+          "quantity": 1
+        },
+        {
+          "itemId": 983,
+          "name": "Red Linen Sash",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 780,
+      "reputation": []
+    },
+    "84": {
+      "questId": 84,
+      "title": "Back to Billy",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 135,
+      "reputation": []
+    },
+    "85": {
+      "questId": 85,
+      "title": "Lost Necklace",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 135,
+      "reputation": []
+    },
+    "86": {
+      "questId": 86,
+      "title": "Pie for Billy",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 405,
+      "reputation": []
+    },
+    "87": {
+      "questId": 87,
+      "title": "Goldtooth",
+      "rewardItems": [
+        {
+          "itemId": 1359,
+          "name": "Lion-stamped Gloves",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 880,
+      "reputation": []
+    },
+    "88": {
+      "questId": 88,
+      "title": "Princess Must Die!",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 1173,
+          "name": "Weather-worn Boots",
+          "quantity": 1
+        },
+        {
+          "itemId": 1182,
+          "name": "Brass-studded Bracers",
+          "quantity": 1
+        },
+        {
+          "itemId": 11191,
+          "name": "Farmer's Boots",
+          "quantity": 1
+        }
+      ],
+      "experience": 780,
+      "reputation": []
+    },
+    "89": {
+      "questId": 89,
+      "title": "The Everstill Bridge",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 1310,
+          "name": "Smith's Trousers",
+          "quantity": 1
+        },
+        {
+          "itemId": 1303,
+          "name": "Bridgeworker's Gloves",
+          "quantity": 1
+        },
+        {
+          "itemId": 1304,
+          "name": "Riding Gloves",
+          "quantity": 1
+        }
+      ],
+      "experience": 1550,
+      "reputation": []
+    },
+    "90": {
+      "questId": 90,
+      "title": "Seasoned Wolf Kabobs",
+      "rewardItems": [
+        {
+          "itemId": 1017,
+          "name": "Seasoned Wolf Kabob",
+          "quantity": 1
+        },
+        {
+          "itemId": 2701,
+          "name": "Recipe: Seasoned Wolf Kabob",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 2000,
+      "reputation": []
+    },
+    "91": {
+      "questId": 91,
+      "title": "Solomon's Law",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1850,
+      "reputation": []
+    },
+    "92": {
+      "questId": 92,
+      "title": "Redridge Goulash",
+      "rewardItems": [
+        {
+          "itemId": 1082,
+          "name": "Redridge Goulash",
+          "quantity": 1
+        },
+        {
+          "itemId": 2699,
+          "name": "Recipe: Redridge Goulash",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 1350,
+      "reputation": []
+    },
+    "98": {
+      "questId": 98,
+      "title": "The Legend of Stalvan",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 2044,
+          "name": "Crescent of Forlorn Spirits",
+          "quantity": 1
+        },
+        {
+          "itemId": 2043,
+          "name": "Ring of Forlorn Spirits",
+          "quantity": 1
+        }
+      ],
+      "experience": 4100,
+      "reputation": []
+    },
+    "99": {
+      "questId": 99,
+      "title": "Arugal's Folly",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 3586,
+          "name": "Logsplitter",
+          "quantity": 1
+        },
+        {
+          "itemId": 3570,
+          "name": "Bonegrinding Pestle",
+          "quantity": 1
+        },
+        {
+          "itemId": 5242,
+          "name": "Cinder Wand",
+          "quantity": 1
+        }
+      ],
+      "experience": 1350,
+      "reputation": []
+    },
+    "100": {
+      "questId": 100,
+      "title": "Call of Water",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 0,
+      "reputation": []
+    },
+    "101": {
+      "questId": 101,
+      "title": "The Totem of Infliction",
+      "rewardItems": [
+        {
+          "itemId": 1131,
+          "name": "Totem of Infliction",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 2550,
+      "reputation": []
+    },
+    "102": {
+      "questId": 102,
+      "title": "Patrolling Westfall",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 1154,
+          "name": "Belt of the People's Militia",
+          "quantity": 1
+        },
+        {
+          "itemId": 710,
+          "name": "Bracers of the People's Militia",
+          "quantity": 1
+        }
+      ],
+      "experience": 980,
+      "reputation": []
+    },
+    "103": {
+      "questId": 103,
+      "title": "Keeper of the Flame",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 2455,
+          "name": "Minor Mana Potion",
+          "quantity": 1
+        },
+        {
+          "itemId": 118,
+          "name": "Minor Healing Potion",
+          "quantity": 1
+        },
+        {
+          "itemId": 955,
+          "name": "Scroll of Intellect",
+          "quantity": 1
+        },
+        {
+          "itemId": 1180,
+          "name": "Scroll of Stamina",
+          "quantity": 1
+        }
+      ],
+      "experience": 1150,
+      "reputation": []
+    },
+    "104": {
+      "questId": 104,
+      "title": "The Coastal Menace",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 1172,
+          "name": "Grayson's Torch",
+          "quantity": 1
+        },
+        {
+          "itemId": 1557,
+          "name": "Buckler of the Seas",
+          "quantity": 1
+        },
+        {
+          "itemId": 5240,
+          "name": "Torchlight Wand",
+          "quantity": 1
+        }
+      ],
+      "experience": 1550,
+      "reputation": []
+    },
+    "105": {
+      "questId": 105,
+      "title": "Alas, Andorhal",
+      "rewardItems": [
+        {
+          "itemId": 17759,
+          "name": "Mark of Resolution",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 8300,
+      "reputation": []
+    },
+    "106": {
+      "questId": 106,
+      "title": "Young Lovers",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 135,
+      "reputation": []
+    },
+    "107": {
+      "questId": 107,
+      "title": "Note to William",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 135,
+      "reputation": []
+    },
+    "109": {
+      "questId": 109,
+      "title": "Report to Gryan Stoutmantle",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 630,
+      "reputation": []
+    },
+    "110": {
+      "questId": 110,
+      "title": "Insect Part Analysis",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 440,
+      "reputation": []
+    },
+    "111": {
+      "questId": 111,
+      "title": "Speak with Gramma",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 135,
+      "reputation": []
+    },
+    "112": {
+      "questId": 112,
+      "title": "Collecting Kelp",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 315,
+      "reputation": []
+    },
+    "113": {
+      "questId": 113,
+      "title": "Insect Part Analysis",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 440,
+      "reputation": []
+    },
+    "114": {
+      "questId": 114,
+      "title": "The Escape",
+      "rewardItems": [
+        {
+          "itemId": 118,
+          "name": "Minor Healing Potion",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 790,
+      "reputation": []
+    },
+    "115": {
+      "questId": 115,
+      "title": "Shadow Magic",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2300,
+      "reputation": []
+    },
+    "116": {
+      "questId": 116,
+      "title": "Dry Times",
+      "rewardItems": [
+        {
+          "itemId": 1270,
+          "name": "Finely Woven Cloak",
+          "quantity": 1
+        },
+        {
+          "itemId": 10456,
+          "name": "A Bulging Coin Purse",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 1050,
+      "reputation": []
+    },
+    "117": {
+      "questId": 117,
+      "title": "Thunderbrew",
+      "rewardItems": [
+        {
+          "itemId": 1262,
+          "name": "Keg of Thunderbrew Lager",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 0,
+      "reputation": []
+    },
+    "118": {
+      "questId": 118,
+      "title": "The Price of Shoes",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 340,
+      "reputation": []
+    },
+    "119": {
+      "questId": 119,
+      "title": "Return to Verner",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 680,
+      "reputation": []
+    },
+    "120": {
+      "questId": 120,
+      "title": "Messenger to Stormwind",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 490,
+      "reputation": []
+    },
+    "121": {
+      "questId": 121,
+      "title": "Messenger to Stormwind",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 245,
+      "reputation": []
+    },
+    "122": {
+      "questId": 122,
+      "title": "Underbelly Scales",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 6092,
+          "name": "Black Whelp Boots",
+          "quantity": 1
+        },
+        {
+          "itemId": 1302,
+          "name": "Black Whelp Gloves",
+          "quantity": 1
+        }
+      ],
+      "experience": 1700,
+      "reputation": []
+    },
+    "123": {
+      "questId": 123,
+      "title": "The Collector",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 210,
+      "reputation": []
+    },
+    "124": {
+      "questId": 124,
+      "title": "A Baying of Gnolls",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1150,
+      "reputation": []
+    },
+    "125": {
+      "questId": 125,
+      "title": "The Lost Tools",
+      "rewardItems": [
+        {
+          "itemId": 2313,
+          "name": "Medium Armor Kit",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 880,
+      "reputation": []
+    },
+    "126": {
+      "questId": 126,
+      "title": "Howling in the Hills",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 1319,
+          "name": "Ring of Iron Will",
+          "quantity": 1
+        },
+        {
+          "itemId": 2910,
+          "name": "Gold Militia Boots",
+          "quantity": 1
+        }
+      ],
+      "experience": 2000,
+      "reputation": []
+    },
+    "127": {
+      "questId": 127,
+      "title": "Selling Fish",
+      "rewardItems": [
+        {
+          "itemId": 3663,
+          "name": "Murloc Fin Soup",
+          "quantity": 1
+        },
+        {
+          "itemId": 3680,
+          "name": "Recipe: Murloc Fin Soup",
+          "quantity": 1
+        },
+        {
+          "itemId": 1322,
+          "name": "Fishliver Oil",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 1250,
+      "reputation": []
+    },
+    "128": {
+      "questId": 128,
+      "title": "Blackrock Bounty",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2000,
+      "reputation": []
+    },
+    "133": {
+      "questId": 133,
+      "title": "Ghoulish Effigy",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1650,
+      "reputation": []
+    },
+    "134": {
+      "questId": 134,
+      "title": "Ogre Thieves",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1200,
+      "reputation": []
+    },
+    "135": {
+      "questId": 135,
+      "title": "The Defias Brotherhood",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 680,
+      "reputation": []
+    },
+    "136": {
+      "questId": 136,
+      "title": "Captain Sander's Hidden Treasure",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 580,
+      "reputation": []
+    },
+    "138": {
+      "questId": 138,
+      "title": "Captain Sander's Hidden Treasure",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 580,
+      "reputation": []
+    },
+    "139": {
+      "questId": 139,
+      "title": "Captain Sander's Hidden Treasure",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 580,
+      "reputation": []
+    },
+    "140": {
+      "questId": 140,
+      "title": "Captain Sander's Hidden Treasure",
+      "rewardItems": [
+        {
+          "itemId": 2842,
+          "name": "Silver Bar",
+          "quantity": 1
+        },
+        {
+          "itemId": 3342,
+          "name": "Captain Sander's Shirt",
+          "quantity": 1
+        },
+        {
+          "itemId": 3344,
+          "name": "Captain Sander's Sash",
+          "quantity": 1
+        },
+        {
+          "itemId": 3343,
+          "name": "Captain Sander's Booty Bag",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 1150,
+      "reputation": []
+    },
+    "141": {
+      "questId": 141,
+      "title": "The Defias Brotherhood",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 340,
+      "reputation": []
+    },
+    "142": {
+      "questId": 142,
+      "title": "The Defias Brotherhood",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1350,
+      "reputation": []
+    },
+    "143": {
+      "questId": 143,
+      "title": "Messenger to Westfall",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 490,
+      "reputation": []
+    },
+    "150": {
+      "questId": 150,
+      "title": "Murloc Poachers",
+      "rewardItems": [
+        {
+          "itemId": 3567,
+          "name": "Dwarven Fishing Pole",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 1550,
+      "reputation": []
+    },
+    "151": {
+      "questId": 151,
+      "title": "Poor Old Blanchy",
+      "rewardItems": [
+        {
+          "itemId": 2165,
+          "name": "Old Blanchy's Blanket",
+          "quantity": 1
+        },
+        {
+          "itemId": 1537,
+          "name": "Old Blanchy's Feed Pouch",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 1250,
+      "reputation": []
+    },
+    "152": {
+      "questId": 152,
+      "title": "The Coast Isn't Clear",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1450,
+      "reputation": []
+    },
+    "153": {
+      "questId": 153,
+      "title": "Red Leather Bandanas",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 3511,
+          "name": "Cloak of the People's Militia",
+          "quantity": 1
+        },
+        {
+          "itemId": 5944,
+          "name": "Greaves of the People's Militia",
+          "quantity": 1
+        },
+        {
+          "itemId": 12295,
+          "name": "Leggings of the People's Militia",
+          "quantity": 1
+        }
+      ],
+      "experience": 1050,
+      "reputation": []
+    },
+    "154": {
+      "questId": 154,
+      "title": "Return the Comb",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 195,
+      "reputation": []
+    },
+    "155": {
+      "questId": 155,
+      "title": "The Defias Brotherhood",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1700,
+      "reputation": []
+    },
+    "156": {
+      "questId": 156,
+      "title": "Gather Rot Blossoms",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 970,
+      "reputation": []
+    },
+    "157": {
+      "questId": 157,
+      "title": "Deliver the Thread",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1450,
+      "reputation": []
+    },
+    "158": {
+      "questId": 158,
+      "title": "Zombie Juice",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 485,
+      "reputation": []
+    },
+    "159": {
+      "questId": 159,
+      "title": "Juice Delivery",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 970,
+      "reputation": []
+    },
+    "160": {
+      "questId": 160,
+      "title": "Note to the Mayor",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 610,
+      "reputation": []
+    },
+    "161": {
+      "questId": 161,
+      "title": "A Dark Threat Looms",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1350,
+      "reputation": []
+    },
+    "162": {
+      "questId": 162,
+      "title": "Rise of the Silithid",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 5700,
+      "reputation": []
+    },
+    "163": {
+      "questId": 163,
+      "title": "Raven Hill",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 390,
+      "reputation": []
+    },
+    "164": {
+      "questId": 164,
+      "title": "Deliveries to Sven",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 920,
+      "reputation": []
+    },
+    "165": {
+      "questId": 165,
+      "title": "The Hermit",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1000,
+      "reputation": []
+    },
+    "166": {
+      "questId": 166,
+      "title": "The Defias Brotherhood",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 6087,
+          "name": "Chausses of Westfall",
+          "quantity": 1
+        },
+        {
+          "itemId": 2041,
+          "name": "Tunic of Westfall",
+          "quantity": 1
+        },
+        {
+          "itemId": 2042,
+          "name": "Staff of Westfall",
+          "quantity": 1
+        }
+      ],
+      "experience": 2600,
+      "reputation": []
+    },
+    "167": {
+      "questId": 167,
+      "title": "Oh Brother. . .",
+      "rewardItems": [
+        {
+          "itemId": 1893,
+          "name": "Miner's Revenge",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 1550,
+      "reputation": []
+    },
+    "168": {
+      "questId": 168,
+      "title": "Collecting Memories",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 2037,
+          "name": "Tunneler's Boots",
+          "quantity": 1
+        },
+        {
+          "itemId": 2036,
+          "name": "Dusty Mining Gloves",
+          "quantity": 1
+        }
+      ],
+      "experience": 1350,
+      "reputation": []
+    },
+    "169": {
+      "questId": 169,
+      "title": "Wanted: Gath'Ilzogg",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2650,
+      "reputation": []
     }
   },
   "itemDetails": {
@@ -683,6 +1775,19 @@
       "armor": 7,
       "durability": "20 / 20"
     },
+    "118": {
+      "itemId": 118,
+      "name": "Minor Healing Potion",
+      "type": "Consumable",
+      "subtype": "",
+      "quality": "Common",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
     "159": {
       "itemId": 159,
       "name": "Refreshing Spring Water",
@@ -694,6 +1799,19 @@
       "slot": "",
       "armor": 0,
       "durability": ""
+    },
+    "710": {
+      "itemId": 710,
+      "name": "Bracers of the People's Militia",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 14,
+      "requiredLevel": 0,
+      "slot": "Wrist",
+      "armor": 11,
+      "durability": "18 / 18",
+      "containerSlots": 0
     },
     "724": {
       "itemId": 724,
@@ -755,6 +1873,32 @@
       "armor": 0,
       "durability": ""
     },
+    "955": {
+      "itemId": 955,
+      "name": "Scroll of Intellect",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "983": {
+      "itemId": 983,
+      "name": "Red Linen Sash",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Common",
+      "level": 9,
+      "requiredLevel": 0,
+      "slot": "Waist",
+      "armor": 9,
+      "durability": "16 / 16",
+      "containerSlots": 0
+    },
     "1008": {
       "itemId": 1008,
       "name": "Well-used Sword",
@@ -766,6 +1910,58 @@
       "slot": "Main Hand",
       "armor": 0,
       "durability": "40 / 40"
+    },
+    "1017": {
+      "itemId": 1017,
+      "name": "Seasoned Wolf Kabob",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 25,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "1082": {
+      "itemId": 1082,
+      "name": "Redridge Goulash",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 20,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "1131": {
+      "itemId": 1131,
+      "name": "Totem of Infliction",
+      "type": "Miscellaneous",
+      "subtype": "Held In Off-Hand",
+      "quality": "Common",
+      "level": 25,
+      "requiredLevel": 0,
+      "slot": "Held In Off-Hand",
+      "armor": 50,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "1154": {
+      "itemId": 1154,
+      "name": "Belt of the People's Militia",
+      "type": "Armor",
+      "subtype": "Mail",
+      "quality": "Poor",
+      "level": 14,
+      "requiredLevel": 0,
+      "slot": "Waist",
+      "armor": 73,
+      "durability": "20 / 20",
+      "containerSlots": 0
     },
     "1158": {
       "itemId": 1158,
@@ -803,6 +1999,110 @@
       "armor": 0,
       "durability": "30 / 30"
     },
+    "1171": {
+      "itemId": 1171,
+      "name": "Well-stitched Robe",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 10,
+      "requiredLevel": 0,
+      "slot": "Chest",
+      "armor": 18,
+      "durability": "45 / 45",
+      "containerSlots": 0
+    },
+    "1172": {
+      "itemId": 1172,
+      "name": "Grayson's Torch",
+      "type": "Miscellaneous",
+      "subtype": "Held In Off-Hand",
+      "quality": "Poor",
+      "level": 21,
+      "requiredLevel": 0,
+      "slot": "Held In Off-Hand",
+      "armor": 15,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "1173": {
+      "itemId": 1173,
+      "name": "Weather-worn Boots",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 10,
+      "requiredLevel": 0,
+      "slot": "Feet",
+      "armor": 36,
+      "durability": "25 / 25",
+      "containerSlots": 0
+    },
+    "1177": {
+      "itemId": 1177,
+      "name": "Oil of Olaf",
+      "type": "Consumable",
+      "subtype": "",
+      "quality": "Common",
+      "level": 8,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "1178": {
+      "itemId": 1178,
+      "name": "Explosive Rocket",
+      "type": "Consumable",
+      "subtype": "",
+      "quality": "Poor",
+      "level": 8,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "1179": {
+      "itemId": 1179,
+      "name": "Ice Cold Milk",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "1180": {
+      "itemId": 1180,
+      "name": "Scroll of Stamina",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "1182": {
+      "itemId": 1182,
+      "name": "Brass-studded Bracers",
+      "type": "Armor",
+      "subtype": "Mail",
+      "quality": "Poor",
+      "level": 10,
+      "requiredLevel": 0,
+      "slot": "Wrist",
+      "armor": 45,
+      "durability": "20 / 20",
+      "containerSlots": 0
+    },
     "1191": {
       "itemId": 1191,
       "name": "Bag of Marbles",
@@ -814,6 +2114,32 @@
       "slot": "",
       "armor": 0,
       "durability": ""
+    },
+    "1262": {
+      "itemId": 1262,
+      "name": "Keg of Thunderbrew Lager",
+      "type": "Consumable",
+      "subtype": "",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "1270": {
+      "itemId": 1270,
+      "name": "Finely Woven Cloak",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "Back",
+      "armor": 14,
+      "durability": "",
+      "containerSlots": 0
     },
     "1276": {
       "itemId": 1276,
@@ -839,6 +2165,110 @@
       "armor": 168,
       "durability": "60 / 60"
     },
+    "1302": {
+      "itemId": 1302,
+      "name": "Black Whelp Gloves",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 18,
+      "requiredLevel": 0,
+      "slot": "Hands",
+      "armor": 46,
+      "durability": "20 / 20",
+      "containerSlots": 0
+    },
+    "1303": {
+      "itemId": 1303,
+      "name": "Bridgeworker's Gloves",
+      "type": "Armor",
+      "subtype": "Mail",
+      "quality": "Poor",
+      "level": 20,
+      "requiredLevel": 0,
+      "slot": "Hands",
+      "armor": 105,
+      "durability": "30 / 30",
+      "containerSlots": 0
+    },
+    "1304": {
+      "itemId": 1304,
+      "name": "Riding Gloves",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 20,
+      "requiredLevel": 0,
+      "slot": "Hands",
+      "armor": 21,
+      "durability": "20 / 20",
+      "containerSlots": 0
+    },
+    "1310": {
+      "itemId": 1310,
+      "name": "Smith's Trousers",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 20,
+      "requiredLevel": 0,
+      "slot": "Legs",
+      "armor": 68,
+      "durability": "55 / 55",
+      "containerSlots": 0
+    },
+    "1319": {
+      "itemId": 1319,
+      "name": "Ring of Iron Will",
+      "type": "Armor",
+      "subtype": "Finger",
+      "quality": "Poor",
+      "level": 25,
+      "requiredLevel": 0,
+      "slot": "Finger",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "1322": {
+      "itemId": 1322,
+      "name": "Fishliver Oil",
+      "type": "Consumable",
+      "subtype": "",
+      "quality": "Common",
+      "level": 21,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "1359": {
+      "itemId": 1359,
+      "name": "Lion-stamped Gloves",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Common",
+      "level": 8,
+      "requiredLevel": 0,
+      "slot": "Hands",
+      "armor": 28,
+      "durability": "18 / 18",
+      "containerSlots": 0
+    },
+    "1434": {
+      "itemId": 1434,
+      "name": "Glowing Wax Stick",
+      "type": "Consumable",
+      "subtype": "",
+      "quality": "Common",
+      "level": 7,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
     "1479": {
       "itemId": 1479,
       "name": "Salma's Oven Mitts",
@@ -863,6 +2293,32 @@
       "armor": 0,
       "durability": "50 / 50"
     },
+    "1537": {
+      "itemId": 1537,
+      "name": "Old Blanchy's Feed Pouch",
+      "type": "Container",
+      "subtype": "Bag",
+      "quality": "Common",
+      "level": 1,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 4
+    },
+    "1557": {
+      "itemId": 1557,
+      "name": "Buckler of the Seas",
+      "type": "Armor",
+      "subtype": "Shield",
+      "quality": "Poor",
+      "level": 20,
+      "requiredLevel": 0,
+      "slot": "Off Hand",
+      "armor": 411,
+      "durability": "65 / 65",
+      "containerSlots": 0
+    },
     "1561": {
       "itemId": 1561,
       "name": "Harvester's Robe",
@@ -886,6 +2342,123 @@
       "slot": "Two-hand",
       "armor": 0,
       "durability": "60 / 60"
+    },
+    "1729": {
+      "itemId": 1729,
+      "name": "Gunnysack of the Night Watch",
+      "type": "Container",
+      "subtype": "Bag",
+      "quality": "Poor",
+      "level": 25,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 10
+    },
+    "1893": {
+      "itemId": 1893,
+      "name": "Miner's Revenge",
+      "type": "Weapon",
+      "subtype": "Axe",
+      "quality": "Common",
+      "level": 20,
+      "requiredLevel": 0,
+      "slot": "Two-hand",
+      "armor": 0,
+      "durability": "65 / 65",
+      "containerSlots": 0
+    },
+    "2036": {
+      "itemId": 2036,
+      "name": "Dusty Mining Gloves",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 18,
+      "requiredLevel": 0,
+      "slot": "Hands",
+      "armor": 46,
+      "durability": "20 / 20",
+      "containerSlots": 0
+    },
+    "2037": {
+      "itemId": 2037,
+      "name": "Tunneler's Boots",
+      "type": "Armor",
+      "subtype": "Mail",
+      "quality": "Poor",
+      "level": 18,
+      "requiredLevel": 0,
+      "slot": "Feet",
+      "armor": 111,
+      "durability": "40 / 40",
+      "containerSlots": 0
+    },
+    "2041": {
+      "itemId": 2041,
+      "name": "Tunic of Westfall",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 24,
+      "requiredLevel": 0,
+      "slot": "Chest",
+      "armor": 92,
+      "durability": "90 / 90",
+      "containerSlots": 0
+    },
+    "2042": {
+      "itemId": 2042,
+      "name": "Staff of Westfall",
+      "type": "Weapon",
+      "subtype": "Staff",
+      "quality": "Poor",
+      "level": 24,
+      "requiredLevel": 0,
+      "slot": "Two-hand",
+      "armor": 0,
+      "durability": "90 / 90",
+      "containerSlots": 0
+    },
+    "2043": {
+      "itemId": 2043,
+      "name": "Ring of Forlorn Spirits",
+      "type": "Armor",
+      "subtype": "Finger",
+      "quality": "Poor",
+      "level": 35,
+      "requiredLevel": 0,
+      "slot": "Finger",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "2044": {
+      "itemId": 2044,
+      "name": "Crescent of Forlorn Spirits",
+      "type": "Weapon",
+      "subtype": "Axe",
+      "quality": "Poor",
+      "level": 35,
+      "requiredLevel": 0,
+      "slot": "Main Hand",
+      "armor": 0,
+      "durability": "90 / 90",
+      "containerSlots": 0
+    },
+    "2165": {
+      "itemId": 2165,
+      "name": "Old Blanchy's Blanket",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Common",
+      "level": 10,
+      "requiredLevel": 0,
+      "slot": "Back",
+      "armor": 9,
+      "durability": "",
+      "containerSlots": 0
     },
     "2186": {
       "itemId": 2186,
@@ -923,6 +2496,19 @@
       "armor": 0,
       "durability": "30 / 30"
     },
+    "2237": {
+      "itemId": 2237,
+      "name": "Patched Pants",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 10,
+      "requiredLevel": 0,
+      "slot": "Legs",
+      "armor": 46,
+      "durability": "40 / 40",
+      "containerSlots": 0
+    },
     "2238": {
       "itemId": 2238,
       "name": "Urchin's Pants",
@@ -947,6 +2533,45 @@
       "armor": 161,
       "durability": "45 / 45"
     },
+    "2313": {
+      "itemId": 2313,
+      "name": "Medium Armor Kit",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "2454": {
+      "itemId": 2454,
+      "name": "Elixir of Lion's Strength",
+      "type": "Consumable",
+      "subtype": "",
+      "quality": "Common",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "2455": {
+      "itemId": 2455,
+      "name": "Minor Mana Potion",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
     "2562": {
       "itemId": 2562,
       "name": "Bouquet of Scarlet Begonias",
@@ -958,6 +2583,19 @@
       "slot": "Held In Off-Hand",
       "armor": 0,
       "durability": ""
+    },
+    "2575": {
+      "itemId": 2575,
+      "name": "Red Linen Shirt",
+      "type": "Armor",
+      "subtype": "Shirt",
+      "quality": "Common",
+      "level": 10,
+      "requiredLevel": 0,
+      "slot": "Shirt",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
     },
     "2691": {
       "itemId": 2691,
@@ -982,6 +2620,58 @@
       "slot": "",
       "armor": 0,
       "durability": ""
+    },
+    "2699": {
+      "itemId": 2699,
+      "name": "Recipe: Redridge Goulash",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 20,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "2701": {
+      "itemId": 2701,
+      "name": "Recipe: Seasoned Wolf Kabob",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 25,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "2842": {
+      "itemId": 2842,
+      "name": "Silver Bar",
+      "type": "Trade Goods",
+      "subtype": "Material",
+      "quality": "Common",
+      "level": 10,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "2910": {
+      "itemId": 2910,
+      "name": "Gold Militia Boots",
+      "type": "Armor",
+      "subtype": "Mail",
+      "quality": "Poor",
+      "level": 25,
+      "requiredLevel": 0,
+      "slot": "Feet",
+      "armor": 126,
+      "durability": "45 / 45",
+      "containerSlots": 0
     },
     "2953": {
       "itemId": 2953,
@@ -1019,6 +2709,84 @@
       "armor": 5,
       "durability": ""
     },
+    "3342": {
+      "itemId": 3342,
+      "name": "Captain Sander's Shirt",
+      "type": "Armor",
+      "subtype": "Shirt",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "Shirt",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "3343": {
+      "itemId": 3343,
+      "name": "Captain Sander's Booty Bag",
+      "type": "Container",
+      "subtype": "Bag",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 8
+    },
+    "3344": {
+      "itemId": 3344,
+      "name": "Captain Sander's Sash",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "Waist",
+      "armor": 16,
+      "durability": "18 / 18",
+      "containerSlots": 0
+    },
+    "3511": {
+      "itemId": 3511,
+      "name": "Cloak of the People's Militia",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "Back",
+      "armor": 14,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "3567": {
+      "itemId": 3567,
+      "name": "Dwarven Fishing Pole",
+      "type": "Weapon",
+      "subtype": "Gun",
+      "quality": "Common",
+      "level": 19,
+      "requiredLevel": 0,
+      "slot": "Ranged",
+      "armor": 0,
+      "durability": "45 / 45",
+      "containerSlots": 0
+    },
+    "3570": {
+      "itemId": 3570,
+      "name": "Bonegrinding Pestle",
+      "type": "Unknown",
+      "subtype": "Mace",
+      "quality": "Poor",
+      "level": 16,
+      "requiredLevel": 0,
+      "slot": "Main Hand",
+      "armor": 0,
+      "durability": "50 / 50",
+      "containerSlots": 0
+    },
     "3578": {
       "itemId": 3578,
       "name": "Harvester's Pants",
@@ -1031,6 +2799,71 @@
       "armor": 61,
       "durability": "45 / 45"
     },
+    "3586": {
+      "itemId": 3586,
+      "name": "Logsplitter",
+      "type": "Weapon",
+      "subtype": "Axe",
+      "quality": "Poor",
+      "level": 16,
+      "requiredLevel": 0,
+      "slot": "Two-hand",
+      "armor": 0,
+      "durability": "55 / 55",
+      "containerSlots": 0
+    },
+    "3604": {
+      "itemId": 3604,
+      "name": "Bandolier of the Night Watch",
+      "type": "Container",
+      "subtype": "Bag",
+      "quality": "Poor",
+      "level": 25,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 12
+    },
+    "3605": {
+      "itemId": 3605,
+      "name": "Quiver of the Night Watch",
+      "type": "Container",
+      "subtype": "Bag",
+      "quality": "Poor",
+      "level": 25,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 12
+    },
+    "3663": {
+      "itemId": 3663,
+      "name": "Murloc Fin Soup",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 25,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "3680": {
+      "itemId": 3680,
+      "name": "Recipe: Murloc Fin Soup",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 25,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
     "4536": {
       "itemId": 4536,
       "name": "Shiny Red Apple",
@@ -1042,6 +2875,19 @@
       "slot": "",
       "armor": 0,
       "durability": ""
+    },
+    "4541": {
+      "itemId": 4541,
+      "name": "Freshly Baked Bread",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
     },
     "4604": {
       "itemId": 4604,
@@ -1067,6 +2913,32 @@
       "armor": 0,
       "durability": "25 / 25"
     },
+    "5240": {
+      "itemId": 5240,
+      "name": "Torchlight Wand",
+      "type": "Weapon",
+      "subtype": "Wand",
+      "quality": "Poor",
+      "level": 21,
+      "requiredLevel": 0,
+      "slot": "Ranged",
+      "armor": 0,
+      "durability": "40 / 40",
+      "containerSlots": 0
+    },
+    "5242": {
+      "itemId": 5242,
+      "name": "Cinder Wand",
+      "type": "Weapon",
+      "subtype": "Wand",
+      "quality": "Poor",
+      "level": 16,
+      "requiredLevel": 0,
+      "slot": "Ranged",
+      "armor": 0,
+      "durability": "35 / 35",
+      "containerSlots": 0
+    },
     "5579": {
       "itemId": 5579,
       "name": "Militia Warhammer",
@@ -1090,6 +2962,19 @@
       "slot": "Main Hand",
       "armor": 0,
       "durability": "30 / 30"
+    },
+    "5944": {
+      "itemId": 5944,
+      "name": "Greaves of the People's Militia",
+      "type": "Armor",
+      "subtype": "Mail",
+      "quality": "Poor",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "Feet",
+      "armor": 99,
+      "durability": "35 / 35",
+      "containerSlots": 0
     },
     "6070": {
       "itemId": 6070,
@@ -1127,6 +3012,32 @@
       "armor": 55,
       "durability": "35 / 35"
     },
+    "6087": {
+      "itemId": 6087,
+      "name": "Chausses of Westfall",
+      "type": "Armor",
+      "subtype": "Mail",
+      "quality": "Poor",
+      "level": 24,
+      "requiredLevel": 0,
+      "slot": "Legs",
+      "armor": 173,
+      "durability": "75 / 75",
+      "containerSlots": 0
+    },
+    "6092": {
+      "itemId": 6092,
+      "name": "Black Whelp Boots",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 18,
+      "requiredLevel": 0,
+      "slot": "Feet",
+      "armor": 51,
+      "durability": "35 / 35",
+      "containerSlots": 0
+    },
     "6093": {
       "itemId": 6093,
       "name": "Orc Crusher",
@@ -1163,6 +3074,32 @@
       "armor": 0,
       "durability": ""
     },
+    "10456": {
+      "itemId": 10456,
+      "name": "A Bulging Coin Purse",
+      "type": "Miscellaneous",
+      "subtype": "Other",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "11191": {
+      "itemId": 11191,
+      "name": "Farmer's Boots",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 10,
+      "requiredLevel": 0,
+      "slot": "Feet",
+      "armor": 13,
+      "durability": "25 / 25",
+      "containerSlots": 0
+    },
     "11192": {
       "itemId": 11192,
       "name": "Outfitter Gloves",
@@ -1174,6 +3111,19 @@
       "slot": "Hands",
       "armor": 6,
       "durability": "14 / 14"
+    },
+    "12295": {
+      "itemId": 12295,
+      "name": "Leggings of the People's Militia",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "Legs",
+      "armor": 24,
+      "durability": "40 / 40",
+      "containerSlots": 0
     },
     "12296": {
       "itemId": 12296,
@@ -1198,6 +3148,19 @@
       "slot": "Waist",
       "armor": 40,
       "durability": "20 / 20"
+    },
+    "17759": {
+      "itemId": 17759,
+      "name": "Mark of Resolution",
+      "type": "Miscellaneous",
+      "subtype": "Trinket",
+      "quality": "Common",
+      "level": 60,
+      "requiredLevel": 0,
+      "slot": "Trinket",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
     }
   }
 }
