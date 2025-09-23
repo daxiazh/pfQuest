@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-09-23T02:46:18.635Z",
+  "lastProcessedQuestId": 37,
+  "processedCount": 37,
+  "stats": {
+    "totalQuests": 6500,
+    "questsWithRewards": 14,
+    "totalRewardItems": 30,
+    "processedItems": 30,
+    "errors": 1,
+    "networkRetries": 0,
+    "resumedFromQuestId": 0
+  }
+}

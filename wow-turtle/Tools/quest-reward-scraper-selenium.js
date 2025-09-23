@@ -10,11 +10,15 @@ const chrome = require('selenium-webdriver/chrome');
 const cheerio = require('cheerio');
 
 class SeleniumQuestRewardScraper {
-    constructor() {
+    constructor(outputPath = null) {
         this.baseQuestUrl = 'https://database.turtle-wow.org/?quest=';
         this.baseItemUrl = 'https://database.turtle-wow.org/?item=';
         this.delay = 2000; // 请求间隔（毫秒）
         this.driver = null;
+        this.outputPath = outputPath; // 输出文件路径，用于增量处理
+        this.progressFile = null; // 进度文件路径
+        this.isIncrementalMode = false; // 是否为增量模式
+        this.lastProcessedQuestId = 0; // 最后处理的任务ID
         this.results = {
             questRewards: {},
             itemDetails: {},
@@ -26,9 +30,122 @@ class SeleniumQuestRewardScraper {
                 totalRewardItems: 0,
                 processedItems: 0,
                 errors: 0,
-                networkRetries: 0
+                networkRetries: 0,
+                resumedFromQuestId: 0 // 从哪个任务ID开始恢复
             }
         };
+    }
+
+    /**
+     * 启用增量处理模式
+     * @param {string} outputPath - 输出文件路径
+     */
+    enableIncrementalMode(outputPath) {
+        this.isIncrementalMode = true;
+        this.outputPath = outputPath;
+        this.progressFile = outputPath.replace('.json', '-progress.json');
+        
+        console.log('🔄 启用增量处理模式');
+        console.log(`  输出文件: ${this.outputPath}`);
+        console.log(`  进度文件: ${this.progressFile}`);
+    }
+
+    /**
+     * 加载现有数据和进度
+     */
+    loadExistingData() {
+        if (!this.isIncrementalMode) {
+            return;
+        }
+
+        // 加载现有的完整数据
+        if (fs.existsSync(this.outputPath)) {
+            try {
+                const existingData = JSON.parse(fs.readFileSync(this.outputPath, 'utf8'));
+                
+                // 合并现有数据
+                if (existingData.questRewards) {
+                    this.results.questRewards = { ...existingData.questRewards };
+                }
+                if (existingData.itemDetails) {
+                    this.results.itemDetails = { ...existingData.itemDetails };
+                }
+                
+                const existingCount = Object.keys(this.results.questRewards).length;
+                console.log(`📂 加载了 ${existingCount} 个现有任务数据`);
+                
+            } catch (error) {
+                console.warn(`⚠️ 加载现有数据失败: ${error.message}`);
+            }
+        }
+
+        // 加载进度信息
+        if (fs.existsSync(this.progressFile)) {
+            try {
+                const progressData = JSON.parse(fs.readFileSync(this.progressFile, 'utf8'));
+                this.lastProcessedQuestId = progressData.lastProcessedQuestId || 0;
+                this.results.stats.resumedFromQuestId = this.lastProcessedQuestId;
+                
+                console.log(`🔄 从任务 ID ${this.lastProcessedQuestId} 开始恢复处理`);
+                
+            } catch (error) {
+                console.warn(`⚠️ 加载进度文件失败: ${error.message}`);
+            }
+        }
+    }
+
+    /**
+     * 保存进度信息
+     * @param {number} questId - 当前处理的任务ID
+     */
+    saveProgress(questId) {
+        if (!this.isIncrementalMode) {
+            return;
+        }
+
+        this.lastProcessedQuestId = questId;
+        
+        const progressData = {
+            timestamp: new Date().toISOString(),
+            lastProcessedQuestId: questId,
+            processedCount: Object.keys(this.results.questRewards).length,
+            stats: { ...this.results.stats }
+        };
+
+        try {
+            fs.writeFileSync(this.progressFile, JSON.stringify(progressData, null, 2), 'utf8');
+        } catch (error) {
+            console.warn(`⚠️ 保存进度失败: ${error.message}`);
+        }
+    }
+
+    /**
+     * 过滤任务列表，跳过已处理的任务
+     * @param {Array<number>} questIds - 原始任务ID列表
+     * @returns {Array<number>} 需要处理的任务ID列表
+     */
+    filterQuestList(questIds) {
+        if (!this.isIncrementalMode || this.lastProcessedQuestId === 0) {
+            return questIds;
+        }
+
+        // 找到从哪个位置开始处理
+        let startIndex = 0;
+        for (let i = 0; i < questIds.length; i++) {
+            if (questIds[i] > this.lastProcessedQuestId) {
+                startIndex = i;
+                break;
+            }
+        }
+
+        const filteredList = questIds.slice(startIndex);
+        const skippedCount = questIds.length - filteredList.length;
+        
+        if (skippedCount > 0) {
+            console.log(`⏭️ 跳过 ${skippedCount} 个已处理的任务`);
+        }
+        
+        return filteredList;
     }
 
     /**
@@ -155,6 +272,7 @@ class SeleniumQuestRewardScraper {
         return null;
     }
 
+
     /**
      * 解析任务页面，提取奖励信息
      * @param {string} html - 任务页面HTML
@@ -176,7 +294,12 @@ class SeleniumQuestRewardScraper {
             // 获取任务标题
             const titleElement = $('h1.heading-size-1, h1, .page-header h1').first();
             if (titleElement.length > 0) {
-                rewards.title = titleElement.text().trim();
+                let title = titleElement.text().trim();
+                // 清理标题末尾的 " - Quests" 后缀
+                title = title.replace(/\s*-\s*Quests?\s*$/i, '');
+                rewards.title = title || `Quest ${questId}`;
+            } else {
+                rewards.title = `Quest ${questId}`;
             }
 
             console.log(`📝 解析任务: ${rewards.title || questId}`);
@@ -324,26 +447,45 @@ class SeleniumQuestRewardScraper {
             } else {
                 item.name = nameElement.text().trim();
             }
+            
+            // 清理物品名称末尾的 " - Items" 后缀
+            if (item.name) {
+                item.name = item.name.replace(/\s*-\s*Items?\s*$/i, '');
+            }
 
-            // 解析 tooltip 内容 - 这是物品详细信息的主要来源
-            const tooltipElement = $('.tooltip table, [class*="tooltip"]').first();
-            if (tooltipElement.length > 0) {
-                const tooltipText = tooltipElement.text();
-                console.log(`🔍 Tooltip 内容: ${tooltipText.substring(0, 200)}...`);
-                
-                // 从 tooltip 中提取物品名称（如果之前没找到）
-                if (!item.name) {
-                    const tooltipNameMatch = tooltipText.match(/^([^\n\r]+)/);
-                    if (tooltipNameMatch) {
-                        item.name = tooltipNameMatch[1].replace(/^[^a-zA-Z]*/, '').trim();
-                    }
+            // 查找特定的 tooltip div - 格式: id="tooltip{itemId}-generic"
+            const tooltipElement = $(`#tooltip${itemId}-generic table`).first();
+            if (tooltipElement.length === 0) {
+                throw new Error(`物品 ${itemId}: 无法找到 tooltip 数据`);
+            }
+            
+            const tooltipText = tooltipElement.text();
+            console.log(`🔍 Tooltip 内容: ${tooltipText.substring(0, 200)}...`);
+            
+            // 从 tooltip 中提取物品名称（如果之前没找到）
+            if (!item.name) {
+                // 查找 <b class="q1">物品名称</b> 格式
+                const nameElement = tooltipElement.find('b[class^="q"]').first();
+                if (nameElement.length > 0) {
+                    item.name = nameElement.text().trim();
                 }
+            }
 
-                // 解析装备位置和类型 - 格式: "Hands    Leather"
-                const slotTypeMatch = tooltipText.match(/(Hands|Head|Neck|Shoulder|Chest|Waist|Legs|Feet|Wrist|Finger|Trinket|Main Hand|Off Hand|Two-Hand|Ranged|Back|Shirt|Tabard)\s+(Cloth|Leather|Mail|Plate|Dagger|Sword|Axe|Bow|Gun|Crossbow|Staff|Wand|Shield|Miscellaneous)/i);
-                if (slotTypeMatch) {
-                    item.slot = slotTypeMatch[1];
-                    item.subtype = slotTypeMatch[2];
+            // 解析装备位置和类型 - 从表格结构中提取
+            // 格式: <table width="100%"><tr><td>Legs</td><th>Cloth</th></tr></table>
+            const slotTypeTable = tooltipElement.find('table[width="100%"]').first();
+            
+            if (slotTypeTable.length > 0) {
+                // 找到了装备位置类型表格，这是装备
+                const slotElement = slotTypeTable.find('td').first();
+                const typeElement = slotTypeTable.find('th').first();
+                
+                if (slotElement.length > 0) {
+                    item.slot = slotElement.text().trim();
+                }
+                
+                if (typeElement.length > 0) {
+                    item.subtype = typeElement.text().trim();
                     
                     // 根据子类型推断主类型
                     const subtypeToType = {
@@ -364,18 +506,48 @@ class SeleniumQuestRewardScraper {
                     };
                     item.type = subtypeToType[item.subtype] || 'Unknown';
                 }
-
-                // 解析护甲值 - 格式: "21 Armor"
-                const armorMatch = tooltipText.match(/(\d+)\s+Armor/i);
-                if (armorMatch) {
-                    item.armor = parseInt(armorMatch[1]);
+                
+                // 对于装备，如果没有解析到装备位置或类型，抛出异常
+                if (!item.slot || !item.subtype) {
+                    throw new Error(`物品 ${itemId}: 装备缺少必要信息 (位置: ${item.slot}, 类型: ${item.subtype})`);
                 }
-
-                // 解析耐久度 - 格式: "Durability 16 / 16"
-                const durabilityMatch = tooltipText.match(/Durability\s+(\d+\s*\/\s*\d+)/i);
-                if (durabilityMatch) {
-                    item.durability = durabilityMatch[1];
+            } else {
+                // 没有找到装备位置类型表格，可能是消耗品、配方等非装备物品
+                // 检查是否是已知的非装备类型
+                const tooltipText = tooltipElement.text();
+                
+                // 检查是否是配方/技能书类型
+                const isRecipe = tooltipText.includes('Requires ') && tooltipText.includes('Use:');
+                const isConsumable = tooltipText.includes('Use:') && !isRecipe;
+                const isQuestItem = tooltipText.includes('Quest Item');
+                
+                if (!isRecipe && !isConsumable && !isQuestItem) {
+                    // 不是已知的非装备类型，但也没有装备信息，可能是数据异常
+                    throw new Error(`物品 ${itemId}: 无法识别物品类型，缺少装备位置和类型信息`);
                 }
+                
+                // 为非装备物品设置默认类型
+                if (isRecipe) {
+                    item.type = 'Recipe';
+                } else if (isConsumable) {
+                    item.type = 'Consumable';
+                } else if (isQuestItem) {
+                    item.type = 'Quest';
+                } else {
+                    item.type = 'Miscellaneous';
+                }
+            }
+
+            // 解析护甲值 - 格式: "9 Armor"
+            const armorMatch = tooltipText.match(/(\d+)\s+Armor/i);
+            if (armorMatch) {
+                item.armor = parseInt(armorMatch[1]);
+            }
+
+            // 解析耐久度 - 格式: "Durability 30 / 30"
+            const durabilityMatch = tooltipText.match(/Durability\s+(\d+\s*\/\s*\d+)/i);
+            if (durabilityMatch) {
+                item.durability = durabilityMatch[1];
             }
 
             // 解析品质 - 从 CSS 类名
@@ -467,8 +639,19 @@ class SeleniumQuestRewardScraper {
      * @param {Array<number>} questIds - 任务ID列表
      */
     async processQuests(questIds) {
-        console.log(`开始处理 ${questIds.length} 个任务...`);
-        this.results.stats.totalQuests = questIds.length;
+        // 加载现有数据和进度
+        this.loadExistingData();
+        
+        // 过滤任务列表，跳过已处理的任务
+        const filteredQuestIds = this.filterQuestList(questIds);
+        
+        console.log(`开始处理 ${filteredQuestIds.length} 个任务... (总计: ${questIds.length})`);
+        this.results.stats.totalQuests = questIds.length; // 保持总数不变
+
+        if (filteredQuestIds.length === 0) {
+            console.log('✅ 所有任务都已处理完成！');
+            return;
+        }
 
         // 初始化浏览器
         const driverReady = await this.initDriver();
@@ -477,15 +660,18 @@ class SeleniumQuestRewardScraper {
         }
 
         try {
-            for (let i = 0; i < questIds.length; i++) {
-                const questId = questIds[i];
-                console.log(`\n📋 进度: ${i + 1}/${questIds.length} - 处理任务 ${questId}`);
+            for (let i = 0; i < filteredQuestIds.length; i++) {
+                const questId = filteredQuestIds[i];
+                const originalIndex = questIds.indexOf(questId);
+                console.log(`\n📋 进度: ${originalIndex + 1}/${questIds.length} - 处理任务 ${questId}`);
 
                 try {
                     // 获取任务奖励
                     const questRewards = await this.getQuestRewards(questId);
                     
                     if (!questRewards) {
+                        // 即使失败也要保存进度
+                        this.saveProgress(questId);
                         continue;
                     }
 
@@ -508,14 +694,24 @@ class SeleniumQuestRewardScraper {
                     // 保存任务奖励信息
                     this.results.questRewards[questId] = questRewards;
 
-                    // 每处理5个任务输出一次进度
-                    if ((i + 1) % 5 === 0) {
-                        this.saveProgressResults(`quest-rewards-progress-${i + 1}.json`);
+                    // 保存进度
+                    this.saveProgress(questId);
+
+                    // 每处理10个任务保存一次完整数据
+                    if ((i + 1) % 10 === 0) {
+                        if (this.isIncrementalMode && this.outputPath) {
+                            this.saveResults(this.outputPath, true); // 增量保存
+                            console.log(`💾 已保存中间结果 (处理了 ${i + 1}/${filteredQuestIds.length} 个任务)`);
+                        } else {
+                            this.saveProgressResults(`quest-rewards-progress-${i + 1}.json`);
+                        }
                     }
 
                 } catch (error) {
                     console.error(`处理任务 ${questId} 时出错: ${error.message}`);
                     this.results.stats.errors++;
+                    // 即使出错也要保存进度，避免重复处理
+                    this.saveProgress(questId);
                 }
             }
 
@@ -594,8 +790,9 @@ class SeleniumQuestRewardScraper {
     /**
      * 保存最终结果到文件
      * @param {string} outputPath - 输出文件路径
+     * @param {boolean} isIncremental - 是否为增量保存
      */
-    saveResults(outputPath) {
+    saveResults(outputPath, isIncremental = false) {
         const finalResults = {
             timestamp: new Date().toISOString(),
             stats: this.results.stats,
@@ -603,12 +800,24 @@ class SeleniumQuestRewardScraper {
             itemDetails: this.results.itemDetails
         };
 
-        fs.writeFileSync(outputPath, JSON.stringify(finalResults, null, 2), 'utf8');
-        console.log(`💾 结果已保存到: ${outputPath}`);
+        // 如果是增量模式且不是最终保存，则合并现有数据
+        if (isIncremental && this.isIncrementalMode) {
+            // 数据已经在内存中合并了，直接保存
+            fs.writeFileSync(outputPath, JSON.stringify(finalResults, null, 2), 'utf8');
+            
+            if (!isIncremental) {
+                console.log(`💾 结果已保存到: ${outputPath}`);
+            }
+        } else {
+            fs.writeFileSync(outputPath, JSON.stringify(finalResults, null, 2), 'utf8');
+            console.log(`💾 结果已保存到: ${outputPath}`);
+        }
         
-        // 保存失败列表
-        const outputDir = path.dirname(outputPath);
-        this.saveFailedItems(outputDir);
+        // 只在最终保存时保存失败列表
+        if (!isIncremental) {
+            const outputDir = path.dirname(outputPath);
+            this.saveFailedItems(outputDir);
+        }
     }
 
     /**

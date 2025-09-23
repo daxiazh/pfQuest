@@ -178,6 +178,8 @@ function showHelp() {
   ✅ 支持JavaScript渲染的动态内容
   ✅ 更稳定的页面解析
   ✅ 可视化调试（非无头模式）
+  ✅ All模式支持增量处理，自动保存进度和断点续传
+  ✅ 数据增量合并，避免重复处理
 
 示例:
   node scrape-quest-rewards-selenium.js --debug                    # 调试单个任务
@@ -197,6 +199,8 @@ function showHelp() {
   • 建议使用 --show-browser 模式观察抓取过程
   • 无头模式性能更好，但无法观察过程
   • 可以随时按 Ctrl+C 中断并保存进度
+  • All模式会自动保存进度文件，支持断点续传
+  • 重新运行All模式会自动从上次中断处继续
     `);
 }
 
@@ -324,6 +328,16 @@ async function main() {
         // 创建爬虫实例
         scraper = new SeleniumQuestRewardScraper();
         scraper.delay = config.delay;
+        
+        // 检查是否为 All 模式（没有数量限制且没有指定特定任务）
+        const isAllMode = config.maxQuests === null && 
+                         config.specificQuests.length === 0 && 
+                         !config.retryFailed;
+        
+        if (isAllMode) {
+            console.log('🔄 检测到 All 模式，启用增量处理');
+            scraper.enableIncrementalMode(config.outputFile);
+        }
         
         // 如果是无头模式，需要修改浏览器选项
         if (config.headless) {

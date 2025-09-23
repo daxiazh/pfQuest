@@ -11,7 +11,10 @@
     "scrape-sample": "node scrape-quest-rewards-selenium.js -c 5",
     "scrape-headless": "node scrape-quest-rewards-selenium.js --headless -c 10",
     "scrape-retry": "node scrape-quest-rewards-selenium.js --retry-failed",
-    "test": "node test.js"
+    "scrape-all": "node scrape-quest-rewards-selenium.js --all",
+    "scrape-all-headless": "node scrape-quest-rewards-selenium.js --all --headless",
+    "test": "node test.js",
+    "test-incremental": "node test-incremental.js"
   },
   "keywords": ["wow", "turtle-wow", "pfquest", "data-merger"],
   "author": "pfQuest Tools",

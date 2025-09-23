@@ -1,22 +1,59 @@
 {
-  "timestamp": "2025-09-23T01:45:58.503Z",
+  "timestamp": "2025-09-23T02:56:39.694Z",
   "stats": {
     "totalQuests": 1,
-    "questsWithRewards": 0,
-    "totalRewardItems": 0,
-    "processedItems": 0,
+    "questsWithRewards": 1,
+    "totalRewardItems": 2,
+    "processedItems": 2,
     "errors": 0,
-    "networkRetries": 0
+    "networkRetries": 0,
+    "resumedFromQuestId": 0
   },
   "questRewards": {
-    "7487": {
-      "questId": 7487,
-      "title": "Attunement to the Core - Quests",
-      "rewardItems": [],
+    "22": {
+      "questId": 22,
+      "title": "Goretusk Liver Pie",
+      "rewardItems": [
+        {
+          "itemId": 724,
+          "name": "Goretusk Liver Pie",
+          "quantity": 1
+        },
+        {
+          "itemId": 2697,
+          "name": "Recipe: Goretusk Liver Pie",
+          "quantity": 1
+        }
+      ],
       "choiceItems": [],
-      "experience": 6600,
+      "experience": 910,
       "reputation": []
     }
   },
-  "itemDetails": {}
+  "itemDetails": {
+    "724": {
+      "itemId": 724,
+      "name": "Goretusk Liver Pie",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": ""
+    },
+    "2697": {
+      "itemId": 2697,
+      "name": "Recipe: Goretusk Liver Pie",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": ""
+    }
+  }
 }

@@ -44,6 +44,35 @@
             "skipFiles": [
                 "<node_internals>/**"
             ]
+        },
+        {
+            "name": "调试增量处理功能",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/test-incremental.js",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "name": "调试 All 模式抓取",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/scrape-quest-rewards-selenium.js",
+            "args": ["--all", "--debug", "-c", "3"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
         }
     ],
     "inputs": [
