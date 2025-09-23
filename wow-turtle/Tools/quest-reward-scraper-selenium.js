@@ -19,6 +19,43 @@ class SeleniumQuestRewardScraper {
         this.progressFile = null; // 进度文件路径
         this.isIncrementalMode = false; // 是否为增量模式
         this.lastProcessedQuestId = 0; // 最后处理的任务ID
+        
+        // 使用 Map 优化查找性能
+        this.ignoredItemsSet = new Set([]); // 忽略的物品ID集合
+        this.subtypeToTypeMap = new Map([
+            ['Cloth', 'Armor'],
+            ['Leather', 'Armor'],
+            ['Mail', 'Armor'],
+            ['Plate', 'Armor'],
+            ['Dagger', 'Weapon'],
+            ['Sword', 'Weapon'],
+            ['Axe', 'Weapon'],
+            ['Bow', 'Weapon'],
+            ['Gun', 'Weapon'],
+            ['Crossbow', 'Weapon'],
+            ['Staff', 'Weapon'],
+            ['Wand', 'Weapon'],
+            ['Shield', 'Armor'],
+            ['Miscellaneous', 'Miscellaneous']
+        ]);
+        this.qualityMap = new Map([
+            ['q0', 'Poor'],
+            ['q1', 'Common'],
+            ['q2', 'Uncommon'],
+            ['q3', 'Rare'],
+            ['q4', 'Epic'],
+            ['q5', 'Legendary'],
+            ['q6', 'Artifact']
+        ]);
+        
+        // 特殊装备位置的默认类型映射
+        this.specialSlotTypeMap = new Map([
+            ['Trinket', 'Miscellaneous'],
+            ['Held In Off-Hand', 'Miscellaneous'],
+            ['Off Hand', 'Miscellaneous'],
+            ['Ranged', 'Weapon']
+        ]);
+        
         this.results = {
             questRewards: {},
             itemDetails: {},
@@ -105,11 +142,9 @@ class SeleniumQuestRewardScraper {
 
         this.lastProcessedQuestId = questId;
         
+        // 简化进度文件，只保存最后处理的任务ID，便于手动修改
         const progressData = {
-            timestamp: new Date().toISOString(),
-            lastProcessedQuestId: questId,
-            processedCount: Object.keys(this.results.questRewards).length,
-            stats: { ...this.results.stats }
+            lastProcessedQuestId: questId
         };
 
         try {
@@ -355,16 +390,22 @@ class SeleniumQuestRewardScraper {
                                                contextText.includes('可选');
                                 
                                 if (isChoice) {
-                                    // 避免重复添加
-                                    const exists = rewards.choiceItems.some(existing => existing.itemId === itemId);
-                                    if (!exists) {
+                                    // 使用 Set 避免重复添加
+                                    if (!rewards.choiceItemIds) {
+                                        rewards.choiceItemIds = new Set();
+                                    }
+                                    if (!rewards.choiceItemIds.has(itemId)) {
+                                        rewards.choiceItemIds.add(itemId);
                                         rewards.choiceItems.push(item);
                                         console.log(`  🎁 发现可选奖励: ${itemName} (ID: ${itemId})`);
                                     }
                                 } else {
-                                    // 避免重复添加
-                                    const exists = rewards.rewardItems.some(existing => existing.itemId === itemId);
-                                    if (!exists) {
+                                    // 使用 Set 避免重复添加
+                                    if (!rewards.rewardItemIds) {
+                                        rewards.rewardItemIds = new Set();
+                                    }
+                                    if (!rewards.rewardItemIds.has(itemId)) {
+                                        rewards.rewardItemIds.add(itemId);
                                         rewards.rewardItems.push(item);
                                         console.log(`  🎁 发现固定奖励: ${itemName} (ID: ${itemId})`);
                                     }
@@ -410,6 +451,10 @@ class SeleniumQuestRewardScraper {
             this.results.stats.errors++;
         }
 
+        // 清理辅助的 Set，避免输出到最终结果
+        delete rewards.rewardItemIds;
+        delete rewards.choiceItemIds;
+
         return rewards;
     }
 
@@ -420,7 +465,6 @@ class SeleniumQuestRewardScraper {
      * @returns {Object} 物品详细信息
      */
     parseItemDetails(html, itemId) {
-        const $ = cheerio.load(html);
         const item = {
             itemId: itemId,
             name: '',
@@ -433,6 +477,13 @@ class SeleniumQuestRewardScraper {
             armor: 0,
             durability: ''
         };
+
+        if (this.ignoredItemsSet.has(itemId)) {
+            console.log(`  ⚠️ 忽略物品 ${itemId}`);
+            return item;
+        }
+
+        const $ = cheerio.load(html);       
 
         try {
             // 获取物品名称 - 从页面标题或 h1 标签
@@ -471,72 +522,8 @@ class SeleniumQuestRewardScraper {
                 }
             }
 
-            // 解析装备位置和类型 - 从表格结构中提取
-            // 格式: <table width="100%"><tr><td>Legs</td><th>Cloth</th></tr></table>
-            const slotTypeTable = tooltipElement.find('table[width="100%"]').first();
-            
-            if (slotTypeTable.length > 0) {
-                // 找到了装备位置类型表格，这是装备
-                const slotElement = slotTypeTable.find('td').first();
-                const typeElement = slotTypeTable.find('th').first();
-                
-                if (slotElement.length > 0) {
-                    item.slot = slotElement.text().trim();
-                }
-                
-                if (typeElement.length > 0) {
-                    item.subtype = typeElement.text().trim();
-                    
-                    // 根据子类型推断主类型
-                    const subtypeToType = {
-                        'Cloth': 'Armor',
-                        'Leather': 'Armor', 
-                        'Mail': 'Armor',
-                        'Plate': 'Armor',
-                        'Dagger': 'Weapon',
-                        'Sword': 'Weapon',
-                        'Axe': 'Weapon',
-                        'Bow': 'Weapon',
-                        'Gun': 'Weapon',
-                        'Crossbow': 'Weapon',
-                        'Staff': 'Weapon',
-                        'Wand': 'Weapon',
-                        'Shield': 'Armor',
-                        'Miscellaneous': 'Miscellaneous'
-                    };
-                    item.type = subtypeToType[item.subtype] || 'Unknown';
-                }
-                
-                // 对于装备，如果没有解析到装备位置或类型，抛出异常
-                if (!item.slot || !item.subtype) {
-                    throw new Error(`物品 ${itemId}: 装备缺少必要信息 (位置: ${item.slot}, 类型: ${item.subtype})`);
-                }
-            } else {
-                // 没有找到装备位置类型表格，可能是消耗品、配方等非装备物品
-                // 检查是否是已知的非装备类型
-                const tooltipText = tooltipElement.text();
-                
-                // 检查是否是配方/技能书类型
-                const isRecipe = tooltipText.includes('Requires ') && tooltipText.includes('Use:');
-                const isConsumable = tooltipText.includes('Use:') && !isRecipe;
-                const isQuestItem = tooltipText.includes('Quest Item');
-                
-                if (!isRecipe && !isConsumable && !isQuestItem) {
-                    // 不是已知的非装备类型，但也没有装备信息，可能是数据异常
-                    throw new Error(`物品 ${itemId}: 无法识别物品类型，缺少装备位置和类型信息`);
-                }
-                
-                // 为非装备物品设置默认类型
-                if (isRecipe) {
-                    item.type = 'Recipe';
-                } else if (isConsumable) {
-                    item.type = 'Consumable';
-                } else if (isQuestItem) {
-                    item.type = 'Quest';
-                } else {
-                    item.type = 'Miscellaneous';
-                }
-            }
+            // 解析装备位置和类型
+            this.parseItemSlotAndType(tooltipElement, item, itemId);
 
             // 解析护甲值 - 格式: "9 Armor"
             const armorMatch = tooltipText.match(/(\d+)\s+Armor/i);
@@ -550,13 +537,10 @@ class SeleniumQuestRewardScraper {
                 item.durability = durabilityMatch[1];
             }
 
-            // 解析品质 - 从 CSS 类名
-            const qualityClasses = ['q0', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6'];
-            const qualityNames = ['Poor', 'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Artifact'];
-            
-            for (let i = 0; i < qualityClasses.length; i++) {
-                if ($(`.${qualityClasses[i]}`).length > 0) {
-                    item.quality = qualityNames[i];
+            // 解析品质 - 从 CSS 类名，使用 Map 优化查找
+            for (const [qualityClass, qualityName] of this.qualityMap) {
+                if ($(`.${qualityClass}`).length > 0) {
+                    item.quality = qualityName;
                     break;
                 }
             }
@@ -580,9 +564,95 @@ class SeleniumQuestRewardScraper {
         } catch (error) {
             console.error(`解析物品 ${itemId} 失败: ${error.message}`);
             this.results.stats.errors++;
+            // 重新抛出异常，确保程序停止
+            throw error;
         }
 
         return item;
+    }
+    
+    /**
+     * 解析物品的装备位置和类型
+     * @param {Object} tooltipElement - Cheerio包装的tooltip元素
+     * @param {Object} item - 物品对象
+     * @param {number} itemId - 物品ID
+     */
+    parseItemSlotAndType(tooltipElement, item, itemId) {
+        // 格式: <table width="100%"><tr><td>位置</td><th>类型</th></tr></table>
+        const slotTypeTable = tooltipElement.find('table[width="100%"]').first();
+        
+        if (slotTypeTable.length > 0) {
+            // 找到了装备位置类型表格，这是装备
+            const slotElement = slotTypeTable.find('td').first();
+            const typeElement = slotTypeTable.find('th').first();
+            
+            if (slotElement.length > 0) {
+                item.slot = slotElement.text().trim();
+            }
+            
+            if (typeElement.length > 0) {
+                const subtypeText = typeElement.text().trim();
+                if (subtypeText) {
+                    item.subtype = subtypeText;
+                    // 根据子类型推断主类型 - 使用 Map 优化查找
+                    item.type = this.subtypeToTypeMap.get(item.subtype) || 'Unknown';
+                }
+            }
+            
+            // 处理特殊装备位置（如饰品、副手装备等）
+            if (item.slot && !item.subtype) {
+                // 检查是否是特殊装备位置
+                const defaultType = this.specialSlotTypeMap.get(item.slot);
+                if (defaultType) {
+                    item.type = defaultType;
+                    item.subtype = item.slot; // 使用位置作为子类型
+                    console.log(`  ℹ️ 检测到特殊装备: ${item.slot}，设置类型为 ${item.type}`);
+                } else {
+                    throw new Error(`物品 ${itemId}: 未知的装备位置类型 (位置: ${item.slot})`);
+                }
+            }
+            
+            // 对于普通装备，如果没有解析到装备位置，抛出异常
+            if (!item.slot) {
+                throw new Error(`物品 ${itemId}: 装备缺少位置信息`);
+            }
+            
+        } else {
+            // 没有找到装备位置类型表格，可能是消耗品、配方等非装备物品
+            this.parseNonEquipmentItem(tooltipElement, item, itemId);
+        }
+    }
+    
+    /**
+     * 解析非装备类物品（消耗品、配方等）
+     * @param {Object} tooltipElement - Cheerio包装的tooltip元素
+     * @param {Object} item - 物品对象
+     * @param {number} itemId - 物品ID
+     */
+    parseNonEquipmentItem(tooltipElement, item, itemId) {
+        const tooltipText = tooltipElement.text();
+        
+        // 检查是否是配方/技能书类型
+        const isRecipe = tooltipText.includes('Requires ') && tooltipText.includes('Use:');
+        const isConsumable = tooltipText.includes('Use:') && !isRecipe;
+        const isQuestItem = tooltipText.includes('Quest Item');
+        
+        if (isRecipe) {
+            item.type = 'Recipe';
+            item.subtype = '';
+            item.slot = '';
+        } else if (isConsumable) {
+            item.type = 'Consumable';
+            item.subtype = '';
+            item.slot = '';
+        } else if (isQuestItem) {
+            item.type = 'Quest';
+            item.subtype = '';
+            item.slot = '';
+        } else {
+            // 如果无法识别物品类型，抛出异常
+            throw new Error(`物品 ${itemId}: 无法识别的物品类型`);
+        }
     }
 
     /**
@@ -710,8 +780,8 @@ class SeleniumQuestRewardScraper {
                 } catch (error) {
                     console.error(`处理任务 ${questId} 时出错: ${error.message}`);
                     this.results.stats.errors++;
-                    // 即使出错也要保存进度，避免重复处理
-                    this.saveProgress(questId);
+                    // 不保存失败任务的进度，确保下次可以重试
+                    throw error;
                 }
             }
 

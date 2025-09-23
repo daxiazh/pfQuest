@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:wowpedia.fandom.com)",
+      "WebFetch(domain:wowwiki-archive.fandom.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(rm:*)",
+      "Bash(node:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

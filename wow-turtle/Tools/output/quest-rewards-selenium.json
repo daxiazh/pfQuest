@@ -1,15 +1,289 @@
 {
-  "timestamp": "2025-09-23T02:56:39.694Z",
+  "timestamp": "2025-09-23T06:42:56.988Z",
   "stats": {
-    "totalQuests": 1,
-    "questsWithRewards": 1,
-    "totalRewardItems": 2,
-    "processedItems": 2,
+    "totalQuests": 6500,
+    "questsWithRewards": 21,
+    "totalRewardItems": 45,
+    "processedItems": 45,
     "errors": 0,
     "networkRetries": 0,
-    "resumedFromQuestId": 0
+    "resumedFromQuestId": 3
   },
   "questRewards": {
+    "4": {
+      "questId": 4,
+      "title": "Quest 4",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 0,
+      "reputation": []
+    },
+    "5": {
+      "questId": 5,
+      "title": "Jitters' Growling Gut",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 390,
+      "reputation": []
+    },
+    "6": {
+      "questId": 6,
+      "title": "Bounty on Garrick Padfoot",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 6076,
+          "name": "Tapered Pants",
+          "quantity": 1
+        },
+        {
+          "itemId": 60,
+          "name": "Layered Tunic",
+          "quantity": 1
+        },
+        {
+          "itemId": 3070,
+          "name": "Ensign Cloak",
+          "quantity": 1
+        }
+      ],
+      "experience": 335,
+      "reputation": []
+    },
+    "7": {
+      "questId": 7,
+      "title": "Kobold Camp Cleanup",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 170,
+      "reputation": []
+    },
+    "8": {
+      "questId": 8,
+      "title": "A Rogue's Deal",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 4604,
+          "name": "Forest Mushroom Cap",
+          "quantity": 1
+        },
+        {
+          "itemId": 159,
+          "name": "Refreshing Spring Water",
+          "quantity": 1
+        }
+      ],
+      "experience": 110,
+      "reputation": []
+    },
+    "9": {
+      "questId": 9,
+      "title": "The Killing Fields",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 3578,
+          "name": "Harvester's Pants",
+          "quantity": 1
+        },
+        {
+          "itemId": 1561,
+          "name": "Harvester's Robe",
+          "quantity": 1
+        }
+      ],
+      "experience": 1050,
+      "reputation": []
+    },
+    "10": {
+      "questId": 10,
+      "title": "The Scrimshank Redemption",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 4400,
+      "reputation": []
+    },
+    "11": {
+      "questId": 11,
+      "title": "Riverpaw Gnoll Bounty",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 2249,
+          "name": "Militia Buckler",
+          "quantity": 1
+        },
+        {
+          "itemId": 2238,
+          "name": "Urchin's Pants",
+          "quantity": 1
+        }
+      ],
+      "experience": 840,
+      "reputation": []
+    },
+    "12": {
+      "questId": 12,
+      "title": "The People's Militia",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 910,
+      "reputation": []
+    },
+    "13": {
+      "questId": 13,
+      "title": "The People's Militia",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 980,
+      "reputation": []
+    },
+    "14": {
+      "questId": 14,
+      "title": "The People's Militia",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 1566,
+          "name": "Edge of the People's Militia",
+          "quantity": 1
+        },
+        {
+          "itemId": 1480,
+          "name": "Fist of the People's Militia",
+          "quantity": 1
+        },
+        {
+          "itemId": 12296,
+          "name": "Spark of the People's Militia",
+          "quantity": 1
+        }
+      ],
+      "experience": 1600,
+      "reputation": []
+    },
+    "15": {
+      "questId": 15,
+      "title": "Investigate Echo Ridge",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 250,
+      "reputation": []
+    },
+    "16": {
+      "questId": 16,
+      "title": "Give Gerard a Drink",
+      "rewardItems": [
+        {
+          "itemId": 4536,
+          "name": "Shiny Red Apple",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 0,
+      "reputation": []
+    },
+    "17": {
+      "questId": 17,
+      "title": "Uldaman Reagent Run",
+      "rewardItems": [
+        {
+          "itemId": 9030,
+          "name": "Restorative Potion",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 3450,
+      "reputation": []
+    },
+    "18": {
+      "questId": 18,
+      "title": "Brotherhood of Thieves",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 2224,
+          "name": "Militia Dagger",
+          "quantity": 1
+        },
+        {
+          "itemId": 5580,
+          "name": "Militia Hammer",
+          "quantity": 1
+        },
+        {
+          "itemId": 1161,
+          "name": "Militia Shortsword",
+          "quantity": 1
+        },
+        {
+          "itemId": 5579,
+          "name": "Militia Warhammer",
+          "quantity": 1
+        },
+        {
+          "itemId": 1159,
+          "name": "Militia Quarterstaff",
+          "quantity": 1
+        }
+      ],
+      "experience": 355,
+      "reputation": []
+    },
+    "19": {
+      "questId": 19,
+      "title": "Tharil'zun",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 1276,
+          "name": "Fire Hardened Buckler",
+          "quantity": 1
+        },
+        {
+          "itemId": 6093,
+          "name": "Orc Crusher",
+          "quantity": 1
+        }
+      ],
+      "experience": 2550,
+      "reputation": []
+    },
+    "20": {
+      "questId": 20,
+      "title": "Blackrock Menace",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1650,
+      "reputation": []
+    },
+    "21": {
+      "questId": 21,
+      "title": "Skirmish at Echo Ridge",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 2186,
+          "name": "Outfitter Belt",
+          "quantity": 1
+        },
+        {
+          "itemId": 2691,
+          "name": "Outfitter Boots",
+          "quantity": 1
+        },
+        {
+          "itemId": 11192,
+          "name": "Outfitter Gloves",
+          "quantity": 1
+        }
+      ],
+      "experience": 450,
+      "reputation": []
+    },
     "22": {
       "questId": 22,
       "title": "Goretusk Liver Pie",
@@ -28,9 +302,399 @@
       "choiceItems": [],
       "experience": 910,
       "reputation": []
+    },
+    "23": {
+      "questId": 23,
+      "title": "Ursangous's Paw",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1950,
+      "reputation": []
+    },
+    "24": {
+      "questId": 24,
+      "title": "Shadumbra's Head",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2200,
+      "reputation": []
+    },
+    "25": {
+      "questId": 25,
+      "title": "Stonetalon Standstill",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2000,
+      "reputation": []
+    },
+    "26": {
+      "questId": 26,
+      "title": "A Lesson to Learn",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 115,
+      "reputation": []
+    },
+    "27": {
+      "questId": 27,
+      "title": "A Lesson to Learn",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 115,
+      "reputation": []
+    },
+    "28": {
+      "questId": 28,
+      "title": "Trial of the Lake",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 880,
+      "reputation": []
+    },
+    "29": {
+      "questId": 29,
+      "title": "Trial of the Lake",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 880,
+      "reputation": []
+    },
+    "30": {
+      "questId": 30,
+      "title": "Trial of the Sea Lion",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 880,
+      "reputation": []
+    },
+    "31": {
+      "questId": 31,
+      "title": "Aquatic Form",
+      "rewardItems": [
+        {
+          "itemId": 16608,
+          "name": "Aquarius Belt",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 1150,
+      "reputation": []
+    },
+    "32": {
+      "questId": 32,
+      "title": "Rise of the Silithid",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 5450,
+      "reputation": []
+    },
+    "33": {
+      "questId": 33,
+      "title": "Wolves Across the Border",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 80,
+          "name": "Soft Fur-lined Shoes",
+          "quantity": 1
+        },
+        {
+          "itemId": 6070,
+          "name": "Wolfskin Bracers",
+          "quantity": 1
+        }
+      ],
+      "experience": 170,
+      "reputation": []
+    },
+    "34": {
+      "questId": 34,
+      "title": "An Unwelcome Guest",
+      "rewardItems": [
+        {
+          "itemId": 2562,
+          "name": "Bouquet of Scarlet Begonias",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 1950,
+      "reputation": []
+    },
+    "35": {
+      "questId": 35,
+      "title": "Further Concerns",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 420,
+      "reputation": []
+    },
+    "36": {
+      "questId": 36,
+      "title": "Westfall Stew",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 420,
+      "reputation": []
+    },
+    "37": {
+      "questId": 37,
+      "title": "Find the Lost Guards",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 210,
+      "reputation": []
+    },
+    "38": {
+      "questId": 38,
+      "title": "Westfall Stew",
+      "rewardItems": [
+        {
+          "itemId": 733,
+          "name": "Westfall Stew",
+          "quantity": 1
+        },
+        {
+          "itemId": 728,
+          "name": "Recipe: Westfall Stew",
+          "quantity": 1
+        },
+        {
+          "itemId": 1479,
+          "name": "Salma's Oven Mitts",
+          "quantity": 1
+        },
+        {
+          "itemId": 2225,
+          "name": "Sharp Kitchen Knife",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 910,
+      "reputation": []
+    },
+    "39": {
+      "questId": 39,
+      "title": "Deliver Thomas' Report",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1050,
+      "reputation": []
+    },
+    "40": {
+      "questId": 40,
+      "title": "A Fishy Peril",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 85,
+      "reputation": []
+    },
+    "45": {
+      "questId": 45,
+      "title": "Discover Rolf's Fate",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 420,
+      "reputation": []
+    },
+    "46": {
+      "questId": 46,
+      "title": "Bounty on Murlocs",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 4840,
+          "name": "Long Bayonet",
+          "quantity": 1
+        },
+        {
+          "itemId": 1158,
+          "name": "Solid Metal Club",
+          "quantity": 1
+        },
+        {
+          "itemId": 1008,
+          "name": "Well-used Sword",
+          "quantity": 1
+        }
+      ],
+      "experience": 840,
+      "reputation": []
+    },
+    "47": {
+      "questId": 47,
+      "title": "Gold Dust Exchange",
+      "rewardItems": [
+        {
+          "itemId": 1191,
+          "name": "Bag of Marbles",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 630,
+      "reputation": [],
+      "money": 10
+    },
+    "48": {
+      "questId": 48,
+      "title": "Sweet Amber",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 3750,
+      "reputation": []
+    },
+    "49": {
+      "questId": 49,
+      "title": "Sweet Amber",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 4650,
+      "reputation": []
+    },
+    "50": {
+      "questId": 50,
+      "title": "Sweet Amber",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 4650,
+      "reputation": []
+    },
+    "51": {
+      "questId": 51,
+      "title": "Sweet Amber",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 4650,
+      "reputation": []
+    },
+    "52": {
+      "questId": 52,
+      "title": "Protect the Frontier",
+      "rewardItems": [
+        {
+          "itemId": 858,
+          "name": "Lesser Healing Potion",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 630,
+      "reputation": []
+    },
+    "53": {
+      "questId": 53,
+      "title": "Sweet Amber",
+      "rewardItems": [
+        {
+          "itemId": 744,
+          "name": "Thunderbrew's Boot Flask",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 5600,
+      "reputation": []
+    },
+    "54": {
+      "questId": 54,
+      "title": "Report to Goldshire",
+      "rewardItems": [
+        {
+          "itemId": 6078,
+          "name": "Pikeman Shield",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 225,
+      "reputation": []
+    },
+    "55": {
+      "questId": 55,
+      "title": "Morbent Fel",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 2954,
+          "name": "Night Watch Pantaloons",
+          "quantity": 1
+        },
+        {
+          "itemId": 2953,
+          "name": "Watch Master's Cloak",
+          "quantity": 1
+        },
+        {
+          "itemId": 1282,
+          "name": "Sparkmetal Coif",
+          "quantity": 1
+        },
+        {
+          "itemId": 7344,
+          "name": "Torch of Holy Flame",
+          "quantity": 1
+        }
+      ],
+      "experience": 3850,
+      "reputation": []
+    },
+    "56": {
+      "questId": 56,
+      "title": "The Night Watch",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1450,
+      "reputation": []
+    },
+    "57": {
+      "questId": 57,
+      "title": "The Night Watch",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2100,
+      "reputation": []
     }
   },
   "itemDetails": {
+    "60": {
+      "itemId": 60,
+      "name": "Layered Tunic",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "Chest",
+      "armor": 33,
+      "durability": "45 / 45"
+    },
+    "80": {
+      "itemId": 80,
+      "name": "Soft Fur-lined Shoes",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "Feet",
+      "armor": 7,
+      "durability": "20 / 20"
+    },
+    "159": {
+      "itemId": 159,
+      "name": "Refreshing Spring Water",
+      "type": "Consumable",
+      "subtype": "",
+      "quality": "Common",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": ""
+    },
     "724": {
       "itemId": 724,
       "name": "Goretusk Liver Pie",
@@ -43,6 +707,270 @@
       "armor": 0,
       "durability": ""
     },
+    "728": {
+      "itemId": 728,
+      "name": "Recipe: Westfall Stew",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": ""
+    },
+    "733": {
+      "itemId": 733,
+      "name": "Westfall Stew",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": ""
+    },
+    "744": {
+      "itemId": 744,
+      "name": "Thunderbrew's Boot Flask",
+      "type": "Miscellaneous",
+      "subtype": "Trinket",
+      "quality": "Common",
+      "level": 44,
+      "requiredLevel": 0,
+      "slot": "Trinket",
+      "armor": 0,
+      "durability": ""
+    },
+    "858": {
+      "itemId": 858,
+      "name": "Lesser Healing Potion",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 13,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": ""
+    },
+    "1008": {
+      "itemId": 1008,
+      "name": "Well-used Sword",
+      "type": "Weapon",
+      "subtype": "Sword",
+      "quality": "Poor",
+      "level": 10,
+      "requiredLevel": 0,
+      "slot": "Main Hand",
+      "armor": 0,
+      "durability": "40 / 40"
+    },
+    "1158": {
+      "itemId": 1158,
+      "name": "Solid Metal Club",
+      "type": "Unknown",
+      "subtype": "Mace",
+      "quality": "Poor",
+      "level": 10,
+      "requiredLevel": 0,
+      "slot": "Main Hand",
+      "armor": 0,
+      "durability": "40 / 40"
+    },
+    "1159": {
+      "itemId": 1159,
+      "name": "Militia Quarterstaff",
+      "type": "Weapon",
+      "subtype": "Staff",
+      "quality": "Poor",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "Two-hand",
+      "armor": 0,
+      "durability": "35 / 35"
+    },
+    "1161": {
+      "itemId": 1161,
+      "name": "Militia Shortsword",
+      "type": "Weapon",
+      "subtype": "Sword",
+      "quality": "Poor",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "Main Hand",
+      "armor": 0,
+      "durability": "30 / 30"
+    },
+    "1191": {
+      "itemId": 1191,
+      "name": "Bag of Marbles",
+      "type": "Consumable",
+      "subtype": "",
+      "quality": "Common",
+      "level": 8,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": ""
+    },
+    "1276": {
+      "itemId": 1276,
+      "name": "Fire Hardened Buckler",
+      "type": "Armor",
+      "subtype": "Shield",
+      "quality": "Poor",
+      "level": 27,
+      "requiredLevel": 0,
+      "slot": "Off Hand",
+      "armor": 528,
+      "durability": "80 / 80"
+    },
+    "1282": {
+      "itemId": 1282,
+      "name": "Sparkmetal Coif",
+      "type": "Armor",
+      "subtype": "Mail",
+      "quality": "Poor",
+      "level": 33,
+      "requiredLevel": 0,
+      "slot": "Head",
+      "armor": 168,
+      "durability": "60 / 60"
+    },
+    "1479": {
+      "itemId": 1479,
+      "name": "Salma's Oven Mitts",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Common",
+      "level": 12,
+      "requiredLevel": 0,
+      "slot": "Hands",
+      "armor": 13,
+      "durability": "16 / 16"
+    },
+    "1480": {
+      "itemId": 1480,
+      "name": "Fist of the People's Militia",
+      "type": "Unknown",
+      "subtype": "Mace",
+      "quality": "Poor",
+      "level": 17,
+      "requiredLevel": 0,
+      "slot": "Main Hand",
+      "armor": 0,
+      "durability": "50 / 50"
+    },
+    "1561": {
+      "itemId": 1561,
+      "name": "Harvester's Robe",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "Chest",
+      "armor": 28,
+      "durability": "50 / 50"
+    },
+    "1566": {
+      "itemId": 1566,
+      "name": "Edge of the People's Militia",
+      "type": "Weapon",
+      "subtype": "Sword",
+      "quality": "Poor",
+      "level": 17,
+      "requiredLevel": 0,
+      "slot": "Two-hand",
+      "armor": 0,
+      "durability": "60 / 60"
+    },
+    "2186": {
+      "itemId": 2186,
+      "name": "Outfitter Belt",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "Waist",
+      "armor": 19,
+      "durability": "16 / 16"
+    },
+    "2224": {
+      "itemId": 2224,
+      "name": "Militia Dagger",
+      "type": "Weapon",
+      "subtype": "Dagger",
+      "quality": "Poor",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "One-hand",
+      "armor": 0,
+      "durability": "20 / 20"
+    },
+    "2225": {
+      "itemId": 2225,
+      "name": "Sharp Kitchen Knife",
+      "type": "Weapon",
+      "subtype": "Dagger",
+      "quality": "Common",
+      "level": 11,
+      "requiredLevel": 0,
+      "slot": "One-hand",
+      "armor": 0,
+      "durability": "30 / 30"
+    },
+    "2238": {
+      "itemId": 2238,
+      "name": "Urchin's Pants",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 10,
+      "requiredLevel": 0,
+      "slot": "Legs",
+      "armor": 16,
+      "durability": "35 / 35"
+    },
+    "2249": {
+      "itemId": 2249,
+      "name": "Militia Buckler",
+      "type": "Armor",
+      "subtype": "Shield",
+      "quality": "Poor",
+      "level": 10,
+      "requiredLevel": 0,
+      "slot": "Off Hand",
+      "armor": 161,
+      "durability": "45 / 45"
+    },
+    "2562": {
+      "itemId": 2562,
+      "name": "Bouquet of Scarlet Begonias",
+      "type": "Miscellaneous",
+      "subtype": "Held In Off-Hand",
+      "quality": "Common",
+      "level": 23,
+      "requiredLevel": 0,
+      "slot": "Held In Off-Hand",
+      "armor": 0,
+      "durability": ""
+    },
+    "2691": {
+      "itemId": 2691,
+      "name": "Outfitter Boots",
+      "type": "Armor",
+      "subtype": "Mail",
+      "quality": "Poor",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "Feet",
+      "armor": 46,
+      "durability": "25 / 25"
+    },
     "2697": {
       "itemId": 2697,
       "name": "Recipe: Goretusk Liver Pie",
@@ -54,6 +982,222 @@
       "slot": "",
       "armor": 0,
       "durability": ""
+    },
+    "2953": {
+      "itemId": 2953,
+      "name": "Watch Master's Cloak",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 33,
+      "requiredLevel": 0,
+      "slot": "Back",
+      "armor": 23,
+      "durability": ""
+    },
+    "2954": {
+      "itemId": 2954,
+      "name": "Night Watch Pantaloons",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 33,
+      "requiredLevel": 0,
+      "slot": "Legs",
+      "armor": 39,
+      "durability": "55 / 55"
+    },
+    "3070": {
+      "itemId": 3070,
+      "name": "Ensign Cloak",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "Back",
+      "armor": 5,
+      "durability": ""
+    },
+    "3578": {
+      "itemId": 3578,
+      "name": "Harvester's Pants",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 15,
+      "requiredLevel": 0,
+      "slot": "Legs",
+      "armor": 61,
+      "durability": "45 / 45"
+    },
+    "4536": {
+      "itemId": 4536,
+      "name": "Shiny Red Apple",
+      "type": "Consumable",
+      "subtype": "",
+      "quality": "Common",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": ""
+    },
+    "4604": {
+      "itemId": 4604,
+      "name": "Forest Mushroom Cap",
+      "type": "Consumable",
+      "subtype": "",
+      "quality": "Common",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": ""
+    },
+    "4840": {
+      "itemId": 4840,
+      "name": "Long Bayonet",
+      "type": "Weapon",
+      "subtype": "Dagger",
+      "quality": "Poor",
+      "level": 10,
+      "requiredLevel": 0,
+      "slot": "One-hand",
+      "armor": 0,
+      "durability": "25 / 25"
+    },
+    "5579": {
+      "itemId": 5579,
+      "name": "Militia Warhammer",
+      "type": "Unknown",
+      "subtype": "Mace",
+      "quality": "Poor",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "Two-hand",
+      "armor": 0,
+      "durability": "35 / 35"
+    },
+    "5580": {
+      "itemId": 5580,
+      "name": "Militia Hammer",
+      "type": "Unknown",
+      "subtype": "Mace",
+      "quality": "Poor",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "Main Hand",
+      "armor": 0,
+      "durability": "30 / 30"
+    },
+    "6070": {
+      "itemId": 6070,
+      "name": "Wolfskin Bracers",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "Wrist",
+      "armor": 15,
+      "durability": "16 / 16"
+    },
+    "6076": {
+      "itemId": 6076,
+      "name": "Tapered Pants",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "Legs",
+      "armor": 9,
+      "durability": "30 / 30"
+    },
+    "6078": {
+      "itemId": 6078,
+      "name": "Pikeman Shield",
+      "type": "Armor",
+      "subtype": "Shield",
+      "quality": "Common",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "Off Hand",
+      "armor": 55,
+      "durability": "35 / 35"
+    },
+    "6093": {
+      "itemId": 6093,
+      "name": "Orc Crusher",
+      "type": "Unknown",
+      "subtype": "Mace",
+      "quality": "Poor",
+      "level": 27,
+      "requiredLevel": 0,
+      "slot": "Two-hand",
+      "armor": 0,
+      "durability": "80 / 80"
+    },
+    "7344": {
+      "itemId": 7344,
+      "name": "Torch of Holy Flame",
+      "type": "Miscellaneous",
+      "subtype": "Held In Off-Hand",
+      "quality": "Poor",
+      "level": 33,
+      "requiredLevel": 0,
+      "slot": "Held In Off-Hand",
+      "armor": 0,
+      "durability": ""
+    },
+    "9030": {
+      "itemId": 9030,
+      "name": "Restorative Potion",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 42,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": ""
+    },
+    "11192": {
+      "itemId": 11192,
+      "name": "Outfitter Gloves",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 5,
+      "requiredLevel": 0,
+      "slot": "Hands",
+      "armor": 6,
+      "durability": "14 / 14"
+    },
+    "12296": {
+      "itemId": 12296,
+      "name": "Spark of the People's Militia",
+      "type": "Weapon",
+      "subtype": "Wand",
+      "quality": "Poor",
+      "level": 17,
+      "requiredLevel": 0,
+      "slot": "Ranged",
+      "armor": 0,
+      "durability": "35 / 35"
+    },
+    "16608": {
+      "itemId": 16608,
+      "name": "Aquarius Belt",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Common",
+      "level": 16,
+      "requiredLevel": 0,
+      "slot": "Waist",
+      "armor": 40,
+      "durability": "20 / 20"
     }
   }
 }
