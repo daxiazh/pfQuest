@@ -18,12 +18,15 @@ class SeleniumQuestRewardScraper {
         this.results = {
             questRewards: {},
             itemDetails: {},
+            failedQuests: new Set(),  // 失败的任务ID集合
+            failedItems: new Set(),   // 失败的物品ID集合
             stats: {
                 totalQuests: 0,
                 questsWithRewards: 0,
                 totalRewardItems: 0,
                 processedItems: 0,
-                errors: 0
+                errors: 0,
+                networkRetries: 0
             }
         };
     }
@@ -88,34 +91,68 @@ class SeleniumQuestRewardScraper {
     }
 
     /**
-     * 获取网页内容
+     * 获取网页内容（带重试机制）
      * @param {string} url - 目标URL
+     * @param {number} maxRetries - 最大重试次数
      * @returns {string} 网页HTML内容
      */
-    async fetchPage(url) {
-        try {
-            console.log(`正在获取: ${url}`);
-            
-            // 导航到目标页面
-            await this.driver.get(url);
-            
-            // 等待页面加载完成（等待body元素出现）
-            await this.driver.wait(until.elementLocated(By.tagName('body')), 10000);
-            
-            // 额外等待，确保动态内容加载
-            await this.sleep(2000);
-            
-            // 获取页面HTML源码
-            const html = await this.driver.getPageSource();
-            
-            console.log(`✅ 成功获取: ${url}`);
-            return html;
-            
-        } catch (error) {
-            console.error(`获取页面失败 ${url}: ${error.message}`);
-            this.results.stats.errors++;
-            return null;
+    async fetchPage(url, maxRetries = 3) {
+        let lastError = null;
+        
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                console.log(`正在获取 (${attempt}/${maxRetries}): ${url}`);
+                
+                // 如果是重试，增加延迟
+                if (attempt > 1) {
+                    const retryDelay = 2000 + (attempt - 1) * 1000; // 递增延迟
+                    console.log(`⏳ 等待 ${retryDelay}ms 后重试...`);
+                    await this.sleep(retryDelay);
+                    this.results.stats.networkRetries++;
+                }
+                
+                // 导航到目标页面
+                await this.driver.get(url);
+                
+                // 等待页面加载完成（等待body元素出现）
+                await this.driver.wait(until.elementLocated(By.tagName('body')), 15000);
+                
+                // 检查页面是否包含错误信息
+                const pageText = await this.driver.findElement(By.tagName('body')).getText();
+                if (pageText.includes('404') || pageText.includes('Not Found') || pageText.includes('Error')) {
+                    throw new Error('页面返回错误信息');
+                }
+                
+                // 额外等待，确保动态内容加载
+                await this.sleep(2000);
+                
+                // 获取页面HTML源码
+                const html = await this.driver.getPageSource();
+                
+                console.log(`✅ 成功获取: ${url}`);
+                return html;
+                
+            } catch (error) {
+                lastError = error;
+                const isNetworkError = error.message.includes('timeout') || 
+                                     error.message.includes('network') ||
+                                     error.message.includes('connection') ||
+                                     error.message.includes('ERR_') ||
+                                     error.name === 'TimeoutError';
+                
+                if (isNetworkError && attempt < maxRetries) {
+                    console.warn(`🔄 网络错误，准备重试 (${attempt}/${maxRetries}): ${error.message}`);
+                    continue;
+                } else {
+                    console.error(`❌ 获取页面失败 ${url} (尝试 ${attempt}/${maxRetries}): ${error.message}`);
+                    break;
+                }
+            }
         }
+        
+        // 所有尝试都失败了
+        this.results.stats.errors++;
+        return null;
     }
 
     /**
@@ -132,7 +169,6 @@ class SeleniumQuestRewardScraper {
             rewardItems: [],
             choiceItems: [],
             experience: 0,
-            money: 0,
             reputation: []
         };
 
@@ -145,41 +181,89 @@ class SeleniumQuestRewardScraper {
 
             console.log(`📝 解析任务: ${rewards.title || questId}`);
 
-            // 解析所有奖励物品 - 查找所有包含 ?item= 的链接
-            $('a[href*="?item="]').each((index, element) => {
-                const itemLink = $(element);
-                const href = itemLink.attr('href') || '';
-                const itemIdMatch = href.match(/[?&]item=(\d+)/);
+            // 精确匹配 <h3>Reward</h3> 后面的奖励内容
+            const rewardHeader = $('h3:contains("Reward"), h3:contains("reward")').first();
+            
+            if (rewardHeader.length > 0) {
+                console.log(`  🎯 找到奖励标题: ${rewardHeader.text()}`);
                 
-                if (itemIdMatch) {
-                    const itemId = parseInt(itemIdMatch[1]);
-                    const itemName = itemLink.text().trim() || itemLink.attr('title') || '';
+                // 查找紧跟在 Reward 标题后面的内容
+                let currentElement = rewardHeader.next();
+                let searchDepth = 0;
+                const maxSearchDepth = 10; // 限制搜索深度，避免找到其他区域的内容
+                
+                while (currentElement.length > 0 && searchDepth < maxSearchDepth) {
+                    const elementText = currentElement.text().toLowerCase();
                     
-                    // 检查是否为有效的物品链接（有名称且不为空）
-                    if (itemName && itemName.length > 0) {
-                        const item = {
-                            itemId: itemId,
-                            name: itemName,
-                            quantity: 1
-                        };
-                        
-                        // 判断是否为可选择奖励
-                        const parentText = itemLink.parent().parent().text().toLowerCase();
-                        const isChoice = parentText.includes('choice') || 
-                                       parentText.includes('choose') || 
-                                       parentText.includes('可选') ||
-                                       itemLink.closest('.choice-rewards, .tab-choice, [data-tab="choice"]').length > 0;
-                        
-                        if (isChoice) {
-                            rewards.choiceItems.push(item);
-                        } else {
-                            rewards.rewardItems.push(item);
-                        }
-                        
-                        console.log(`  📦 发现物品: ${itemName} (ID: ${itemId}) - ${isChoice ? '可选' : '固定'}`);
+                    // 如果遇到下一个标题，停止搜索
+                    if (currentElement.is('h1, h2, h3, h4') && 
+                        !elementText.includes('reward') && 
+                        !elementText.includes('choose')) {
+                        break;
                     }
+                    
+                    // 查找此元素及其子元素中的物品链接
+                    const itemLinks = currentElement.find('a[href*="?item="]');
+                    
+                    itemLinks.each((idx, element) => {
+                        const itemLink = $(element);
+                        const href = itemLink.attr('href') || '';
+                        const itemIdMatch = href.match(/[?&]item=(\d+)/);
+                        
+                        if (itemIdMatch) {
+                            const itemId = parseInt(itemIdMatch[1]);
+                            const itemName = itemLink.text().trim();
+                            
+                            if (itemName && itemName.length > 0) {
+                                const item = {
+                                    itemId: itemId,
+                                    name: itemName,
+                                    quantity: 1
+                                };
+                                
+                                // 判断是否为可选择奖励
+                                // 检查上下文是否包含 "choose" 或类似词汇
+                                const contextText = currentElement.text().toLowerCase();
+                                const parentText = currentElement.parent().text().toLowerCase();
+                                const isChoice = contextText.includes('choose') || 
+                                               contextText.includes('one of these') ||
+                                               contextText.includes('select') ||
+                                               parentText.includes('choose') ||
+                                               contextText.includes('可选');
+                                
+                                if (isChoice) {
+                                    // 避免重复添加
+                                    const exists = rewards.choiceItems.some(existing => existing.itemId === itemId);
+                                    if (!exists) {
+                                        rewards.choiceItems.push(item);
+                                        console.log(`  🎁 发现可选奖励: ${itemName} (ID: ${itemId})`);
+                                    }
+                                } else {
+                                    // 避免重复添加
+                                    const exists = rewards.rewardItems.some(existing => existing.itemId === itemId);
+                                    if (!exists) {
+                                        rewards.rewardItems.push(item);
+                                        console.log(`  🎁 发现固定奖励: ${itemName} (ID: ${itemId})`);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    
+                    // 移动到下一个兄弟元素
+                    currentElement = currentElement.next();
+                    searchDepth++;
                 }
-            });
+                
+                const totalRewards = rewards.rewardItems.length + rewards.choiceItems.length;
+                if (totalRewards > 0) {
+                    console.log(`  ✅ 共找到 ${totalRewards} 个奖励物品 (固定: ${rewards.rewardItems.length}, 可选: ${rewards.choiceItems.length})`);
+                } else {
+                    console.log(`  ⚠️ 找到奖励标题但没有找到奖励物品`);
+                }
+            } else {
+                console.log(`  ℹ️ 此任务没有奖励 (未找到 Reward 标题)`);
+            }
 
             // 解析经验值
             const pageText = $('body').text();
@@ -223,17 +307,78 @@ class SeleniumQuestRewardScraper {
             level: 0,
             requiredLevel: 0,
             slot: '',
-            stats: []
+            armor: 0,
+            durability: ''
         };
 
         try {
-            // 获取物品名称
-            const nameElement = $('h1.heading-size-1, h1, .page-header h1').first();
-            if (nameElement.length > 0) {
+            // 获取物品名称 - 从页面标题或 h1 标签
+            let nameElement = $('h1').first();
+            if (nameElement.length === 0) {
+                // 从 title 标签获取名称
+                const titleText = $('title').text();
+                const nameMatch = titleText.match(/^([^-]+)/);
+                if (nameMatch) {
+                    item.name = nameMatch[1].trim();
+                }
+            } else {
                 item.name = nameElement.text().trim();
             }
 
-            // 获取物品品质（通过CSS类名或颜色）
+            // 解析 tooltip 内容 - 这是物品详细信息的主要来源
+            const tooltipElement = $('.tooltip table, [class*="tooltip"]').first();
+            if (tooltipElement.length > 0) {
+                const tooltipText = tooltipElement.text();
+                console.log(`🔍 Tooltip 内容: ${tooltipText.substring(0, 200)}...`);
+                
+                // 从 tooltip 中提取物品名称（如果之前没找到）
+                if (!item.name) {
+                    const tooltipNameMatch = tooltipText.match(/^([^\n\r]+)/);
+                    if (tooltipNameMatch) {
+                        item.name = tooltipNameMatch[1].replace(/^[^a-zA-Z]*/, '').trim();
+                    }
+                }
+
+                // 解析装备位置和类型 - 格式: "Hands    Leather"
+                const slotTypeMatch = tooltipText.match(/(Hands|Head|Neck|Shoulder|Chest|Waist|Legs|Feet|Wrist|Finger|Trinket|Main Hand|Off Hand|Two-Hand|Ranged|Back|Shirt|Tabard)\s+(Cloth|Leather|Mail|Plate|Dagger|Sword|Axe|Bow|Gun|Crossbow|Staff|Wand|Shield|Miscellaneous)/i);
+                if (slotTypeMatch) {
+                    item.slot = slotTypeMatch[1];
+                    item.subtype = slotTypeMatch[2];
+                    
+                    // 根据子类型推断主类型
+                    const subtypeToType = {
+                        'Cloth': 'Armor',
+                        'Leather': 'Armor', 
+                        'Mail': 'Armor',
+                        'Plate': 'Armor',
+                        'Dagger': 'Weapon',
+                        'Sword': 'Weapon',
+                        'Axe': 'Weapon',
+                        'Bow': 'Weapon',
+                        'Gun': 'Weapon',
+                        'Crossbow': 'Weapon',
+                        'Staff': 'Weapon',
+                        'Wand': 'Weapon',
+                        'Shield': 'Armor',
+                        'Miscellaneous': 'Miscellaneous'
+                    };
+                    item.type = subtypeToType[item.subtype] || 'Unknown';
+                }
+
+                // 解析护甲值 - 格式: "21 Armor"
+                const armorMatch = tooltipText.match(/(\d+)\s+Armor/i);
+                if (armorMatch) {
+                    item.armor = parseInt(armorMatch[1]);
+                }
+
+                // 解析耐久度 - 格式: "Durability 16 / 16"
+                const durabilityMatch = tooltipText.match(/Durability\s+(\d+\s*\/\s*\d+)/i);
+                if (durabilityMatch) {
+                    item.durability = durabilityMatch[1];
+                }
+            }
+
+            // 解析品质 - 从 CSS 类名
             const qualityClasses = ['q0', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6'];
             const qualityNames = ['Poor', 'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Artifact'];
             
@@ -244,31 +389,21 @@ class SeleniumQuestRewardScraper {
                 }
             }
 
-            // 查找物品信息表格或详情区域
-            const pageText = $('body').text();
-            
-            // 解析物品类型
-            const typeMatch = pageText.match(/Type[:\s]+([^\n\r]+)/i) || 
-                             pageText.match(/类型[:\s]+([^\n\r]+)/i);
-            if (typeMatch) {
-                item.type = typeMatch[1].trim();
+            // 从 infobox 解析物品等级
+            const infoboxText = $('.infobox').text();
+            if (infoboxText) {
+                const levelMatch = infoboxText.match(/Level:\s*(\d+)/i);
+                if (levelMatch) {
+                    item.level = parseInt(levelMatch[1]);
+                }
             }
 
-            // 解析物品等级
-            const levelMatch = pageText.match(/Item level[:\s]+(\d+)/i) || 
-                              pageText.match(/物品等级[:\s]+(\d+)/i);
-            if (levelMatch) {
-                item.level = parseInt(levelMatch[1]);
-            }
-
-            // 解析需求等级
-            const reqLevelMatch = pageText.match(/Required level[:\s]+(\d+)/i) || 
-                                 pageText.match(/需要等级[:\s]+(\d+)/i);
-            if (reqLevelMatch) {
-                item.requiredLevel = parseInt(reqLevelMatch[1]);
-            }
-
-            console.log(`✅ 物品 ${itemId} (${item.name}) 解析完成: ${item.type} - ${item.quality}`);
+            console.log(`✅ 物品 ${itemId} (${item.name}) 解析完成:`);
+            console.log(`   - 类型: ${item.type}/${item.subtype}`);
+            console.log(`   - 装备位置: ${item.slot}`);
+            console.log(`   - 品质: ${item.quality}`);
+            console.log(`   - 等级: ${item.level}`);
+            if (item.armor > 0) console.log(`   - 护甲: ${item.armor}`);
 
         } catch (error) {
             console.error(`解析物品 ${itemId} 失败: ${error.message}`);
@@ -288,6 +423,9 @@ class SeleniumQuestRewardScraper {
         const html = await this.fetchPage(url);
         
         if (!html) {
+            // 记录失败的任务ID
+            this.results.failedQuests.add(questId);
+            console.warn(`⚠️ 任务 ${questId} 获取失败，已记录到失败列表`);
             return null;
         }
 
@@ -310,6 +448,9 @@ class SeleniumQuestRewardScraper {
         const html = await this.fetchPage(url);
         
         if (!html) {
+            // 记录失败的物品ID
+            this.results.failedItems.add(itemId);
+            console.warn(`⚠️ 物品 ${itemId} 获取失败，已记录到失败列表`);
             return null;
         }
 
@@ -420,6 +561,37 @@ class SeleniumQuestRewardScraper {
     }
 
     /**
+     * 保存失败列表到文件
+     * @param {string} outputDir - 输出目录
+     */
+    saveFailedItems(outputDir) {
+        const failedData = {
+            timestamp: new Date().toISOString(),
+            failedQuests: Array.from(this.results.failedQuests).sort((a, b) => a - b),
+            failedItems: Array.from(this.results.failedItems).sort((a, b) => a - b),
+            retryInfo: {
+                totalFailedQuests: this.results.failedQuests.size,
+                totalFailedItems: this.results.failedItems.size,
+                networkRetries: this.results.stats.networkRetries
+            }
+        };
+
+        if (failedData.failedQuests.length > 0 || failedData.failedItems.length > 0) {
+            const failedPath = path.join(outputDir, 'failed-items.json');
+            fs.writeFileSync(failedPath, JSON.stringify(failedData, null, 2), 'utf8');
+            console.log(`⚠️ 失败列表已保存到: ${failedPath}`);
+            console.log(`   - 失败任务: ${failedData.failedQuests.length} 个`);
+            console.log(`   - 失败物品: ${failedData.failedItems.length} 个`);
+            console.log(`   - 总重试次数: ${failedData.networkRetries} 次`);
+            
+            if (failedData.failedQuests.length > 0) {
+                console.log(`💡 可使用以下命令重新处理失败的任务:`);
+                console.log(`   node scrape-quest-rewards-selenium.js -q ${failedData.failedQuests.slice(0, 10).join(',')}`);
+            }
+        }
+    }
+
+    /**
      * 保存最终结果到文件
      * @param {string} outputPath - 输出文件路径
      */
@@ -433,6 +605,10 @@ class SeleniumQuestRewardScraper {
 
         fs.writeFileSync(outputPath, JSON.stringify(finalResults, null, 2), 'utf8');
         console.log(`💾 结果已保存到: ${outputPath}`);
+        
+        // 保存失败列表
+        const outputDir = path.dirname(outputPath);
+        this.saveFailedItems(outputDir);
     }
 
     /**
@@ -446,6 +622,9 @@ class SeleniumQuestRewardScraper {
         console.log(`💎 总奖励物品: ${stats.totalRewardItems}`);
         console.log(`🔍 已处理物品: ${stats.processedItems}`);
         console.log(`❌ 错误数量: ${stats.errors}`);
+        console.log(`🔄 网络重试: ${stats.networkRetries} 次`);
+        console.log(`⚠️ 失败任务: ${this.results.failedQuests.size} 个`);
+        console.log(`⚠️ 失败物品: ${this.results.failedItems.size} 个`);
         console.log(`✅ 成功率: ${((stats.totalQuests - stats.errors) / stats.totalQuests * 100).toFixed(1)}%`);
     }
 }

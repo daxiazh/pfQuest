@@ -10,6 +10,7 @@
     "scrape-debug": "node scrape-quest-rewards-selenium.js --debug",
     "scrape-sample": "node scrape-quest-rewards-selenium.js -c 5",
     "scrape-headless": "node scrape-quest-rewards-selenium.js --headless -c 10",
+    "scrape-retry": "node scrape-quest-rewards-selenium.js --retry-failed",
     "test": "node test.js"
   },
   "keywords": ["wow", "turtle-wow", "pfquest", "data-merger"],

@@ -13,10 +13,12 @@ const SeleniumQuestRewardScraper = require('./quest-reward-scraper-selenium');
 const DEFAULT_CONFIG = {
     questIdsFile: path.join(__dirname, 'output', 'valid-quest-ids.json'),
     outputFile: path.join(__dirname, 'output', 'quest-rewards-selenium.json'),
+    failedFile: path.join(__dirname, 'output', 'failed-items.json'),
     maxQuests: null,
     specificQuests: [],
     delay: 3000, // Selenium 默认3秒间隔
-    headless: false // 默认显示浏览器窗口
+    headless: false, // 默认显示浏览器窗口
+    retryFailed: false // 是否重试失败的任务
 };
 
 /**
@@ -131,6 +133,10 @@ function parseArguments() {
                 config.headless = false; // 调试模式显示浏览器
                 break;
                 
+            case '--retry-failed':
+                config.retryFailed = true;
+                break;
+                
             default:
                 if (arg.startsWith('-')) {
                     console.error(`错误: 未知参数 ${arg}`);
@@ -164,6 +170,7 @@ function showHelp() {
   --headless                    无头模式（后台运行，不显示浏览器）
   --show-browser                显示浏览器窗口（默认）
   --debug [任务ID]              调试模式，显示浏览器（默认：41188）
+  --retry-failed                重试失败的任务和物品
   -h, --help                    显示此帮助信息
 
 优势:
@@ -178,6 +185,7 @@ function showHelp() {
   node scrape-quest-rewards-selenium.js -q 41188,41209             # 处理指定任务
   node scrape-quest-rewards-selenium.js --headless -c 50           # 后台处理50个任务
   node scrape-quest-rewards-selenium.js -d 5000 -c 20              # 5秒间隔处理20个任务
+  node scrape-quest-rewards-selenium.js --retry-failed             # 重试失败的任务
 
 安装要求:
   1. 安装 Chrome 浏览器
@@ -218,9 +226,44 @@ function loadQuestIds(filePath) {
 }
 
 /**
+ * 加载失败任务列表
+ */
+function loadFailedQuests(filePath) {
+    if (!fs.existsSync(filePath)) {
+        return [];
+    }
+    
+    try {
+        const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        const failedQuests = data.failedQuests || [];
+        const failedItems = data.failedItems || [];
+        
+        console.log(`从失败列表加载了 ${failedQuests.length} 个失败任务, ${failedItems.length} 个失败物品`);
+        return [...failedQuests, ...failedItems]; // 合并任务和物品ID
+    } catch (error) {
+        console.warn(`解析失败列表文件失败: ${error.message}`);
+        return [];
+    }
+}
+
+/**
  * 获取要处理的任务列表
  */
 function getQuestList(config) {
+    // 如果是重试失败模式
+    if (config.retryFailed) {
+        const failedIds = loadFailedQuests(config.failedFile);
+        if (failedIds.length === 0) {
+            console.log('没有找到失败的任务或物品需要重试');
+            return [];
+        }
+        
+        // 去重并排序
+        const uniqueIds = [...new Set(failedIds)].sort((a, b) => a - b);
+        console.log(`重试模式：找到 ${uniqueIds.length} 个需要重试的ID`);
+        return uniqueIds;
+    }
+    
     // 如果指定了特定任务，直接返回
     if (config.specificQuests.length > 0) {
         console.log(`使用指定的任务列表: [${config.specificQuests.join(', ')}]`);

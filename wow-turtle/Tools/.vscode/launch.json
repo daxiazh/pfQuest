@@ -20,7 +20,7 @@
             "type": "node",
             "request": "launch",
             "program": "${workspaceFolder}/scrape-quest-rewards-selenium.js",
-            "args": ["--debug", "41188"],
+            "args": ["--debug", "7487"],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "env": {
