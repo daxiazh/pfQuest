@@ -136,7 +136,7 @@ query:SetScript("OnHide", function()
   local count = 0
   for qid in pairs(this.history) do count = count + 1 end
 
-  DEFAULT_CHAT_FRAME:AddMessage("|cff33ffccpf|cffffffffQuest|r: 共有 " .. count .. " 项任务被标记为已完成。")
+  DEFAULT_CHAT_FRAME:AddMessage("|cff33ffccpf|cffffffffQuest|r: A total of " .. count .. " quests have been marked as completed.")
 
   pfQuest_history = this.history
   this.history = nil
@@ -149,7 +149,7 @@ query:SetScript("OnUpdate", function()
 end)
 
 function pfDatabase:QueryServer()
-  DEFAULT_CHAT_FRAME:AddMessage("|cff33ffccpf|cffffffffQuest|r: 从服务器接收任务数据中...")
+  DEFAULT_CHAT_FRAME:AddMessage("|cff33ffccpf|cffffffffQuest|r: Receiving quest data from server...")
   query:Show()
 end
 

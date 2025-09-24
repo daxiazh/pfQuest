@@ -753,7 +753,7 @@ function pfDatabase:SearchMetaRelation(query, meta, show)
 
   if pfDB["meta"] and pfDB["meta"][track] then
     -- check which faction should be searched
-    local faction = query.faction and string.lower(query.faction) or (UnitFactionGroup("player") and string.lower(UnitFactionGroup("player")))
+    local faction = query.faction and string.lower(query.faction) or string.lower(UnitFactionGroup("player"))
     faction = faction == "horde" and "H" or faction == "alliance" and "A" or ""
 
     -- iterate over all tracking entries
@@ -769,9 +769,6 @@ function pfDatabase:SearchMetaRelation(query, meta, show)
         local object = pfDB["objects"]["loc"][math.abs(entry)]
         local unit = pfDB["units"]["loc"][entry]
 
-        -- set node as tracking result
-        meta.tracking = true
-
         -- handle custom tracking icons
         if pfQuest_config.trackingicons == "0" then
           meta.icon = nil
@@ -781,24 +778,13 @@ function pfDatabase:SearchMetaRelation(query, meta, show)
           meta.icon = pfDatabase.icons[unit]
         end
 
-        -- set custom fade range for skill-trackables
-        if meta.icon and skill[track] then
-          meta.fade_range = 85
-        elseif meta.icon then
-          meta.fade_range = 10
-        else
-          meta.fade_range = nil
-        end
-
         if entry < 0 then
           pfDatabase:SearchObjectID(math.abs(entry), meta, maps)
         else
           pfDatabase:SearchMobID(entry, meta, maps)
         end
 
-        -- reset meta table
         meta.icon = prev_icon
-        meta.tracking = false
       end
     end
   end
@@ -1156,7 +1142,7 @@ function pfDatabase:SearchQuestID(id, meta, maps)
           if meta["qlogid"] then
             local _, _, _, _, _, complete = compat.GetQuestLogTitle(meta["qlogid"])
             complete = complete or GetNumQuestLeaderBoards(meta["qlogid"]) == 0 and true or nil
-            if complete == true or complete == 1 then
+            if complete then
               meta["texture"] = pfQuestConfig.path.."\\img\\complete_c"
             else
               meta["texture"] = pfQuestConfig.path.."\\img\\complete"
@@ -1449,84 +1435,77 @@ end
 -- Adds map nodes for each quest starter and ender
 -- Returns its map table
 function pfDatabase:SearchQuests(meta, maps)
-  -- 初始化变量
   local level, minlvl, maxlvl, race, class, prof, festival
-  local maps = maps or {}    -- 地图节点表
-  local meta = meta or {}    -- 元数据表
+  local maps = maps or {}
+  local meta = meta or {}
 
-  -- 获取玩家等级和阵营信息
-  local plevel = UnitLevel("player")           -- 玩家当前等级
-  local pfaction = UnitFactionGroup("player")  -- 玩家阵营
+  local plevel = UnitLevel("player")
+  local pfaction = UnitFactionGroup("player")
   if pfaction == "Horde" then
-    pfaction = "H"      -- 部落阵营代码
+    pfaction = "H"
   elseif pfaction == "Alliance" then
-    pfaction = "A"      -- 联盟阵营代码
+    pfaction = "A"
   else
-    pfaction = "GM"     -- 游戏管理员阵营代码
+    pfaction = "GM"
   end
 
-  -- 获取玩家种族和职业信息
-  local _, race = UnitRace("player")           -- 玩家种族
-  local prace = pfDatabase:GetBitByRace(race)  -- 获取种族位标识
-  local _, class = UnitClass("player")         -- 玩家职业
-  local pclass = pfDatabase:GetBitByClass(class) -- 获取职业位标识
+  local _, race = UnitRace("player")
+  local prace = pfDatabase:GetBitByRace(race)
+  local _, class = UnitClass("player")
+  local pclass = pfDatabase:GetBitByClass(class)
 
-  -- 遍历所有任务
   for id in pairs(quests) do
-    -- 根据玩家等级、职业、种族等条件过滤任务
     if pfDatabase:QuestFilter(id, plevel, pclass, prace) then
-      -- 设置任务元数据
-      meta["quest"] = ( pfDB.quests.loc[id] and pfDB.quests.loc[id].T ) or UNKNOWN  -- 任务名称
-      meta["questid"] = id          -- 任务ID
-      meta["texture"] = pfQuestConfig.path.."\\img\\available_c"  -- 默认任务图标（普通颜色）
+      -- set metadata
+      meta["quest"] = ( pfDB.quests.loc[id] and pfDB.quests.loc[id].T ) or UNKNOWN
+      meta["questid"] = id
+      meta["texture"] = pfQuestConfig.path.."\\img\\available_c"
 
-      meta["qlvl"] = quests[id]["lvl"]   -- 任务等级
-      meta["qmin"] = quests[id]["min"]   -- 任务最低等级要求
+      meta["qlvl"] = quests[id]["lvl"]
+      meta["qmin"] = quests[id]["min"]
 
-      meta["vertex"] = { 0, 0, 0 }       -- 顶点颜色（黑色）
-      meta["layer"] = 3                  -- 图层等级
+      meta["vertex"] = { 0, 0, 0 }
+      meta["layer"] = 3
 
-      -- 将高等级任务图标染成红色
+      -- tint high level quests red
       if quests[id]["min"] and quests[id]["min"] > plevel then
         meta["texture"] = pfQuestConfig.path.."\\img\\available"
-        meta["vertex"] = { 1, .6, .6 }   -- 红色色调
-        meta["layer"] = 2                -- 调整图层
+        meta["vertex"] = { 1, .6, .6 }
+        meta["layer"] = 2
       end
 
-      -- 将低等级任务图标染成灰色
+      -- tint low level quests grey
       if quests[id]["lvl"] and quests[id]["lvl"] + 10 < plevel then
         meta["texture"] = pfQuestConfig.path.."\\img\\available"
-        meta["vertex"] = { 1, 1, 1 }     -- 灰色色调
-        meta["layer"] = 2                -- 调整图层
+        meta["vertex"] = { 1, 1, 1 }
+        meta["layer"] = 2
       end
 
-      -- 将活动任务图标染成蓝色
+      -- tint event quests as blue
       if quests[id]["event"] then
         meta["texture"] = pfQuestConfig.path.."\\img\\available"
-        meta["vertex"] = { .2, .8, 1 }   -- 蓝色色调
-        meta["layer"] = 2                -- 调整图层
+        meta["vertex"] = { .2, .8, 1 }
+        meta["layer"] = 2
       end
 
-      -- 遍历所有任务起始NPC/对象
+      -- iterate over all questgivers
       if quests[id]["start"] then
-        -- 处理任务起始NPC单位
+        -- units
         if quests[id]["start"]["U"] then
-          meta["QTYPE"] = "NPC_START"    -- 标记为NPC任务起始点
+          meta["QTYPE"] = "NPC_START"
           for _, unit in pairs(quests[id]["start"]["U"]) do
-            -- 检查单位是否存在且与玩家阵营相符
             if units[unit] and strfind(units[unit]["fac"] or pfaction, pfaction) then
-              maps = pfDatabase:SearchMobID(unit, meta, maps)  -- 添加NPC到地图节点
+              maps = pfDatabase:SearchMobID(unit, meta, maps)
             end
           end
         end
 
-        -- 处理任务起始对象（如任务物品等）
+        -- objects
         if quests[id]["start"]["O"] then
-          meta["QTYPE"] = "OBJECT_START"   -- 标记为对象任务起始点
+          meta["QTYPE"] = "OBJECT_START"
           for _, object in pairs(quests[id]["start"]["O"]) do
-            -- 检查对象是否存在且与玩家阵营相符
             if objects[object] and strfind(objects[object]["fac"] or pfaction, pfaction) then
-              maps = pfDatabase:SearchObjectID(object, meta, maps)  -- 添加对象到地图节点
+              maps = pfDatabase:SearchObjectID(object, meta, maps)
             end
           end
         end

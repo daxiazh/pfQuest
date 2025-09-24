@@ -1,16 +1,19 @@
 ## Interface: 11200
-## Title: |cff33ffcc[任务]|cffffffffpfQuestDB|cffff1450[4.17]
-## Title-zhCN: |cff33ffcc[任务]|cffffffffpfQuestDB|cffff1450[4.17]
-## Author: Shagu, Wind, Sunelegy, 呲不鸟
-## Notes: |cff33ffccpf|cffffffffQuest|R 由|cff33ffccWind|R&|cff33ffcc呲不鸟|R&|cff33ffccSunelegy|R修改汉化。|N本插件完全免费，请勿在第三方购买！
-## Notes-zhCN: |cff33ffccpf|cffffffffQuest|R 由|cff33ffccWind|R&|cff33ffcc呲不鸟|R&|cff33ffccSunelegy|R修改汉化。|N本插件完全免费，请勿在第三方购买！
-## Version: 7.0.2
+## Title: |cff33ffccpf|cffffffffQuest |cffcccccc[TurtleWoW DB]
+## Author: Shagu
+## Contributors: Gurky, Antealis, HumbleKagu, KasVital, Haaxor1689, IcemanHHW, fatpowaranga
+## Notes: A TurtleWoW DB extension for pfQuest
+## Version: GIT
 ## Dependencies: pfQuest
 ## SavedVariables: pfQuest_turtlecount
 
 init\data-turtle.xml
 init\enUS-turtle.xml
+init\deDE-turtle.xml
+init\esES-turtle.xml
+init\ptBR-turtle.xml
 init\zhCN-turtle.xml
+init\ruRU-turtle.xml
 
 overwrites.lua
 
