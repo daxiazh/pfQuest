@@ -13,6 +13,8 @@
     "scrape-retry": "node scrape-quest-rewards-selenium.js --retry-failed",
     "scrape-all": "node scrape-quest-rewards-selenium.js --all",
     "scrape-all-headless": "node scrape-quest-rewards-selenium.js --all --headless",
+    "convert": "node convert-quest-rewards-to-lua.js",
+    "test-conversion": "node test-conversion.js",
     "test": "node test.js",
     "test-incremental": "node test-incremental.js"
   },

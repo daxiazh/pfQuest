@@ -14,6 +14,11 @@
 - **功能**: 使用真实浏览器抓取任务奖励和物品信息
 - **输出**: `output/quest-rewards-selenium.json`
 
+### 3. 任务奖励数据转换工具 ⭐ 新增
+- **文件**: `convert-quest-rewards-to-lua.js`
+- **功能**: 将抓取的JSON数据转换为pfQuest-turtle可用的Lua格式
+- **输出**: `pfQuest-turtle/db/quest-rewards-turtle.lua`, `pfQuest-turtle/db/item-props-turtle.lua`
+
 ## 🚀 快速开始
 
 ### 安装依赖
@@ -48,6 +53,15 @@ npm run scrape-all
 
 # 后台处理所有任务（推荐）
 npm run scrape-all-headless
+```
+
+#### 步骤3: 转换为Lua格式 ⭐ 新增
+```bash
+# 转换JSON数据为pfQuest-turtle Lua格式
+npm run convert
+
+# 测试转换结果
+npm run test-conversion
 ```
 
 ## 📋 详细使用说明
@@ -112,6 +126,48 @@ node scrape-quest-rewards-selenium.js -d 5000 -o my-rewards.json
 
 # All 模式（推荐用于大规模处理）
 node scrape-quest-rewards-selenium.js --all --headless
+```
+
+### 任务奖励数据转换工具 ⭐ 新增
+
+**基本用法:**
+```bash
+node convert-quest-rewards-to-lua.js
+```
+
+**功能:**
+- 读取 `output/quest-rewards-selenium.json` 文件
+- 使用 WoW 官方 ItemType 分类系统对物品进行分类
+- 自动检测并复用现有 pfQuest 物品名称数据
+- 生成紧凑的数字数组格式 Lua 文件
+
+**输出文件:**
+- `pfQuest-turtle/db/quest-rewards-turtle.lua` - 任务奖励数据
+- `pfQuest-turtle/db/item-props-turtle.lua` - 物品属性数据
+- `pfQuest-turtle/db/zhCN/quest-items-turtle.lua` - 新增物品名称（如需要）
+
+**数据格式:**
+```lua
+-- 任务奖励: [questId] = {itemId1, itemId2, ...}
+[6] = {6076, 60, 3070}
+
+-- 物品属性: [itemId] = {quality, class, subclass}
+[60] = {1, 4, 2}  -- 普通品质，护甲类，皮甲子类
+```
+
+**品质编码**: 0=劣质, 1=普通, 2=优秀, 3=精良, 4=史诗, 5=传说, 6=神器  
+**类型编码**: 0=消耗品, 1=容器, 2=武器, 4=护甲, 7=商品, 9=配方, 12=任务物品, 15=杂项
+
+**使用示例:**
+```bash
+# 基本转换
+node convert-quest-rewards-to-lua.js
+
+# 启用调试模式
+DEBUG=1 node convert-quest-rewards-to-lua.js
+
+# 测试转换结果
+node test-conversion.js
 ```
 
 ## 🔧 系统要求
@@ -183,6 +239,8 @@ node scrape-quest-rewards-selenium.js --all --headless
 | `npm run scrape-headless` | 后台模式 | 无界面处理10个任务 |
 | `npm run scrape-all` | 全量处理 | 处理所有任务，支持增量 |
 | `npm run scrape-all-headless` | 全量后台 | 后台处理所有任务 |
+| `npm run convert` ⭐ | `node convert-quest-rewards-to-lua.js` | 转换JSON为Lua格式 |
+| `npm run test-conversion` ⭐ | `node test-conversion.js` | 测试转换结果 |
 
 ## 🐛 VSCode 调试配置
 
