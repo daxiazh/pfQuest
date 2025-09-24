@@ -70,6 +70,7 @@ local function IsEmpty(tabl)
   return true
 end
 
+
 local layers = {
   -- regular icons
   [pfQuestConfig.path.."\\img\\available"]          = 1,
@@ -112,6 +113,75 @@ local function minimap_indoor()
   pfMap.drawlayer:SetZoom(pfMap.drawlayer:GetZoom() + tempzoom)
 	return state
 end
+
+-- ******************************************
+-- Quest Chain Equipment Rewards Extension
+-- ******************************************
+
+-- ItemType constants for WoW 1.12
+local ITEM_CLASS_WEAPON = 2
+local ITEM_CLASS_ARMOR = 4
+
+-- Armor subclass constants
+local ITEM_SUBCLASS_ARMOR_MISC = 0
+local ITEM_SUBCLASS_ARMOR_CLOTH = 1
+local ITEM_SUBCLASS_ARMOR_LEATHER = 2
+local ITEM_SUBCLASS_ARMOR_MAIL = 3
+local ITEM_SUBCLASS_ARMOR_PLATE = 4
+local ITEM_SUBCLASS_ARMOR_SHIELD = 6
+
+-- 递归检查任务链是否有装备奖励
+local function HasEquipmentRewards(questId, visited)
+  if not questId then return false end
+  
+  visited = visited or {}
+  if visited[questId] then return false end
+  visited[questId] = true
+  
+  -- 检查当前任务奖励
+  local rewards = pfDB["quest-rewards"] and pfDB["quest-rewards"]["data-turtle"] and pfDB["quest-rewards"]["data-turtle"][questId]
+  if rewards then
+    for _, itemId in pairs(rewards) do
+      local itemProps = pfDB["item-props"] and pfDB["item-props"]["data-turtle"] and pfDB["item-props"]["data-turtle"][itemId]
+      if itemProps then
+        local quality, class, subclass = itemProps[1], itemProps[2], itemProps[3]
+        if class == ITEM_CLASS_ARMOR or class == ITEM_CLASS_WEAPON then
+          return true
+        end
+      end
+    end
+  end
+  
+  -- 递归检查后续任务链
+  local turtleQuests = pfDB["quests"] and pfDB["quests"]["data-turtle"]
+  if turtleQuests then
+    for qid, questData in pairs(turtleQuests) do
+      if questData["pre"] and questData["pre"] == questId then
+        if HasEquipmentRewards(qid, visited) then
+          return true
+        end
+      end
+    end
+  end
+  
+  -- 也检查基础数据库中的任务
+  local baseQuests = pfDB["quests"] and pfDB["quests"]["data"]
+  if baseQuests then
+    for qid, questData in pairs(baseQuests) do
+      if questData["pre"] and questData["pre"] == questId then
+        if HasEquipmentRewards(qid, visited) then
+          return true
+        end
+      end
+    end
+  end
+  
+  return false
+end
+
+-- ******************************************
+-- End Quest Chain Equipment Rewards Extension
+-- ******************************************
 
 local function str2rgb(text)
   if not text then return 1, 1, 1 end
@@ -390,6 +460,39 @@ function pfMap:ShowTooltip(meta, tooltip)
       tooltip:AddLine("|cffffffff" .. pfQuest_Loc["Loot"] .. ": " .. item ..  " |cff555555[|r" .. meta["droprate"] .. "%|cff555555]", r,g,b)
     end
   end
+
+  -- ******************************************
+  -- Show quest chain equipment rewards
+  -- ******************************************
+  if meta["questid"] and HasEquipmentRewards(meta["questid"]) then
+    local rewards = pfDB["quest-rewards"] and pfDB["quest-rewards"]["data-turtle"] and pfDB["quest-rewards"]["data-turtle"][meta["questid"]]
+    if rewards then
+      tooltip:AddLine("|cffff66ff链任务装备奖励:|r", 1, 0.4, 0.8)
+      local equipmentCount = 0
+      for _, itemId in pairs(rewards) do
+        local itemProps = pfDB["item-props"] and pfDB["item-props"]["data-turtle"] and pfDB["item-props"]["data-turtle"][itemId]
+        if itemProps then
+          local quality, class, subclass = itemProps[1], itemProps[2], itemProps[3]
+          if class == ITEM_CLASS_ARMOR or class == ITEM_CLASS_WEAPON then
+            equipmentCount = equipmentCount + 1
+            if equipmentCount <= 3 then  -- 只显示前3件装备
+              local itemName = pfDB["items"] and pfDB["items"]["loc"] and pfDB["items"]["loc"][itemId] or "未知物品"
+              local qualityColors = { 
+                [0] = "|cff9d9d9d", [1] = "|cffffffff", [2] = "|cff1eff00", 
+                [3] = "|cff0070dd", [4] = "|cffa335ee", [5] = "|cffff8000", [6] = "|cffe6cc80" 
+              }
+              local qualityColor = qualityColors[quality] or "|cffffffff"
+              tooltip:AddLine("|cffaaaaaa- |r" .. qualityColor .. itemName .. "|r", 0.8, 0.8, 0.8)
+            end
+          end
+        end
+      end
+      if equipmentCount > 3 then
+        tooltip:AddLine("|cffaaaaaa- |r|cff888888还有 " .. (equipmentCount - 3) .. " 件装备...|r", 0.6, 0.6, 0.6)
+      end
+    end
+  end
+  -- ******************************************
 
   tooltip:Show()
 end
@@ -815,6 +918,15 @@ function pfMap:UpdateNode(frame, node, color, obj, distance)
       frame.pic:Hide()
     end
 
+    -- ******************************************
+    -- Check for equipment rewards in quest chain
+    -- ******************************************
+    local hasEquipment = frame.questid and HasEquipmentRewards(frame.questid)
+    if hasEquipment then
+      r, g, b = 1, 0.4, 0.8  -- Pink color for equipment rewards
+    end
+    -- ******************************************
+    
     if obj == "minimap" and pfQuest_config["cutoutminimap"] == "1" then
       frame.tex:SetTexture(pfQuestConfig.path.."\\img\\nodecut")
       frame.tex:SetVertexColor(r,g,b,1)

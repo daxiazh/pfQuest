@@ -249,7 +249,7 @@ async function convertQuestRewardsToLua() {
   console.log(`   发现 ${newItemCount} 个新物品需要添加名称`);
   
   // 5. 生成输出目录
-  const outputDir = path.join(__dirname, '../pfQuest-turtle/db');
+  const outputDir = path.join(__dirname, '../pfQuest/db');
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
@@ -263,7 +263,7 @@ pfDB["quest-rewards"]["data-turtle"] = {
 ${generateLuaArray(questRewards)}
 }`;
   
-  fs.writeFileSync(path.join(outputDir, 'quest-rewards-turtle.lua'), questRewardsLua, 'utf8');
+  fs.writeFileSync(path.join(outputDir, 'quest-rewards.lua'), questRewardsLua, 'utf8');
   
   // 7. 生成物品属性文件
   console.log('📝 生成物品属性数据文件...');
@@ -277,12 +277,12 @@ pfDB["item-props"]["data-turtle"] = {
 ${generateLuaArray(itemProps)}
 }`;
   
-  fs.writeFileSync(path.join(outputDir, 'item-props-turtle.lua'), itemPropsLua, 'utf8');
+  fs.writeFileSync(path.join(outputDir, 'item-props.lua'), itemPropsLua, 'utf8');
   
   // 8. 生成新增物品名称文件
   if (newItemCount > 0) {
     console.log('📝 生成新增物品名称文件...');
-    const zhCNDir = path.join(outputDir, 'zhCN');
+    const zhCNDir = path.join("../pfQuest/db/", 'zhCN');
     if (!fs.existsSync(zhCNDir)) {
       fs.mkdirSync(zhCNDir, { recursive: true });
     }
@@ -303,8 +303,8 @@ ${generateLuaArray(newItemNames, true)}
   console.log(`✅ 物品属性: ${Object.keys(itemProps).length} 个物品`);
   console.log(`✅ 新增物品名称: ${newItemCount} 个物品`);
   console.log(`\n📁 生成的文件:`);
-  console.log(`   - pfQuest-turtle/db/quest-rewards-turtle.lua`);
-  console.log(`   - pfQuest-turtle/db/item-props-turtle.lua`);
+  console.log(`   - pfQuest/db/quest-rewards.lua`);
+  console.log(`   - pfQuest/db/item-props.lua`);
   if (newItemCount > 0) {
     console.log(`   - pfQuest-turtle/db/zhCN/quest-items-turtle.lua`);
   }
