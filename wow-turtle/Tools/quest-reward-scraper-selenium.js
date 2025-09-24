@@ -58,7 +58,19 @@ class SeleniumQuestRewardScraper {
             ['Tabard', 'Armor'],  // 战袍类型装备
             ['Finger', 'Armor'],  // 戒指类型装备
             ['Neck', 'Armor'],   // 项链类型装备
-            ['Back', 'Armor']    // 披风类型装备
+            ['Back', 'Armor'],   // 披风类型装备
+            // 常见装备位置的默认类型映射
+            ['Head', 'Armor'],   // 头部装备
+            ['Chest', 'Armor'],  // 胸部装备
+            ['Legs', 'Armor'],   // 腿部装备
+            ['Feet', 'Armor'],   // 脚部装备
+            ['Hands', 'Armor'],  // 手部装备
+            ['Waist', 'Armor'],  // 腰部装备
+            ['Shoulder', 'Armor'], // 肩部装备
+            ['Wrist', 'Armor'],  // 手腕装备
+            ['Main Hand', 'Weapon'], // 主手武器
+            ['One-Hand', 'Weapon'],  // 单手武器
+            ['Two-Hand', 'Weapon']   // 双手武器
         ]);
         
         this.results = {
