@@ -1,13 +1,13 @@
 {
-  "timestamp": "2025-09-24T05:05:48.298Z",
+  "timestamp": "2025-09-24T06:24:44.803Z",
   "stats": {
     "totalQuests": 6500,
-    "questsWithRewards": 910,
-    "totalRewardItems": 1604,
-    "processedItems": 1604,
-    "errors": 1,
-    "networkRetries": 13,
-    "resumedFromQuestId": 8863
+    "questsWithRewards": 22,
+    "totalRewardItems": 41,
+    "processedItems": 41,
+    "errors": 0,
+    "networkRetries": 0,
+    "resumedFromQuestId": 41675
   },
   "questRewards": {
     "4": {
@@ -69935,6 +69935,633 @@
       "choiceItems": [],
       "experience": 2450,
       "reputation": []
+    },
+    "41676": {
+      "questId": 41676,
+      "title": "Orcs by Our Borders",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 58037,
+          "name": "Ozuk's Piercer",
+          "quantity": 1
+        },
+        {
+          "itemId": 58036,
+          "name": "Blade of the Overlord",
+          "quantity": 1
+        },
+        {
+          "itemId": 58038,
+          "name": "Steeltooth",
+          "quantity": 1
+        }
+      ],
+      "experience": 3350,
+      "reputation": []
+    },
+    "41677": {
+      "questId": 41677,
+      "title": "Darker than Iron",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 58031,
+          "name": "Amberwood Bracers",
+          "quantity": 1
+        },
+        {
+          "itemId": 58032,
+          "name": "Dark Iron Gloves",
+          "quantity": 1
+        }
+      ],
+      "experience": 2150,
+      "reputation": []
+    },
+    "41678": {
+      "questId": 41678,
+      "title": "An Amber Light",
+      "rewardItems": [
+        {
+          "itemId": 58033,
+          "name": "Amber Shawl",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 3500,
+      "reputation": []
+    },
+    "41679": {
+      "questId": 41679,
+      "title": "Charred Bones",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2450,
+      "reputation": []
+    },
+    "41680": {
+      "questId": 41680,
+      "title": "Where is Wiggles?",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 700,
+      "reputation": []
+    },
+    "41681": {
+      "questId": 41681,
+      "title": "Wiggles Knows the Way",
+      "rewardItems": [
+        {
+          "itemId": 58029,
+          "name": "Hood of the Pyremaster",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 2850,
+      "reputation": []
+    },
+    "41682": {
+      "questId": 41682,
+      "title": "Vile Dwarven Pigs",
+      "rewardItems": [
+        {
+          "itemId": 58032,
+          "name": "Dark Iron Gloves",
+          "quantity": 1
+        },
+        {
+          "itemId": 10050,
+          "name": "Mageweave Bag",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 2150,
+      "reputation": []
+    },
+    "41683": {
+      "questId": 41683,
+      "title": "Scum Should Stay Scum",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 58036,
+          "name": "Blade of the Overlord",
+          "quantity": 1
+        },
+        {
+          "itemId": 58037,
+          "name": "Ozuk's Piercer",
+          "quantity": 1
+        },
+        {
+          "itemId": 58038,
+          "name": "Steeltooth",
+          "quantity": 1
+        }
+      ],
+      "experience": 3350,
+      "reputation": []
+    },
+    "41684": {
+      "questId": 41684,
+      "title": "Shadow's Vision",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2100,
+      "reputation": []
+    },
+    "41685": {
+      "questId": 41685,
+      "title": "A Veiled Threat",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 58022,
+          "name": "SI:7 Honorary Medal",
+          "quantity": 1
+        },
+        {
+          "itemId": 58023,
+          "name": "Loop of the Assassin",
+          "quantity": 1
+        },
+        {
+          "itemId": 58024,
+          "name": "Operative Cape",
+          "quantity": 1
+        }
+      ],
+      "experience": 300,
+      "reputation": []
+    },
+    "41686": {
+      "questId": 41686,
+      "title": "Into The Tortured Past",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 300,
+      "reputation": []
+    },
+    "41687": {
+      "questId": 41687,
+      "title": "Misery At Sherwood Quarry",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 58017,
+          "name": "Shiv of Nobility",
+          "quantity": 1
+        },
+        {
+          "itemId": 58021,
+          "name": "Belt of Compassion",
+          "quantity": 1
+        }
+      ],
+      "experience": 1950,
+      "reputation": []
+    },
+    "41688": {
+      "questId": 41688,
+      "title": "To Look A Gift Horse In The Mouth",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2650,
+      "reputation": []
+    },
+    "41689": {
+      "questId": 41689,
+      "title": "A Good Samaritan",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2650,
+      "reputation": []
+    },
+    "41690": {
+      "questId": 41690,
+      "title": "Still Not Enough",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 0,
+      "reputation": []
+    },
+    "41691": {
+      "questId": 41691,
+      "title": "Some May Call It Quackery",
+      "rewardItems": [
+        {
+          "itemId": 31829,
+          "name": "Billy",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 2850,
+      "reputation": []
+    },
+    "41692": {
+      "questId": 41692,
+      "title": "Assessing The Situation",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1400,
+      "reputation": []
+    },
+    "41693": {
+      "questId": 41693,
+      "title": "The Last Lines",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 1850,
+      "reputation": []
+    },
+    "41694": {
+      "questId": 41694,
+      "title": "To The Darkest Places",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 58062,
+          "name": "Half-dissolved Wedding Ring",
+          "quantity": 1
+        },
+        {
+          "itemId": 58063,
+          "name": "Pantaloons of Torture",
+          "quantity": 1
+        }
+      ],
+      "experience": 3400,
+      "reputation": []
+    },
+    "41695": {
+      "questId": 41695,
+      "title": "Noppsy Spickerspan",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 400,
+      "reputation": []
+    },
+    "41696": {
+      "questId": 41696,
+      "title": "You May Call This Cheating...",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2600,
+      "reputation": []
+    },
+    "41697": {
+      "questId": 41697,
+      "title": "Demons Galore",
+      "rewardItems": [
+        {
+          "itemId": 58064,
+          "name": "Harelyss' Whip",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 2700,
+      "reputation": []
+    },
+    "41698": {
+      "questId": 41698,
+      "title": "Explosives Make My Heart Go BOOM!",
+      "rewardItems": [
+        {
+          "itemId": 6714,
+          "name": "Ez-Thro Dynamite",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 3000,
+      "reputation": []
+    },
+    "41699": {
+      "questId": 41699,
+      "title": "Harrowing News",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 300,
+      "reputation": []
+    },
+    "41700": {
+      "questId": 41700,
+      "title": "The Gold Experience",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 58068,
+          "name": "Goblin Nose Ring",
+          "quantity": 1
+        },
+        {
+          "itemId": 58067,
+          "name": "Verix' Navigator Cloak",
+          "quantity": 1
+        }
+      ],
+      "experience": 2800,
+      "reputation": []
+    },
+    "41701": {
+      "questId": 41701,
+      "title": "The Goblin Way Of Fishing",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2600,
+      "reputation": []
+    },
+    "41702": {
+      "questId": 41702,
+      "title": "Tide-ying Up",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 58069,
+          "name": "Penny's Crabcracker",
+          "quantity": 1
+        },
+        {
+          "itemId": 58070,
+          "name": "Tidecaller Chestpiece",
+          "quantity": 1
+        }
+      ],
+      "experience": 3200,
+      "reputation": []
+    },
+    "41703": {
+      "questId": 41703,
+      "title": "Favor For Spare Parts",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 58071,
+          "name": "Plundered Pirate Hat",
+          "quantity": 1
+        },
+        {
+          "itemId": 58072,
+          "name": "Tarred Shoulderpads",
+          "quantity": 1
+        }
+      ],
+      "experience": 3200,
+      "reputation": []
+    },
+    "41704": {
+      "questId": 41704,
+      "title": "Put Them To Rest",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2600,
+      "reputation": []
+    },
+    "41705": {
+      "questId": 41705,
+      "title": "Poor Porcelain Doll",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2400,
+      "reputation": []
+    },
+    "41706": {
+      "questId": 41706,
+      "title": "Foul Essences",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2600,
+      "reputation": []
+    },
+    "41707": {
+      "questId": 41707,
+      "title": "Fungal Fever",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2800,
+      "reputation": []
+    },
+    "41708": {
+      "questId": 41708,
+      "title": "Stinging Lullaby",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 58074,
+          "name": "Lightfooted Mokassins",
+          "quantity": 1
+        },
+        {
+          "itemId": 58075,
+          "name": "Grips of Mending",
+          "quantity": 1
+        }
+      ],
+      "experience": 3000,
+      "reputation": []
+    },
+    "41709": {
+      "questId": 41709,
+      "title": "Ceaseless Storms",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2500,
+      "reputation": []
+    },
+    "41710": {
+      "questId": 41710,
+      "title": "Piece Of A Bigger Picture",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 3000,
+      "reputation": []
+    },
+    "41711": {
+      "questId": 41711,
+      "title": "Calming The Tempest",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 58077,
+          "name": "Hydromancer Cowl",
+          "quantity": 1
+        },
+        {
+          "itemId": 58078,
+          "name": "Choker of Insight",
+          "quantity": 1
+        },
+        {
+          "itemId": 58079,
+          "name": "Pearlescent Shard",
+          "quantity": 1
+        }
+      ],
+      "experience": 3100,
+      "reputation": []
+    },
+    "41712": {
+      "questId": 41712,
+      "title": "Letter Far From Home",
+      "rewardItems": [
+        {
+          "itemId": 6533,
+          "name": "Aquadynamic Fish Attractor",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 440,
+      "reputation": []
+    },
+    "41713": {
+      "questId": 41713,
+      "title": "Solutions To Arcane Resonance",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 8000,
+      "reputation": []
+    },
+    "41714": {
+      "questId": 41714,
+      "title": "The Solution Is Right Here",
+      "rewardItems": [
+        {
+          "itemId": 41485,
+          "name": "Pristine Ley Crystal",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 0,
+      "reputation": []
+    },
+    "41715": {
+      "questId": 41715,
+      "title": "Again Into the Great Ossuary",
+      "rewardItems": [
+        {
+          "itemId": 18746,
+          "name": "Divination Scryer",
+          "quantity": 1
+        }
+      ],
+      "choiceItems": [],
+      "experience": 0,
+      "reputation": []
+    },
+    "41716": {
+      "questId": 41716,
+      "title": "The Shatterblade Expedition",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 40,
+      "reputation": []
+    },
+    "41717": {
+      "questId": 41717,
+      "title": "The Dragonmaw Threat",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2550,
+      "reputation": []
+    },
+    "41718": {
+      "questId": 41718,
+      "title": "The Dragonmaw Orders",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 120,
+      "reputation": []
+    },
+    "41719": {
+      "questId": 41719,
+      "title": "Death to Geshgan",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 3400,
+      "reputation": []
+    },
+    "41720": {
+      "questId": 41720,
+      "title": "Stolgaz Documents",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2650,
+      "reputation": []
+    },
+    "41721": {
+      "questId": 41721,
+      "title": "Zarm'geth Stronghold",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 41785,
+          "name": "Reachhide Harness",
+          "quantity": 1
+        },
+        {
+          "itemId": 41786,
+          "name": "Scarweave Leggings",
+          "quantity": 1
+        },
+        {
+          "itemId": 41787,
+          "name": "Shatterblade Pauldrons",
+          "quantity": 1
+        }
+      ],
+      "experience": 3800,
+      "reputation": []
+    },
+    "41722": {
+      "questId": 41722,
+      "title": "Shatterblade Stew",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2450,
+      "reputation": []
+    },
+    "41723": {
+      "questId": 41723,
+      "title": "Bounty on Wild Maw",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2250,
+      "reputation": []
+    },
+    "41724": {
+      "questId": 41724,
+      "title": "The Betrayal of Rethkag",
+      "rewardItems": [],
+      "choiceItems": [
+        {
+          "itemId": 41789,
+          "name": "Renegade Battle Boots",
+          "quantity": 1
+        },
+        {
+          "itemId": 41790,
+          "name": "Mirefang Staff",
+          "quantity": 1
+        }
+      ],
+      "experience": 2850,
+      "reputation": []
+    },
+    "41725": {
+      "questId": 41725,
+      "title": "Dark Iron Components",
+      "rewardItems": [],
+      "choiceItems": [],
+      "experience": 2050,
+      "reputation": []
     }
   },
   "itemDetails": {
@@ -78010,6 +78637,19 @@
       "durability": "90 / 90",
       "containerSlots": 0
     },
+    "6533": {
+      "itemId": 6533,
+      "name": "Aquadynamic Fish Attractor",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 30,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
     "6635": {
       "itemId": 6635,
       "name": "Earth Sapta",
@@ -78268,6 +78908,19 @@
       "slot": "Legs",
       "armor": 9,
       "durability": "30 / 30",
+      "containerSlots": 0
+    },
+    "6714": {
+      "itemId": 6714,
+      "name": "Ez-Thro Dynamite",
+      "type": "Recipe",
+      "subtype": "",
+      "quality": "Common",
+      "level": 25,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
       "containerSlots": 0
     },
     "6719": {
@@ -81673,6 +82326,19 @@
       "armor": 38,
       "durability": "55 / 55",
       "containerSlots": 0
+    },
+    "10050": {
+      "itemId": 10050,
+      "name": "Mageweave Bag",
+      "type": "Container",
+      "subtype": "Bag",
+      "quality": "Common",
+      "level": 35,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 12
     },
     "10358": {
       "itemId": 10358,
@@ -97661,6 +98327,19 @@
       "durability": "",
       "containerSlots": 0
     },
+    "31829": {
+      "itemId": 31829,
+      "name": "Billy",
+      "type": "Consumable",
+      "subtype": "",
+      "quality": "Common",
+      "level": 1,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
     "40061": {
       "itemId": 40061,
       "name": "Rethress Tide Crest",
@@ -98766,6 +99445,19 @@
       "durability": "75 / 75",
       "containerSlots": 0
     },
+    "41485": {
+      "itemId": 41485,
+      "name": "Pristine Ley Crystal",
+      "type": "Trade Goods",
+      "subtype": "Material",
+      "quality": "Common",
+      "level": 55,
+      "requiredLevel": 0,
+      "slot": "",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
     "41696": {
       "itemId": 41696,
       "name": "Signed Zappo Zapblast Autograph",
@@ -98894,6 +99586,71 @@
       "slot": "Back",
       "armor": 25,
       "durability": "",
+      "containerSlots": 0
+    },
+    "41785": {
+      "itemId": 41785,
+      "name": "Reachhide Harness",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 38,
+      "requiredLevel": 0,
+      "slot": "Chest",
+      "armor": 106,
+      "durability": "85 / 85",
+      "containerSlots": 0
+    },
+    "41786": {
+      "itemId": 41786,
+      "name": "Scarweave Leggings",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 38,
+      "requiredLevel": 0,
+      "slot": "Legs",
+      "armor": 45,
+      "durability": "55 / 55",
+      "containerSlots": 0
+    },
+    "41787": {
+      "itemId": 41787,
+      "name": "Shatterblade Pauldrons",
+      "type": "Armor",
+      "subtype": "Mail",
+      "quality": "Poor",
+      "level": 38,
+      "requiredLevel": 0,
+      "slot": "Shoulder",
+      "armor": 167,
+      "durability": "60 / 60",
+      "containerSlots": 0
+    },
+    "41789": {
+      "itemId": 41789,
+      "name": "Renegade Battle Boots",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 36,
+      "requiredLevel": 0,
+      "slot": "Feet",
+      "armor": 68,
+      "durability": "45 / 45",
+      "containerSlots": 0
+    },
+    "41790": {
+      "itemId": 41790,
+      "name": "Mirefang Staff",
+      "type": "Weapon",
+      "subtype": "Staff",
+      "quality": "Poor",
+      "level": 36,
+      "requiredLevel": 0,
+      "slot": "Two-hand",
+      "armor": 0,
+      "durability": "85 / 85",
       "containerSlots": 0
     },
     "41851": {
@@ -104993,6 +105750,19 @@
       "durability": "65 / 65",
       "containerSlots": 0
     },
+    "58017": {
+      "itemId": 58017,
+      "name": "Shiv of Nobility",
+      "type": "Weapon",
+      "subtype": "Dagger",
+      "quality": "Poor",
+      "level": 37,
+      "requiredLevel": 0,
+      "slot": "One-hand",
+      "armor": 0,
+      "durability": "55 / 55",
+      "containerSlots": 0
+    },
     "58020": {
       "itemId": 58020,
       "name": "Lumberjack Vest",
@@ -105004,6 +105774,58 @@
       "slot": "Chest",
       "armor": 102,
       "durability": "85 / 85",
+      "containerSlots": 0
+    },
+    "58021": {
+      "itemId": 58021,
+      "name": "Belt of Compassion",
+      "type": "Armor",
+      "subtype": "Mail",
+      "quality": "Poor",
+      "level": 35,
+      "requiredLevel": 0,
+      "slot": "Waist",
+      "armor": 120,
+      "durability": "35 / 35",
+      "containerSlots": 0
+    },
+    "58022": {
+      "itemId": 58022,
+      "name": "SI:7 Honorary Medal",
+      "type": "Armor",
+      "subtype": "Neck",
+      "quality": "Poor",
+      "level": 42,
+      "requiredLevel": 0,
+      "slot": "Neck",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "58023": {
+      "itemId": 58023,
+      "name": "Loop of the Assassin",
+      "type": "Armor",
+      "subtype": "Finger",
+      "quality": "Poor",
+      "level": 42,
+      "requiredLevel": 0,
+      "slot": "Finger",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "58024": {
+      "itemId": 58024,
+      "name": "Operative Cape",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 42,
+      "requiredLevel": 0,
+      "slot": "Back",
+      "armor": 28,
+      "durability": "",
       "containerSlots": 0
     },
     "58025": {
@@ -105058,6 +105880,58 @@
       "durability": "70 / 70",
       "containerSlots": 0
     },
+    "58029": {
+      "itemId": 58029,
+      "name": "Hood of the Pyremaster",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 37,
+      "requiredLevel": 0,
+      "slot": "Head",
+      "armor": 40,
+      "durability": "45 / 45",
+      "containerSlots": 0
+    },
+    "58031": {
+      "itemId": 58031,
+      "name": "Amberwood Bracers",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 37,
+      "requiredLevel": 0,
+      "slot": "Wrist",
+      "armor": 46,
+      "durability": "30 / 30",
+      "containerSlots": 0
+    },
+    "58032": {
+      "itemId": 58032,
+      "name": "Dark Iron Gloves",
+      "type": "Armor",
+      "subtype": "Mail",
+      "quality": "Poor",
+      "level": 37,
+      "requiredLevel": 0,
+      "slot": "Hands",
+      "armor": 137,
+      "durability": "35 / 35",
+      "containerSlots": 0
+    },
+    "58033": {
+      "itemId": 58033,
+      "name": "Amber Shawl",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Common",
+      "level": 37,
+      "requiredLevel": 0,
+      "slot": "Back",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
     "58034": {
       "itemId": 58034,
       "name": "Leafsguard",
@@ -105082,6 +105956,227 @@
       "slot": "Two-hand",
       "armor": 0,
       "durability": "85 / 85",
+      "containerSlots": 0
+    },
+    "58036": {
+      "itemId": 58036,
+      "name": "Blade of the Overlord",
+      "type": "Weapon",
+      "subtype": "Sword",
+      "quality": "Poor",
+      "level": 36,
+      "requiredLevel": 0,
+      "slot": "One-hand",
+      "armor": 0,
+      "durability": "75 / 75",
+      "containerSlots": 0
+    },
+    "58037": {
+      "itemId": 58037,
+      "name": "Ozuk's Piercer",
+      "type": "Unknown",
+      "subtype": "Polearm",
+      "quality": "Poor",
+      "level": 36,
+      "requiredLevel": 0,
+      "slot": "Two-hand",
+      "armor": 0,
+      "durability": "85 / 85",
+      "containerSlots": 0
+    },
+    "58038": {
+      "itemId": 58038,
+      "name": "Steeltooth",
+      "type": "Armor",
+      "subtype": "Neck",
+      "quality": "Poor",
+      "level": 36,
+      "requiredLevel": 0,
+      "slot": "Neck",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "58062": {
+      "itemId": 58062,
+      "name": "Half-dissolved Wedding Ring",
+      "type": "Armor",
+      "subtype": "Finger",
+      "quality": "Poor",
+      "level": 35,
+      "requiredLevel": 0,
+      "slot": "Finger",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "58063": {
+      "itemId": 58063,
+      "name": "Pantaloons of Torture",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 35,
+      "requiredLevel": 0,
+      "slot": "Legs",
+      "armor": 89,
+      "durability": "65 / 65",
+      "containerSlots": 0
+    },
+    "58064": {
+      "itemId": 58064,
+      "name": "Harelyss' Whip",
+      "type": "Armor",
+      "subtype": "Neck",
+      "quality": "Common",
+      "level": 36,
+      "requiredLevel": 0,
+      "slot": "Neck",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "58067": {
+      "itemId": 58067,
+      "name": "Verix' Navigator Cloak",
+      "type": "Armor",
+      "subtype": "Back",
+      "quality": "Poor",
+      "level": 35,
+      "requiredLevel": 0,
+      "slot": "Back",
+      "armor": 23,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "58068": {
+      "itemId": 58068,
+      "name": "Goblin Nose Ring",
+      "type": "Armor",
+      "subtype": "Finger",
+      "quality": "Poor",
+      "level": 35,
+      "requiredLevel": 0,
+      "slot": "Finger",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "58069": {
+      "itemId": 58069,
+      "name": "Penny's Crabcracker",
+      "type": "Weapon",
+      "subtype": "Sword",
+      "quality": "Poor",
+      "level": 37,
+      "requiredLevel": 0,
+      "slot": "Two-hand",
+      "armor": 0,
+      "durability": "85 / 85",
+      "containerSlots": 0
+    },
+    "58070": {
+      "itemId": 58070,
+      "name": "Tidecaller Chestpiece",
+      "type": "Armor",
+      "subtype": "Mail",
+      "quality": "Poor",
+      "level": 37,
+      "requiredLevel": 0,
+      "slot": "Chest",
+      "armor": 219,
+      "durability": "100 / 100",
+      "containerSlots": 0
+    },
+    "58071": {
+      "itemId": 58071,
+      "name": "Plundered Pirate Hat",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 35,
+      "requiredLevel": 0,
+      "slot": "Head",
+      "armor": 38,
+      "durability": "45 / 45",
+      "containerSlots": 0
+    },
+    "58072": {
+      "itemId": 58072,
+      "name": "Tarred Shoulderpads",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 35,
+      "requiredLevel": 0,
+      "slot": "Shoulder",
+      "armor": 96,
+      "durability": "50 / 50",
+      "containerSlots": 0
+    },
+    "58074": {
+      "itemId": 58074,
+      "name": "Lightfooted Mokassins",
+      "type": "Armor",
+      "subtype": "Leather",
+      "quality": "Poor",
+      "level": 37,
+      "requiredLevel": 0,
+      "slot": "Feet",
+      "armor": 72,
+      "durability": "45 / 45",
+      "containerSlots": 0
+    },
+    "58075": {
+      "itemId": 58075,
+      "name": "Grips of Mending",
+      "type": "Armor",
+      "subtype": "Mail",
+      "quality": "Poor",
+      "level": 37,
+      "requiredLevel": 0,
+      "slot": "Hands",
+      "armor": 137,
+      "durability": "35 / 35",
+      "containerSlots": 0
+    },
+    "58077": {
+      "itemId": 58077,
+      "name": "Hydromancer Cowl",
+      "type": "Armor",
+      "subtype": "Cloth",
+      "quality": "Poor",
+      "level": 36,
+      "requiredLevel": 0,
+      "slot": "Head",
+      "armor": 39,
+      "durability": "45 / 45",
+      "containerSlots": 0
+    },
+    "58078": {
+      "itemId": 58078,
+      "name": "Choker of Insight",
+      "type": "Armor",
+      "subtype": "Neck",
+      "quality": "Poor",
+      "level": 36,
+      "requiredLevel": 0,
+      "slot": "Neck",
+      "armor": 0,
+      "durability": "",
+      "containerSlots": 0
+    },
+    "58079": {
+      "itemId": 58079,
+      "name": "Pearlescent Shard",
+      "type": "Miscellaneous",
+      "subtype": "Trinket",
+      "quality": "Poor",
+      "level": 36,
+      "requiredLevel": 0,
+      "slot": "Trinket",
+      "armor": 0,
+      "durability": "",
       "containerSlots": 0
     },
     "58084": {

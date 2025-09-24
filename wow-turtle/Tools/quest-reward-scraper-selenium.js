@@ -523,21 +523,54 @@ class SeleniumQuestRewardScraper {
             }
 
             // 查找特定的 tooltip div - 格式: id="tooltip{itemId}-generic"
-            const tooltipElement = $(`#tooltip${itemId}-generic table`).first();
+            let tooltipElement = $(`#tooltip${itemId}-generic table`).first();
+            let tooltipText = '';
+            
             if (tooltipElement.length === 0) {
-                throw new Error(`物品 ${itemId}: 无法找到 tooltip 数据`);
+                console.log(`⚠️ 物品 ${itemId}: 无法找到标准 tooltip，尝试其他方法...`);
+                
+                // 尝试查找其他可能的 tooltip 格式
+                tooltipElement = $(`#tooltip${itemId}-generic`).first();
+                if (tooltipElement.length === 0) {
+                    tooltipElement = $(`.tooltip`).first();
+                }
+                
+                if (tooltipElement.length === 0) {
+                    console.log(`⚠️ 物品 ${itemId}: 无法找到任何 tooltip，将从整页解析`);
+                    tooltipElement = $('body'); // 使用整个页面作为备选
+                }
             }
             
-            const tooltipText = tooltipElement.text();
+            tooltipText = tooltipElement.text();
             console.log(`🔍 Tooltip 内容: ${tooltipText.substring(0, 200)}...`);
             
-            // 从 tooltip 中提取物品名称（如果之前没找到）
+            // 使用正则表达式从 HTML 中提取物品名称和品质
+            // 匹配格式: <b class="q4">Tiara of the Oracle</b>
+            const nameQualityMatch = tooltipElement.html().match(/<b\s+class="(q\d+)"[^>]*>([^<]+)<\/b>/i);
+            if (!nameQualityMatch) {
+                throw new Error(`物品 ${itemId}: 正则表达式无法匹配到名称和品质信息。HTML: ${tooltipElement.html().substring(0, 500)}`);
+            }
+            
+            const qualityClass = nameQualityMatch[1]; // q4
+            const itemName = nameQualityMatch[2].trim(); // Tiara of the Oracle
+            
+            // 验证品质类名是否有效
+            if (!this.qualityMap.has(qualityClass)) {
+                throw new Error(`物品 ${itemId}: 无法识别的品质类名 '${qualityClass}'`);
+            }
+            
+            // 设置物品名称
             if (!item.name) {
-                // 查找 <b class="q1">物品名称</b> 格式
-                const nameElement = tooltipElement.find('b[class^="q"]').first();
-                if (nameElement.length > 0) {
-                    item.name = nameElement.text().trim();
-                }
+                item.name = itemName;
+            }
+            
+            // 设置品质
+            item.quality = this.qualityMap.get(qualityClass);
+            console.log(`✅ 解析成功: ${qualityClass} -> ${item.quality}, 名称: ${itemName} (物品 ${itemId})`);
+            
+            // 最终验证
+            if (!item.name || !item.quality) {
+                throw new Error(`物品 ${itemId}: 解析后仍缺少必要信息。名称: '${item.name}', 品质: '${item.quality}'`);
             }
 
             // 解析装备位置和类型
@@ -553,14 +586,6 @@ class SeleniumQuestRewardScraper {
             const durabilityMatch = tooltipText.match(/Durability\s+(\d+\s*\/\s*\d+)/i);
             if (durabilityMatch) {
                 item.durability = durabilityMatch[1];
-            }
-
-            // 解析品质 - 从 CSS 类名，使用 Map 优化查找
-            for (const [qualityClass, qualityName] of this.qualityMap) {
-                if ($(`.${qualityClass}`).length > 0) {
-                    item.quality = qualityName;
-                    break;
-                }
             }
 
             // 从 infobox 解析物品等级

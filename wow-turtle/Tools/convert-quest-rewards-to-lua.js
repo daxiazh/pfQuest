@@ -233,10 +233,13 @@ async function convertQuestRewardsToLua() {
   
   for (const [itemId, itemData] of Object.entries(jsonData.itemDetails)) {
     // 获取物品属性
-    const quality = qualityToNumber[itemData.quality] || 1;
+    const quality = qualityToNumber[itemData.quality];
+    if (quality === undefined) {
+      console.warn(`   ⚠️ 无法处理物品 ${itemId} 的品质: '${itemData.quality}'，使用默认值 Common`);
+    }
     const { class: itemClass, subclass } = getWoWItemType(itemData);
     
-    itemProps[itemId] = [quality, itemClass, subclass];
+    itemProps[itemId] = [quality !== undefined ? quality : 1, itemClass, subclass];
     
     // 检查是否需要添加物品名称
     if (!existingItems.has(parseInt(itemId))) {
@@ -259,7 +262,7 @@ async function convertQuestRewardsToLua() {
   const questRewardsLua = `-- 任务奖励数据 (自动生成)
 -- 格式: [questId] = { itemId1, itemId2, ... }
 
-pfDB["quest-rewards"]["data-turtle"] = {
+pfDB["quest-rewards"]["data"] = {
 ${generateLuaArray(questRewards)}
 }`;
   
@@ -273,7 +276,7 @@ ${generateLuaArray(questRewards)}
 -- class: 0=Consumable, 1=Container, 2=Weapon, 4=Armor, 7=TradeGoods, 9=Recipe, 12=Quest, 15=Misc
 -- subclass: 参考 WoW ItemType API
 
-pfDB["item-props"]["data-turtle"] = {
+pfDB["item-props"]["data"] = {
 ${generateLuaArray(itemProps)}
 }`;
   

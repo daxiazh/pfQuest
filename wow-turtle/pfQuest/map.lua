@@ -139,10 +139,10 @@ local function HasEquipmentRewards(questId, visited)
   visited[questId] = true
   
   -- 检查当前任务奖励
-  local rewards = pfDB["quest-rewards"] and pfDB["quest-rewards"]["data-turtle"] and pfDB["quest-rewards"]["data-turtle"][questId]
+  local rewards = pfDB["quest-rewards"] and pfDB["quest-rewards"]["data"] and pfDB["quest-rewards"]["data"][questId]
   if rewards then
     for _, itemId in pairs(rewards) do
-      local itemProps = pfDB["item-props"] and pfDB["item-props"]["data-turtle"] and pfDB["item-props"]["data-turtle"][itemId]
+      local itemProps = pfDB["item-props"] and pfDB["item-props"]["data"] and pfDB["item-props"]["data"][itemId]
       if itemProps then
         local quality, class, subclass = itemProps[1], itemProps[2], itemProps[3]
         if class == ITEM_CLASS_ARMOR or class == ITEM_CLASS_WEAPON then
@@ -465,12 +465,12 @@ function pfMap:ShowTooltip(meta, tooltip)
   -- Show quest chain equipment rewards
   -- ******************************************
   if meta["questid"] and HasEquipmentRewards(meta["questid"]) then
-    local rewards = pfDB["quest-rewards"] and pfDB["quest-rewards"]["data-turtle"] and pfDB["quest-rewards"]["data-turtle"][meta["questid"]]
+    local rewards = pfDB["quest-rewards"] and pfDB["quest-rewards"]["data"] and pfDB["quest-rewards"]["data"][meta["questid"]]
     if rewards then
       tooltip:AddLine("|cffff66ff链任务装备奖励:|r", 1, 0.4, 0.8)
       local equipmentCount = 0
       for _, itemId in pairs(rewards) do
-        local itemProps = pfDB["item-props"] and pfDB["item-props"]["data-turtle"] and pfDB["item-props"]["data-turtle"][itemId]
+        local itemProps = pfDB["item-props"] and pfDB["item-props"]["data"] and pfDB["item-props"]["data"][itemId]
         if itemProps then
           local quality, class, subclass = itemProps[1], itemProps[2], itemProps[3]
           if class == ITEM_CLASS_ARMOR or class == ITEM_CLASS_WEAPON then
