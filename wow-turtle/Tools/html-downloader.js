@@ -49,8 +49,6 @@ class HTMLDownloader {
         }
         return {
             lastProcessedQuestId: 0,
-            downloadedQuests: [],
-            downloadedItems: [],
             failedQuests: [],
             failedItems: []
         };
@@ -74,7 +72,7 @@ class HTMLDownloader {
         console.log('🚀 初始化浏览器...');
         
         const options = new chrome.Options();
-        options.addArguments('--headless');
+        // options.addArguments('--headless');
         options.addArguments('--no-sandbox');
         options.addArguments('--disable-dev-shm-usage');
         options.addArguments('--disable-gpu');
@@ -95,104 +93,163 @@ class HTMLDownloader {
     /**
      * 下载任务HTML页面
      */
-    async downloadQuestHTML(questId) {
+    async downloadQuestHTML(questId, progressCallback = null) {
         const cacheFile = path.join(this.questCacheDir, `${questId}.html`);
         
         // 检查缓存是否存在
         if (fs.existsSync(cacheFile)) {
-            console.log(`📋 任务 ${questId} 已缓存，跳过`);
             return true;
         }
 
-        try {
-            const url = `${this.baseUrl}/?quest=${questId}`;
-            console.log(`🌐 下载任务 ${questId}: ${url}`);
-            
-            await this.driver.get(url);
-            await this.driver.sleep(5000); // 等待Cloudflare加载
-            
-            // 等待页面真正加载完成
-            let retries = 10;
-            let html;
-            while (retries > 0) {
-                html = await this.driver.getPageSource();
-                if (!html.includes('请稍候') && !html.includes('Checking your browser')) {
-                    break;
+        let retryCount = 0;
+        const maxRetries = 3;
+        
+        while (retryCount <= maxRetries) {
+            try {
+                const url = `${this.baseUrl}/?quest=${questId}`;
+                
+                // 通知当前状态
+                if (progressCallback) {
+                    progressCallback('quest', questId, retryCount > 0 ? `重试${retryCount}` : '下载中');
                 }
-                console.log(`  等待任务页面加载... (${11 - retries}/10)`);
-                await this.driver.sleep(2000);
-                retries--;
+                
+                await this.driver.get(url);
+                await this.driver.sleep(5000); // 等待Cloudflare加载
+                
+                // 等待页面真正加载完成
+                let cloudflareRetries = 10;
+                let html;
+                while (cloudflareRetries > 0) {
+                    html = await this.driver.getPageSource();
+                    if (!html.includes('请稍候') && !html.includes('Checking your browser')) {
+                        break;
+                    }
+                    await this.driver.sleep(2000);
+                    cloudflareRetries--;
+                }
+                
+                // 验证页面内容
+                if (html.includes('Quest not found') || html.length < 1000) {
+                    if (!this.progress.failedQuests.includes(questId)) {
+                        this.progress.failedQuests.push(questId);
+                    }
+                    return false;
+                }
+                
+                // 保存HTML到缓存
+                fs.writeFileSync(cacheFile, html, 'utf8');
+                return true;
+                
+            } catch (error) {
+                retryCount++;
+                if (retryCount > maxRetries) {
+                    if (!this.progress.failedQuests.includes(questId)) {
+                        this.progress.failedQuests.push(questId);
+                    }
+                    return false;
+                }
+                // 重试前等待一段时间
+                await this.driver.sleep(2000 * retryCount);
             }
-            
-            // 验证页面内容
-            if (html.includes('Quest not found') || html.length < 1000) {
-                console.log(`❌ 任务 ${questId} 不存在或页面异常`);
-                this.progress.failedQuests.push(questId);
-                return false;
-            }
-            
-            // 保存HTML到缓存
-            fs.writeFileSync(cacheFile, html, 'utf8');
-            this.progress.downloadedQuests.push(questId);
-            console.log(`✅ 任务 ${questId} 下载完成`);
-            
-            return true;
-        } catch (error) {
-            console.error(`❌ 下载任务 ${questId} 失败:`, error.message);
-            this.progress.failedQuests.push(questId);
-            return false;
         }
+        
+        return false;
     }
 
     /**
      * 下载物品HTML页面
      */
-    async downloadItemHTML(itemId) {
+    async downloadItemHTML(itemId, progressCallback = null) {
         const cacheFile = path.join(this.itemCacheDir, `${itemId}.html`);
         
         // 检查缓存是否存在
         if (fs.existsSync(cacheFile)) {
-            console.log(`🎒 物品 ${itemId} 已缓存，跳过`);
             return true;
         }
 
-        try {
-            const url = `${this.baseUrl}/?item=${itemId}`;
-            console.log(`🌐 下载物品 ${itemId}: ${url}`);
-            
-            await this.driver.get(url);
-            await this.driver.sleep(5000); // 等待Cloudflare加载
-            
-            // 等待页面真正加载完成
-            let retries = 10;
-            let html;
-            while (retries > 0) {
-                html = await this.driver.getPageSource();
-                if (!html.includes('请稍候') && !html.includes('Checking your browser')) {
-                    break;
+        let retryCount = 0;
+        const maxRetries = 3;
+        
+        while (retryCount <= maxRetries) {
+            try {
+                const url = `${this.baseUrl}/?item=${itemId}`;
+                
+                // 通知当前状态
+                if (progressCallback) {
+                    progressCallback('item', itemId, retryCount > 0 ? `重试${retryCount}` : '下载中');
                 }
-                console.log(`  等待物品页面加载... (${11 - retries}/10)`);
-                await this.driver.sleep(2000);
-                retries--;
+                
+                await this.driver.get(url);
+                await this.driver.sleep(5000); // 等待Cloudflare加载
+                
+                // 等待页面真正加载完成
+                let cloudflareRetries = 10;
+                let html;
+                while (cloudflareRetries > 0) {
+                    html = await this.driver.getPageSource();
+                    if (!html.includes('请稍候') && !html.includes('Checking your browser')) {
+                        break;
+                    }
+                    await this.driver.sleep(2000);
+                    cloudflareRetries--;
+                }
+                
+                // 验证页面内容
+                if (html.includes('Item not found') || html.length < 1000) {
+                    if (!this.progress.failedItems.includes(itemId)) {
+                        this.progress.failedItems.push(itemId);
+                    }
+                    return false;
+                }
+                
+                // 保存HTML到缓存
+                fs.writeFileSync(cacheFile, html, 'utf8');
+                return true;
+                
+            } catch (error) {
+                retryCount++;
+                if (retryCount > maxRetries) {
+                    if (!this.progress.failedItems.includes(itemId)) {
+                        this.progress.failedItems.push(itemId);
+                    }
+                    return false;
+                }
+                // 重试前等待一段时间
+                await this.driver.sleep(2000 * retryCount);
             }
-            
-            // 验证页面内容
-            if (html.includes('Item not found') || html.length < 1000) {
-                console.log(`❌ 物品 ${itemId} 不存在或页面异常`);
-                this.progress.failedItems.push(itemId);
-                return false;
-            }
-            
-            // 保存HTML到缓存
-            fs.writeFileSync(cacheFile, html, 'utf8');
-            this.progress.downloadedItems.push(itemId);
-            console.log(`✅ 物品 ${itemId} 下载完成`);
-            
-            return true;
-        } catch (error) {
-            console.error(`❌ 下载物品 ${itemId} 失败:`, error.message);
-            this.progress.failedItems.push(itemId);
-            return false;
+        }
+        
+        return false;
+    }
+
+    /**
+     * 渲染进度条
+     */
+    renderProgressBar(current, total, success, failed, skipped, currentItem, status, estimatedFinish) {
+        const percentage = ((current / total) * 100).toFixed(1);
+        const barLength = 30;
+        const filledLength = Math.round((current / total) * barLength);
+        const bar = '█'.repeat(filledLength) + '░'.repeat(barLength - filledLength);
+        
+        // 状态图标映射
+        const statusIcons = {
+            '下载中': '📥',
+            '重试1': '🔄',
+            '重试2': '🔄',
+            '重试3': '🔄',
+            '完成': '✅',
+            '失败': '❌',
+            '跳过': '⏭️'
+        };
+        
+        const icon = statusIcons[status] || '📥';
+        
+        // 清除当前行并重新输出
+        process.stdout.write('\r');
+        process.stdout.write(`[${bar}] ${percentage}% (${current}/${total}) ✅${success} ❌${failed} ⏭️${skipped} | ${icon} ${currentItem} ${status} | ⏱️${estimatedFinish}`);
+        
+        if (current === total) {
+            process.stdout.write('\n');
         }
     }
 
@@ -204,16 +261,87 @@ class HTMLDownloader {
         
         let successCount = 0;
         let failCount = 0;
+        let skippedCount = 0;
+        const startTime = Date.now();
         
-        for (const questId of questIds) {
-            if (await this.downloadQuestHTML(questId)) {
+        for (let i = 0; i < questIds.length; i++) {
+            const questId = questIds[i];
+            const completed = i + 1;
+            
+            // 检查是否已缓存（跳过）
+            const cacheFile = path.join(this.questCacheDir, `${questId}.html`);
+            if (fs.existsSync(cacheFile)) {
+                skippedCount++;
+                
+                // 显示跳过状态
+                const elapsedTime = Date.now() - startTime;
+                const avgTimePerTask = elapsedTime / completed;
+                const remainingTasks = questIds.length - completed;
+                const estimatedRemainingTime = remainingTasks * avgTimePerTask;
+                const estimatedFinishTime = new Date(Date.now() + estimatedRemainingTime).toLocaleTimeString();
+                
+                this.renderProgressBar(
+                    completed, 
+                    questIds.length, 
+                    successCount, 
+                    failCount, 
+                    skippedCount,
+                    `任务${questId}`, 
+                    '跳过', 
+                    estimatedFinishTime
+                );
+                
+                continue;
+            }
+            
+            // 进度回调函数
+            const progressCallback = (type, id, status) => {
+                const elapsedTime = Date.now() - startTime;
+                const avgTimePerTask = elapsedTime / Math.max(1, i); // 防止除零
+                const remainingTasks = questIds.length - completed;
+                const estimatedRemainingTime = remainingTasks * avgTimePerTask;
+                const estimatedFinishTime = new Date(Date.now() + estimatedRemainingTime).toLocaleTimeString();
+                
+                this.renderProgressBar(
+                    i, // 使用当前索引，因为还在处理中
+                    questIds.length, 
+                    successCount, 
+                    failCount, 
+                    skippedCount,
+                    `任务${id}`, 
+                    status, 
+                    estimatedFinishTime
+                );
+            };
+            
+            const result = await this.downloadQuestHTML(questId, progressCallback);
+            
+            if (result) {
                 successCount++;
             } else {
                 failCount++;
             }
             
+            // 更新最终状态
+            const elapsedTime = Date.now() - startTime;
+            const avgTimePerTask = elapsedTime / completed;
+            const remainingTasks = questIds.length - completed;
+            const estimatedRemainingTime = remainingTasks * avgTimePerTask;
+            const estimatedFinishTime = new Date(Date.now() + estimatedRemainingTime).toLocaleTimeString();
+            
+            this.renderProgressBar(
+                completed, 
+                questIds.length, 
+                successCount, 
+                failCount, 
+                skippedCount,
+                `任务${questId}`, 
+                result ? '完成' : '失败', 
+                estimatedFinishTime
+            );
+            
             // 每10个任务保存一次进度
-            if ((successCount + failCount) % 10 === 0) {
+            if (completed % 10 === 0) {
                 this.saveProgress();
             }
             
@@ -221,7 +349,8 @@ class HTMLDownloader {
             await this.driver.sleep(500);
         }
         
-        console.log(`📊 任务下载完成: 成功 ${successCount}, 失败 ${failCount}`);
+        const totalTime = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
+        console.log(`\n📊 任务下载完成: 成功 ${successCount}, 失败 ${failCount}, 跳过 ${skippedCount} | 🕐 总耗时: ${totalTime}分钟`);
         this.saveProgress();
     }
 
@@ -233,16 +362,87 @@ class HTMLDownloader {
         
         let successCount = 0;
         let failCount = 0;
+        let skippedCount = 0;
+        const startTime = Date.now();
         
-        for (const itemId of itemIds) {
-            if (await this.downloadItemHTML(itemId)) {
+        for (let i = 0; i < itemIds.length; i++) {
+            const itemId = itemIds[i];
+            const completed = i + 1;
+            
+            // 检查是否已缓存（跳过）
+            const cacheFile = path.join(this.itemCacheDir, `${itemId}.html`);
+            if (fs.existsSync(cacheFile)) {
+                skippedCount++;
+                
+                // 显示跳过状态
+                const elapsedTime = Date.now() - startTime;
+                const avgTimePerItem = elapsedTime / completed;
+                const remainingItems = itemIds.length - completed;
+                const estimatedRemainingTime = remainingItems * avgTimePerItem;
+                const estimatedFinishTime = new Date(Date.now() + estimatedRemainingTime).toLocaleTimeString();
+                
+                this.renderProgressBar(
+                    completed, 
+                    itemIds.length, 
+                    successCount, 
+                    failCount, 
+                    skippedCount,
+                    `物品${itemId}`, 
+                    '跳过', 
+                    estimatedFinishTime
+                );
+                
+                continue;
+            }
+            
+            // 进度回调函数
+            const progressCallback = (type, id, status) => {
+                const elapsedTime = Date.now() - startTime;
+                const avgTimePerItem = elapsedTime / Math.max(1, i);
+                const remainingItems = itemIds.length - completed;
+                const estimatedRemainingTime = remainingItems * avgTimePerItem;
+                const estimatedFinishTime = new Date(Date.now() + estimatedRemainingTime).toLocaleTimeString();
+                
+                this.renderProgressBar(
+                    i, 
+                    itemIds.length, 
+                    successCount, 
+                    failCount, 
+                    skippedCount,
+                    `物品${id}`, 
+                    status, 
+                    estimatedFinishTime
+                );
+            };
+            
+            const result = await this.downloadItemHTML(itemId, progressCallback);
+            
+            if (result) {
                 successCount++;
             } else {
                 failCount++;
             }
             
+            // 更新最终状态
+            const elapsedTime = Date.now() - startTime;
+            const avgTimePerItem = elapsedTime / completed;
+            const remainingItems = itemIds.length - completed;
+            const estimatedRemainingTime = remainingItems * avgTimePerItem;
+            const estimatedFinishTime = new Date(Date.now() + estimatedRemainingTime).toLocaleTimeString();
+            
+            this.renderProgressBar(
+                completed, 
+                itemIds.length, 
+                successCount, 
+                failCount, 
+                skippedCount,
+                `物品${itemId}`, 
+                result ? '完成' : '失败', 
+                estimatedFinishTime
+            );
+            
             // 每10个物品保存一次进度
-            if ((successCount + failCount) % 10 === 0) {
+            if (completed % 10 === 0) {
                 this.saveProgress();
             }
             
@@ -250,7 +450,8 @@ class HTMLDownloader {
             await this.driver.sleep(500);
         }
         
-        console.log(`📊 物品下载完成: 成功 ${successCount}, 失败 ${failCount}`);
+        const totalTime = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
+        console.log(`\n📊 物品下载完成: 成功 ${successCount}, 失败 ${failCount}, 跳过 ${skippedCount} | 🕐 总耗时: ${totalTime}分钟`);
         this.saveProgress();
     }
 
@@ -275,6 +476,7 @@ class HTMLDownloader {
     extractItemIdsFromQuestHTML(questId) {
         const cacheFile = path.join(this.questCacheDir, `${questId}.html`);
         if (!fs.existsSync(cacheFile)) {
+            console.warn(`⚠️ 警告: 任务 ${questId} 的缓存文件不存在: ${cacheFile}`);
             return [];
         }
         
@@ -305,8 +507,11 @@ class HTMLDownloader {
         const questIds = this.loadValidQuestIds(questIdsFile);
         console.log(`📋 加载了 ${questIds.length} 个有效任务ID`);
         
-        // 检查断点续传 - 过滤已下载的任务
-        const remainingQuests = questIds.filter(questId => !this.progress.downloadedQuests.includes(questId));
+        // 检查断点续传 - 过滤已下载的任务（基于文件存在性）
+        const remainingQuests = questIds.filter(questId => {
+            const cacheFile = path.join(this.questCacheDir, `${questId}.html`);
+            return !fs.existsSync(cacheFile);
+        });
         if (remainingQuests.length < questIds.length) {
             console.log(`📦 断点续传: 已下载 ${questIds.length - remainingQuests.length} 个任务，剩余 ${remainingQuests.length} 个`);
         }
@@ -335,8 +540,11 @@ class HTMLDownloader {
         const uniqueItemIds = Array.from(allItemIds);
         console.log(`🎒 发现 ${uniqueItemIds.length} 个独特物品 (来自 ${questsWithRewards} 个有奖励的任务)`);
         
-        // 检查断点续传 - 过滤已下载的物品
-        const remainingItems = uniqueItemIds.filter(itemId => !this.progress.downloadedItems.includes(itemId));
+        // 检查断点续传 - 过滤已下载的物品（基于文件存在性）
+        const remainingItems = uniqueItemIds.filter(itemId => {
+            const cacheFile = path.join(this.itemCacheDir, `${itemId}.html`);
+            return !fs.existsSync(cacheFile);
+        });
         if (remainingItems.length < uniqueItemIds.length) {
             console.log(`📦 断点续传: 已下载 ${uniqueItemIds.length - remainingItems.length} 个物品，剩余 ${remainingItems.length} 个`);
         }
@@ -389,11 +597,24 @@ class HTMLDownloader {
 async function main() {
     const downloader = new HTMLDownloader();
     
-    // 检查进度文件是否存在
+    // 检查缓存状态
+    let cachedQuests = 0, cachedItems = 0;
+    if (fs.existsSync(downloader.questCacheDir)) {
+        cachedQuests = fs.readdirSync(downloader.questCacheDir).filter(f => f.endsWith('.html')).length;
+    }
+    if (fs.existsSync(downloader.itemCacheDir)) {
+        cachedItems = fs.readdirSync(downloader.itemCacheDir).filter(f => f.endsWith('.html')).length;
+    }
+    
+    if (cachedQuests > 0 || cachedItems > 0) {
+        console.log(`📦 检测到缓存文件: ${cachedQuests} 个任务, ${cachedItems} 个物品`);
+    }
+    
     if (fs.existsSync(downloader.progressFile)) {
         const progressStats = downloader.progress;
-        console.log(`📦 检测到进度文件: 已下载 ${progressStats.downloadedQuests.length} 个任务, ${progressStats.downloadedItems.length} 个物品`);
-        console.log(`❌ 失败: ${progressStats.failedQuests.length} 个任务, ${progressStats.failedItems.length} 个物品`);
+        if (progressStats.failedQuests.length > 0 || progressStats.failedItems.length > 0) {
+            console.log(`❌ 之前失败: ${progressStats.failedQuests.length} 个任务, ${progressStats.failedItems.length} 个物品`);
+        }
     }
     
     try {
