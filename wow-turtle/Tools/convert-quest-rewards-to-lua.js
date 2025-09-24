@@ -259,10 +259,8 @@ async function convertQuestRewardsToLua() {
   const questRewardsLua = `-- 任务奖励数据 (自动生成)
 -- 格式: [questId] = { itemId1, itemId2, ... }
 
-pfDB["quest-rewards-turtle"] = {
-  ["data"] = {
+pfDB["quest-rewards"]["data-turtle"] = {
 ${generateLuaArray(questRewards)}
-  }
 }`;
   
   fs.writeFileSync(path.join(outputDir, 'quest-rewards-turtle.lua'), questRewardsLua, 'utf8');
@@ -275,10 +273,8 @@ ${generateLuaArray(questRewards)}
 -- class: 0=Consumable, 1=Container, 2=Weapon, 4=Armor, 7=TradeGoods, 9=Recipe, 12=Quest, 15=Misc
 -- subclass: 参考 WoW ItemType API
 
-pfDB["item-props-turtle"] = {
-  ["data"] = {
+pfDB["item-props"]["data-turtle"] = {
 ${generateLuaArray(itemProps)}
-  }
 }`;
   
   fs.writeFileSync(path.join(outputDir, 'item-props-turtle.lua'), itemPropsLua, 'utf8');
@@ -294,10 +290,8 @@ ${generateLuaArray(itemProps)}
     const questItemsLua = `-- 任务奖励物品名称 (自动生成)
 -- 仅包含原 pfQuest 数据中不存在的物品
 
-pfDB["quest-items-turtle"] = {
-  ["zhCN"] = {
+pfDB["quest-items"]["zhCN--turtle"] = {
 ${generateLuaArray(newItemNames, true)}
-  }
 }`;
     
     fs.writeFileSync(path.join(zhCNDir, 'quest-items-turtle.lua'), questItemsLua, 'utf8');

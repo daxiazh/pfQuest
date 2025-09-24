@@ -80,3 +80,4 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 数据库文件为自动生成，手动修改应在 overwrites.lua 中进行
 - 支持pfUI界面框架集成
 - 图片资源使用TGA格式，支持透明度
+- 永远不要直接读取 db 目录下的文件, 它们都很大, 你应该通过使用这些文件的代码来了解它们的格式, 而不是读取数据来了解.
