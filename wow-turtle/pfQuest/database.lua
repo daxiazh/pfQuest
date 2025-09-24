@@ -1371,6 +1371,62 @@ function pfDatabase:SearchQuestID(id, meta, maps)
   return maps
 end
 
+-- ==============================================================================
+-- 快速检查任务链中是否有装备奖励（提前返回版本）
+-- @param questId 任务ID
+-- @param visited 已访问的任务ID集合，防止循环引用
+-- @param depth 递归深度，防止无限递归
+-- @return boolean 如果任务链中有任何装备奖励返回true，否则返回false
+local function HasRewardsInChain(questId, visited, depth)
+    if not questId then
+        return false
+    end
+    depth = depth or 0
+    if depth > 10 then
+        return false
+    end
+    visited = visited or {}
+    if visited[questId] then
+        return false
+    end
+    visited[questId] = true
+
+    -- 检查当前任务是否有奖励
+    local questRewardsData = pfDB["quest-rewards"] and pfDB["quest-rewards"]["data"]
+    local itemPropsData = pfDB["item-props"]["data"]
+    local rewards = questRewardsData[questId]
+    if rewards then
+        for _, itemId in pairs(rewards) do
+            local itemProps = itemPropsData[itemId]
+            if itemProps then
+                -- 找到有效奖励，立即返回true
+                return true
+            end
+        end
+    end
+
+    -- 递归检查后续任务链
+    local baseQuests = pfDB["quests"] and pfDB["quests"]["data"]
+    if baseQuests then
+        for qid, questData in pairs(baseQuests) do
+            if questData["pre"] then
+                for _, prequest in pairs(questData["pre"]) do
+                    if prequest == questId then
+                        -- 递归检查子任务，如果有奖励立即返回true
+                        if HasRewardsInChain(qid, visited, depth + 1) then
+                            return true
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    return false
+end
+
+-- ==============================================================================
+
 -- SearchQuest
 -- Scans for all quests with a specified name
 -- Adds map nodes for each objective and involved unit
@@ -1486,6 +1542,12 @@ function pfDatabase:SearchQuests(meta, maps)
         meta["texture"] = pfQuestConfig.path.."\\img\\available"
         meta["vertex"] = { .2, .8, 1 }
         meta["layer"] = 2
+      end
+      
+      if HasRewardsInChain(id) then
+        meta["texture"] = pfQuestConfig.path .. "\\img\\available"
+        meta["vertex"] = {1, .2, 0}
+        meta["layer"] = 3
       end
 
       -- iterate over all questgivers

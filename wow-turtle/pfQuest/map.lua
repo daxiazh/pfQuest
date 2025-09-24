@@ -146,6 +146,59 @@ local ITEM_SUBCLASS_ARMOR_SHIELD = 6
 local REWARD_CHILD = 'child'
 local QUEST_REWARD = "quest_reward"
 
+-- 快速检查任务链中是否有装备奖励（提前返回版本）
+-- @param questId 任务ID
+-- @param visited 已访问的任务ID集合，防止循环引用
+-- @param depth 递归深度，防止无限递归
+-- @return boolean 如果任务链中有任何装备奖励返回true，否则返回false
+local function HasRewardsInChain(questId, visited, depth)
+    if not questId then
+        return false
+    end
+    depth = depth or 0
+    if depth > 10 then
+        return false
+    end
+    visited = visited or {}
+    if visited[questId] then
+        return false
+    end
+    visited[questId] = true
+
+    -- 检查当前任务是否有奖励
+    local questRewardsData = pfDB["quest-rewards"] and pfDB["quest-rewards"]["data"]
+    local itemPropsData = pfDB["item-props"]["data"]
+    local rewards = questRewardsData[questId]
+    if rewards then
+        for _, itemId in pairs(rewards) do
+            local itemProps = itemPropsData[itemId]
+            if itemProps then
+                -- 找到有效奖励，立即返回true
+                return true
+            end
+        end
+    end
+
+    -- 递归检查后续任务链
+    local baseQuests = pfDB["quests"] and pfDB["quests"]["data"]
+    if baseQuests then
+        for qid, questData in pairs(baseQuests) do
+            if questData["pre"] then
+                for _, prequest in pairs(questData["pre"]) do
+                    if prequest == questId then
+                        -- 递归检查子任务，如果有奖励立即返回true
+                        if HasRewardsInChain(qid, visited, depth + 1) then
+                            return true
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    return false
+end
+
 -- 递归检查任务链是否有装备奖励，返回树状数据结构
 -- @param questId 任务ID
 -- @param visited 已访问的任务ID集合，防止循环引用
@@ -529,7 +582,17 @@ function pfMap:ShowTooltip(meta, tooltip)
 
             -- 显示后续任务链的奖励
             if questNode.children then
-                tooltip:AddLine("|cff00ff00 --- 后续任务链奖励 ---")
+                -- 快速检查是否有后续奖励，避免不必要的计算
+                local hasAnyRewards = false
+                for _, childNode in pairs(questNode.children) do
+                    if HasRewardsInChain(childNode.questId) then
+                        hasAnyRewards = true
+                        break
+                    end
+                end
+                
+                if hasAnyRewards then
+                    tooltip:AddLine("|cff00ff00 --- 后续任务链奖励 ---")
 
                 -- 收集所有奖励路径
                 local function CollectRewardPaths(questNode, currentPath, allPaths)
@@ -730,8 +793,9 @@ function pfMap:ShowTooltip(meta, tooltip)
                     end
                 end
 
-                -- 显示任务树奖励路径
-                DisplayRewardPaths(questNode)
+                    -- 显示任务树奖励路径
+                    DisplayRewardPaths(questNode)
+                end
             end
         end
 
