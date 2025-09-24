@@ -42,8 +42,11 @@ npm start
 
 #### 步骤2: HTML工具链数据抓取 ⭐ 推荐
 ```bash
-# 下载HTML页面到本地缓存（一次性）
+# 方式A: 完整模式 - 下载任务和物品页面（首次使用）
 npm run download-html
+
+# 方式B: 仅下载物品 - 从已有数据直接下载物品页面（推荐）
+npm run download-items-only
 
 # 从本地HTML分析数据（可多次执行）
 npm run analyze-html
@@ -66,17 +69,28 @@ HTML工具链是现代化的数据处理解决方案，将网页下载和数据�
 
 #### 1. HTML下载器 (`html-downloader.js`)
 
-**基本用法:**
+**两种下载模式:**
+
+**完整模式（首次使用）:**
 ```bash
 npm run download-html
 ```
-
-**核心功能:**
 - 🌐 **三阶段下载**: 任务页面 → 提取物品ID → 物品页面
+- 📋 **从任务ID列表开始**: 使用 `valid-quest-ids.json`
+
+**仅物品模式（推荐）:**
+```bash
+npm run download-items-only
+```
+- 🎯 **直接下载物品**: 从 `quest-rewards-selenium.json` 的 `itemDetails` 提取物品ID
+- ⚡ **跳过任务页面**: 无需下载任务页面，直接下载物品
+- 📊 **3200+ 物品**: 支持大量物品的高效下载
+
+**通用功能:**
 - 📦 **智能断点续传**: 页面级精确控制，支持中途中断恢复
 - 🛡️ **Cloudflare绕过**: 自动绕过反爬虫检测
 - 💾 **本地缓存**: HTML文件缓存到 `cache/` 目录
-- 📊 **实时进度**: 每10个项目自动保存进度
+- 📊 **实时进度条**: 显示当前状态、重试次数、预计完成时间
 
 **断点续传特性:**
 - ✅ 自动检测已下载的任务和物品
@@ -157,10 +171,12 @@ npm run convert
 | 脚本 | 命令 | 描述 |
 |------|------|------|
 | `npm start` | 数据合并 | 生成任务ID列表 |
-| `npm run download-html` ⭐ | HTML下载 | 缓存网页到本地 |
+| `npm run download-html` ⭐ | HTML下载 | 完整模式：下载任务和物品页面 |
+| `npm run download-items-only` ⭐ | 物品下载 | 仅下载物品：从quest-rewards-selenium.json直接下载物品页面 |
 | `npm run analyze-html` ⭐ | 数据分析 | 本地HTML解析 |
 | `npm run test-html-tools` ⭐ | 集成测试 | 验证工具链完整性 |
 | `npm run convert` | 数据转换 | JSON转Lua格式 |
+| `npm run scrape-all-headless` | 传统抓取 | 生产环境大规模批量处理（备用） |
 
 ## 📊 性能优势
 
@@ -208,10 +224,19 @@ A: 品质识别准确率100%，使用严格的正则表达式验证
 
 ### 开发调试（推荐）
 ```bash
+npm install                 # 安装依赖
+npm start                  # 生成任务ID（可选）
+npm run download-items-only # 仅下载物品页面（推荐）
+npm run analyze-html       # 快速数据分析
+npm run convert            # 转换为Lua
+```
+
+### 首次完整下载
+```bash
 npm install              # 安装依赖
 npm start               # 生成任务ID
-npm run download-html   # 一次性下载HTML
-npm run analyze-html    # 快速数据分析
+npm run download-html   # 完整下载任务和物品
+npm run analyze-html    # 数据分析
 npm run convert         # 转换为Lua
 ```
 

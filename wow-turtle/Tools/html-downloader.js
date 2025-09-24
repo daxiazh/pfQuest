@@ -471,6 +471,32 @@ class HTMLDownloader {
     }
 
     /**
+     * 从 quest-rewards-selenium.json 加载物品ID列表
+     */
+    loadItemIdsFromQuestRewards(filePath = null) {
+        const defaultPath = path.join(__dirname, 'output', 'quest-rewards-selenium.json');
+        const questRewardsFile = filePath || defaultPath;
+        
+        if (!fs.existsSync(questRewardsFile)) {
+            throw new Error(`任务奖励文件不存在: ${questRewardsFile}`);
+        }
+        
+        console.log(`📖 读取任务奖励文件: ${questRewardsFile}`);
+        const data = JSON.parse(fs.readFileSync(questRewardsFile, 'utf8'));
+        
+        if (!data.itemDetails) {
+            throw new Error('任务奖励文件中没有找到 itemDetails 字段');
+        }
+        
+        // 提取所有物品ID并去重
+        const itemIds = Object.keys(data.itemDetails).map(id => parseInt(id)).filter(id => !isNaN(id));
+        const uniqueItemIds = [...new Set(itemIds)];
+        
+        console.log(`🎒 从任务奖励文件中提取到 ${uniqueItemIds.length} 个独特物品ID`);
+        return uniqueItemIds;
+    }
+
+    /**
      * 从任务页面提取奖励物品ID
      */
     extractItemIdsFromQuestHTML(questId) {
@@ -567,6 +593,42 @@ class HTMLDownloader {
     }
 
     /**
+     * 直接从任务奖励文件下载物品页面（跳过任务页面下载）
+     */
+    async downloadItemsFromQuestRewards(questRewardsFile = null) {
+        console.log('🎯 开始从任务奖励文件直接下载物品页面...');
+        
+        // 1. 从任务奖励文件加载物品ID
+        const itemIds = this.loadItemIdsFromQuestRewards(questRewardsFile);
+        
+        // 2. 检查断点续传 - 过滤已下载的物品（基于文件存在性）
+        const remainingItems = itemIds.filter(itemId => {
+            const cacheFile = path.join(this.itemCacheDir, `${itemId}.html`);
+            return !fs.existsSync(cacheFile);
+        });
+        
+        if (remainingItems.length < itemIds.length) {
+            console.log(`📦 断点续传: 已下载 ${itemIds.length - remainingItems.length} 个物品，剩余 ${remainingItems.length} 个`);
+        }
+        
+        // 3. 下载物品页面
+        console.log('📥 开始下载物品页面...');
+        if (remainingItems.length > 0) {
+            await this.downloadItems(remainingItems);
+        } else {
+            console.log('✅ 所有物品已下载完成');
+        }
+        
+        console.log('🎉 物品页面下载完成！');
+        
+        return {
+            totalItemCount: itemIds.length,
+            downloadedCount: itemIds.length - remainingItems.length,
+            newlyDownloadedCount: remainingItems.length
+        };
+    }
+
+    /**
      * 从任务ID范围下载 (备用方法)
      */
     async downloadQuestRange(startId = 1, endId = 50000) {
@@ -620,14 +682,30 @@ async function main() {
     try {
         await downloader.initDriver();
         
-        // 使用正确的流程：从 valid-quest-ids.json 下载所有任务奖励
-        const stats = await downloader.downloadAllQuestRewards();
+        // 检查命令行参数
+        const args = process.argv.slice(2);
+        const itemsOnly = args.includes('--items-only');
         
-        console.log('\n📊 下载统计:');
-        console.log(`✅ 任务: ${stats.questCount} 个`);
-        console.log(`✅ 有奖励的任务: ${stats.questsWithRewards} 个`);
-        console.log(`✅ 独特物品: ${stats.itemCount} 个`);
-        console.log('🎉 所有下载任务完成！');
+        if (itemsOnly) {
+            // 仅下载物品模式：从 quest-rewards-selenium.json 直接下载物品
+            console.log('🎯 仅下载物品模式: 从任务奖励文件直接下载物品页面');
+            const stats = await downloader.downloadItemsFromQuestRewards();
+            
+            console.log('\n📊 下载统计:');
+            console.log(`✅ 总物品: ${stats.totalItemCount} 个`);
+            console.log(`✅ 已缓存: ${stats.downloadedCount} 个`);
+            console.log(`✅ 新下载: ${stats.newlyDownloadedCount} 个`);
+            console.log('🎉 物品下载任务完成！');
+        } else {
+            // 完整模式：下载任务和物品
+            const stats = await downloader.downloadAllQuestRewards();
+            
+            console.log('\n📊 下载统计:');
+            console.log(`✅ 任务: ${stats.questCount} 个`);
+            console.log(`✅ 有奖励的任务: ${stats.questsWithRewards} 个`);
+            console.log(`✅ 独特物品: ${stats.itemCount} 个`);
+            console.log('🎉 所有下载任务完成！');
+        }
         
     } catch (error) {
         console.error('❌ 下载过程发生错误:', error);

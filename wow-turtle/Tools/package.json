@@ -5,21 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "merge": "node quest-merger.js",
-    "scrape": "node scrape-quest-rewards-selenium.js",
-    "scrape-debug": "node scrape-quest-rewards-selenium.js --debug",
-    "scrape-sample": "node scrape-quest-rewards-selenium.js -c 5",
-    "scrape-headless": "node scrape-quest-rewards-selenium.js --headless -c 10",
-    "scrape-retry": "node scrape-quest-rewards-selenium.js --retry-failed",
-    "scrape-all": "node scrape-quest-rewards-selenium.js --all",
-    "scrape-all-headless": "node scrape-quest-rewards-selenium.js --all --headless",
     "download-html": "node html-downloader.js",
+    "download-items-only": "node html-downloader.js --items-only",
     "analyze-html": "node data-analyzer.js",
     "test-html-tools": "node test-html-tools.js",
     "convert": "node convert-quest-rewards-to-lua.js",
-    "test-conversion": "node test-conversion.js",
-    "test": "node test.js",
-    "test-incremental": "node test-incremental.js"
+    "scrape-all-headless": "node scrape-quest-rewards-selenium.js --all --headless"
   },
   "keywords": ["wow", "turtle-wow", "pfquest", "data-merger"],
   "author": "pfQuest Tools",
