@@ -456,7 +456,7 @@ function pfMap:ShowTooltip(meta, tooltip)
         end
 
         if not catch then
-            tooltip:AddLine("|cff555555[|cffffcc00!|cff555555]|r " .. meta["quest"], 1, 1, .7)
+            tooltip:AddLine("|cff555555[|cffffcc00!|cff555555]|r " .. meta["quest"] .. "[" .. meta["questid"] .. "]", 1, 1, .7)
         end
 
         if not catch_obj then
