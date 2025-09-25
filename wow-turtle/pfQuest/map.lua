@@ -69,24 +69,10 @@ local minimap_zoom = {
 local unifiedcache = {}
 
 -- ============================================================================
--- 通用格式化函数 (General Formatting Functions)
+-- 通用格式化函数已移动到 utils.lua 中 (General Formatting Functions moved to utils.lua)
 -- ============================================================================
 
--- 格式化任务名称（带颜色）
-local function FormatQuestTitle(questTitle)
-    return "|cffffcc00" .. questTitle .. "|r"
-end
-
--- 格式化单个道具名称（带颜色和方括号）
-local function FormatItemName(itemId, itemQuality)
-    local itemName = pfDB["items"] and pfDB["items"]["loc"] and pfDB["items"]["loc"][itemId] or "未知物品"
-    local itemColor = "|c" ..
-                      string.format("%02x%02x%02x%02x", 255,
-        ITEM_QUALITY_COLORS[itemQuality].r * 255,
-        ITEM_QUALITY_COLORS[itemQuality].g * 255,
-        ITEM_QUALITY_COLORS[itemQuality].b * 255)
-    return itemColor .. "[" .. itemName .. "]|r"
-end
+-- 已移动到 utils.lua 中的共享函数：FormatQuestTitle() 和 FormatItemName()
 
 
 -- =============================================================================

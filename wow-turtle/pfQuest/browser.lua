@@ -17,23 +17,9 @@ local zones = pfDB["zones"]["loc"]
 
 -- ==============================================================
 
--- 格式化任务名称（带颜色）
-local function FormatQuestTitle(questTitle)
-    return "|cffffcc00" .. questTitle .. "|r"
-end
+-- 已移动到 utils.lua 中的共享函数：FormatQuestTitle() 和 FormatItemName()
 
--- 格式化单个道具名称（带颜色和方括号）
-local function FormatItemName(itemId, itemQuality)
-    local itemName = pfDB["items"] and pfDB["items"]["loc"] and pfDB["items"]["loc"][itemId] or "未知物品"
-    local itemColor = "|c" ..
-                      string.format("%02x%02x%02x%02x", 255,
-        ITEM_QUALITY_COLORS[itemQuality].r * 255,
-        ITEM_QUALITY_COLORS[itemQuality].g * 255,
-        ITEM_QUALITY_COLORS[itemQuality].b * 255)
-    return itemColor .. "[" .. itemName .. "]|r"
-end
-
--- 将任务链扁平化为线性列表
+-- 将任务链扁平化为线性列表，使用简单清晰的缩进
 local function FlattenQuestChain(questChain, result, depth)
     result = result or {}
     depth = depth or 0
@@ -141,9 +127,9 @@ local function GetQuestChainSearchResults(questId)
         
         -- 转换为搜索结果格式
         for i, questEntry in ipairs(flattenedQuests) do
-            -- 任务行：显示任务名称和ID
+            -- 任务行：使用简单清晰的缩进
             local indent = string.rep("  ", questEntry.depth)
-            local questText = indent .. FormatQuestTitle(questEntry.title .. " [" .. questEntry.questId .. "]")
+            local questText = indent .. "> " .. FormatQuestTitle(questEntry.title .. " [" .. questEntry.questId .. "]")
             
             results[resultIndex] = {
                 questId = questEntry.questId,
@@ -155,11 +141,11 @@ local function GetQuestChainSearchResults(questId)
             }
             resultIndex = resultIndex + 1
             
-            -- 每个装备奖励单独一行
+            -- 每个装备奖励单独一行，紧跟在任务后面
             if questEntry.rewards and table.getn(questEntry.rewards) > 0 then
                 for j, reward in pairs(questEntry.rewards) do
-                    local rewardIndent = string.rep("  ", questEntry.depth + 1)
-                    local rewardText = rewardIndent .. "奖励: " .. FormatItemName(reward.itemId, reward.quality)
+                    local rewardIndent = string.rep("  ", questEntry.depth)
+                    local rewardText = rewardIndent .. "    └─ 奖励: " .. FormatItemName(reward.itemId, reward.quality)
                     
                     results[resultIndex] = {
                         questId = questEntry.questId,
