@@ -992,6 +992,22 @@ function pfMap:DeleteNode(addon, title)
 end
 
 function pfMap:NodeClick()
+    -- 双击检测逻辑
+    local currentTime = GetTime()
+    local doubleClickThreshold = 0.5  -- 500毫秒内的两次点击视为双击
+    
+    if this.lastClickTime and (currentTime - this.lastClickTime) <= doubleClickThreshold then
+        -- 双击：打开任务链查看
+        if this.questid and ShowQuestChain then
+            ShowQuestChain(this.questid)
+            this.lastClickTime = nil  -- 重置点击时间防止三击
+            return
+        end
+    end
+    
+    -- 记录点击时间用于双击检测
+    this.lastClickTime = currentTime
+    
     if IsShiftKeyDown() then
         if this.questid and this.texture and this.layer < 5 then
             -- mark questnode as done

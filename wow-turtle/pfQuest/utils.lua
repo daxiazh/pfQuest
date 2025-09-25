@@ -147,3 +147,37 @@ function RewardMatchesFilter(itemId, itemQuality)
     local itemType = GetItemRewardType(itemId)
     return RewardFilter.CheckMask(itemType)
 end
+
+-- ============================================================================
+-- 任务链查看功能 (Quest Chain Viewer Functions)
+-- ============================================================================
+
+-- 打开任务链查看界面
+-- @param questId 任务ID
+-- 通过双击地图任务图标调用此函数
+function ShowQuestChain(questId)
+    if not questId or not pfBrowser or not pfBrowser.tabs then
+        return
+    end
+    
+    -- 确保浏览器存在并显示
+    if not pfBrowser:IsShown() then
+        pfBrowser:Show()
+    end
+    
+    -- 切换到任务链标签页（复用现有的按钮点击逻辑）
+    if pfBrowser.tabs["questchains"] and pfBrowser.tabs["questchains"].button then
+        local button = pfBrowser.tabs["questchains"].button
+        if button:GetScript("OnClick") then
+            button:GetScript("OnClick")()
+        end
+    end
+    
+    -- 设置搜索文本为任务ID
+    if pfBrowser.input then
+        pfBrowser.input:SetText(tostring(questId))
+        -- 触发搜索更新（复用现有的焦点切换逻辑）
+        pfBrowser.input:SetFocus()
+        pfBrowser.input:ClearFocus()
+    end
+end

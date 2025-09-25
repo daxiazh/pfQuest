@@ -129,7 +129,7 @@ local function GetQuestChainSearchResults(questId)
         for i, questEntry in ipairs(flattenedQuests) do
             -- 任务行：使用简单清晰的缩进
             local indent = string.rep("  ", questEntry.depth)
-            local questText = indent .. "> " .. FormatQuestTitle(questEntry.title .. " [" .. questEntry.questId .. "]")
+            local questText = indent .. "- " .. FormatQuestTitle(questEntry.title .. " [" .. questEntry.questId .. "]")
             
             results[resultIndex] = {
                 questId = questEntry.questId,
