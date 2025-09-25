@@ -88,6 +88,23 @@ local function FormatItemName(itemId, itemQuality)
     return itemColor .. "[" .. itemName .. "]|r"
 end
 
+-- 检查任务节点是否有价值（自身或后续有奖励）
+local function HasValueInTree(questNode)
+    if questNode.rewards then
+        return true
+    end
+    if questNode.children then
+        for _, childNode in pairs(questNode.children) do
+            if HasValueInTree(childNode) then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+-- =============================================================================
+
 -- used to store/cache combined meta data across nodes of
 -- the same kind to avoid duplicating data for each pin
 -- the objects here get directly attached to the pfMap nodes
@@ -537,20 +554,24 @@ function pfMap:ShowTooltip(meta, tooltip)
                 for _, reward in ipairs(questNode.rewards) do
                     local itemId = reward[1]
                     local itemQuality = reward[2]
-                    local itemName = pfDB["items"] and pfDB["items"]["loc"] and pfDB["items"]["loc"][itemId] or
-                                         "未知物品"
-                    local itemColor = "|c" ..
-                                          string.format("%02x%02x%02x%02x", 255,
-                            ITEM_QUALITY_COLORS[itemQuality].r * 255, ITEM_QUALITY_COLORS[itemQuality].g * 255,
-                            ITEM_QUALITY_COLORS[itemQuality].b * 255)
-
-                    tooltip:AddLine("  ⚬ " .. itemColor .. itemName .. "|r", .8, .8, .8)
+                 
+                    tooltip:AddLine("    " .. FormatItemName(itemId, itemQuality), .8, .8, .8)
                 end
             end
 
             -- 显示后续任务链的奖励
             if questNode.children then
-                tooltip:AddLine("|cff00ff00 --- 后续任务链奖励 ---")
+                -- 检查是否有任何后续任务有奖励
+                local hasAnyReward = false
+                for _, childNode in pairs(questNode.children) do
+                    if HasValueInTree(childNode) then
+                        hasAnyReward = true
+                        break
+                    end
+                end
+                
+                if hasAnyReward then
+                    tooltip:AddLine("|cff00ff00 --- 后续任务链奖励 ---")
 
                 -- 收集所有奖励路径
                 local function CollectRewardPaths(questNode, currentPath, allPaths)
@@ -579,20 +600,6 @@ function pfMap:ShowTooltip(meta, tooltip)
                     return allPaths
                 end
 
-                -- 检查任务节点是否有价值（自身或后续有奖励）
-                local function HasValueInTree(questNode)
-                    if questNode.rewards then
-                        return true
-                    end
-                    if questNode.children then
-                        for _, childNode in pairs(questNode.children) do
-                            if HasValueInTree(childNode) then
-                                return true
-                            end
-                        end
-                    end
-                    return false
-                end
                 
 
                 -- 格式化装备列表为一行显示（精简版）
@@ -754,6 +761,7 @@ function pfMap:ShowTooltip(meta, tooltip)
 
                 -- 显示任务树奖励路径
                 DisplayRewardPaths(questNode)
+                end
             end
         end
 
