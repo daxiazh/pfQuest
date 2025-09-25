@@ -155,25 +155,22 @@ local function GetQuestChainSearchResults(questId)
             }
             resultIndex = resultIndex + 1
             
-            -- 奖励行：如果有装备奖励，单独显示
+            -- 每个装备奖励单独一行
             if questEntry.rewards and table.getn(questEntry.rewards) > 0 then
-                local rewardIndent = string.rep("  ", questEntry.depth + 1)
-                local rewardText = rewardIndent .. "奖励: "
-                
                 for j, reward in pairs(questEntry.rewards) do
-                    if j > 1 then rewardText = rewardText .. " " end
-                    rewardText = rewardText .. FormatItemName(reward.itemId, reward.quality)
+                    local rewardIndent = string.rep("  ", questEntry.depth + 1)
+                    local rewardText = rewardIndent .. "奖励: " .. FormatItemName(reward.itemId, reward.quality)
+                    
+                    results[resultIndex] = {
+                        questId = questEntry.questId,
+                        title = "奖励",
+                        displayText = rewardText,
+                        depth = questEntry.depth + 1,
+                        reward = reward,  -- 单个装备信息
+                        isReward = true
+                    }
+                    resultIndex = resultIndex + 1
                 end
-                
-                results[resultIndex] = {
-                    questId = questEntry.questId,
-                    title = "奖励",
-                    displayText = rewardText,
-                    depth = questEntry.depth + 1,
-                    rewards = questEntry.rewards,
-                    isReward = true
-                }
-                resultIndex = resultIndex + 1
             end
         end
     end
@@ -181,7 +178,7 @@ local function GetQuestChainSearchResults(questId)
     return results
 end
 
--- 创建支持装备tooltip的任务链按钮
+-- 创建简化的任务链按钮 - 每个装备单独一行
 local function QuestChainResultButtonCreate(i, resultType)
   local f = CreateFrame("Button", nil, pfBrowser.tabs[resultType].list)
   f:SetPoint("TOPLEFT", pfBrowser.tabs[resultType].list, "TOPLEFT", 10, -i*30 + 5)
@@ -215,45 +212,21 @@ local function QuestChainResultButtonCreate(i, resultType)
   f.fav.icon:SetAllPoints(f.fav)
   f.fav:Hide()  -- 隐藏收藏按钮
 
-  -- 特殊的鼠标悬停处理
+  -- 鼠标悬停处理
   f:SetScript("OnEnter", function()
     this.tex:SetTexture(1,1,1,.1)
     
-    if this.questEntry and this.questEntry.isReward and this.questEntry.rewards then
-      -- 奖励行：检测鼠标位置显示对应装备tooltip
-      local mouseX = GetCursorPosition() / UIParent:GetEffectiveScale()
-      local frameX = this:GetLeft()
-      local frameWidth = this:GetWidth()
-      local textStart = frameX + 30  -- 文本起始位置
-      
-      -- 简单检测：根据鼠标位置估算是哪个装备
-      local relativeX = mouseX - textStart
-      local charWidth = 8  -- 估算字符宽度
-      local estimatedCharPos = relativeX / charWidth
-      
-      -- 查找对应的装备
-      local targetReward = nil
-      local charCount = string.len("奖励: ")
-      
-      for _, reward in pairs(this.questEntry.rewards) do
-        local rewardName = pfDB["items"] and pfDB["items"]["loc"] and pfDB["items"]["loc"][reward.itemId] or "未知物品"
-        local rewardLen = string.len("[" .. rewardName .. "]") + 1  -- +1 for space
-        
-        if estimatedCharPos >= charCount and estimatedCharPos <= charCount + rewardLen then
-          targetReward = reward
-          break
-        end
-        charCount = charCount + rewardLen
-      end
-      
-      if targetReward then
+    if this.questEntry then
+      if this.questEntry.isQuest then
+        -- 任务行：显示任务tooltip
+        pfDatabase:ShowExtendedTooltip(this.id, GameTooltip, this, "ANCHOR_LEFT", -10, -5)
+      elseif this.questEntry.isReward and this.questEntry.reward then
+        -- 装备行：显示装备tooltip
+        local itemSuffix = pfQuestCompat and pfQuestCompat.itemsuffix or ":0:0:0"
         GameTooltip:SetOwner(this, "ANCHOR_LEFT", -10, -5)
-        GameTooltip:SetHyperlink("item:" .. targetReward.itemId .. pfQuestCompat.itemsuffix)
+        GameTooltip:SetHyperlink("item:" .. this.questEntry.reward.itemId .. itemSuffix)
         GameTooltip:Show()
       end
-    elseif this.questEntry and this.questEntry.isQuest then
-      -- 任务行：显示任务tooltip
-      pfDatabase:ShowExtendedTooltip(this.id, GameTooltip, this, "ANCHOR_LEFT", -10, -5)
     end
   end)
 
@@ -272,6 +245,26 @@ local function QuestChainResultButtonCreate(i, resultType)
       local meta = { ["addon"] = "PFDB" }
       local maps = pfDatabase:SearchQuestID(this.id, meta)
       pfMap:ShowMapID(pfDatabase:GetBestMap(maps))
+    elseif this.questEntry and this.questEntry.isReward then
+      -- 装备行：在当前聊天框输入物品链接
+      local reward = this.questEntry.reward
+      local itemName = pfDB["items"] and pfDB["items"]["loc"] and pfDB["items"]["loc"][reward.itemId] or "未知物品"
+      
+      -- 获取物品品质颜色
+      local qualityColor = ITEM_QUALITY_COLORS[reward.quality] or ITEM_QUALITY_COLORS[0]
+      local colorCode = string.format("%02x%02x%02x%02x", 255, 
+        qualityColor.r * 255, qualityColor.g * 255, qualityColor.b * 255)
+      
+      -- 创建带品质颜色的物品链接
+      local itemLink = "\124c" .. colorCode .. "\124Hitem:" .. reward.itemId .. ":0:0:0\124h[" .. itemName .. "]\124h\124r"
+      
+      -- 输出到当前激活的聊天框输入区域，而不是消息区域
+      if ChatFrameEditBox and ChatFrameEditBox:IsVisible() then
+        ChatFrameEditBox:Insert(itemLink)
+      else
+        -- 如果没有激活的输入框，则显示在默认聊天框
+        DEFAULT_CHAT_FRAME:AddMessage(itemLink)
+      end
     end
   end)
 
@@ -1027,15 +1020,15 @@ EnableTooltips(pfBrowser.clean, {
 })
 pfUI.api.SkinButton(pfBrowser.clean)
 
-CreateBrowseWindow("units", "pfQuestBrowserUnits", pfBrowser, "BOTTOMLEFT", 5, 5)
-CreateBrowseWindow("objects", "pfQuestBrowserObjects", pfBrowser, "BOTTOMLEFT", 130, 5)
-CreateBrowseWindow("items", "pfQuestBrowserItems", pfBrowser, "BOTTOMLEFT", 255, 5)
-CreateBrowseWindow("quests", "pfQuestBrowserQuests", pfBrowser, "BOTTOMLEFT", 380, 5)
 -- ==============================================================
-CreateBrowseWindow("questchains", "pfQuestBrowserQuestChains", pfBrowser, "BOTTOMLEFT", 505, 5)
+CreateBrowseWindow("questchains", "pfQuestBrowserQuestChains", pfBrowser, "BOTTOMLEFT", 5, 5)
 -- ==============================================================
+CreateBrowseWindow("units", "pfQuestBrowserUnits", pfBrowser, "BOTTOMLEFT", 130, 5)
+CreateBrowseWindow("objects", "pfQuestBrowserObjects", pfBrowser, "BOTTOMLEFT", 255, 5)
+CreateBrowseWindow("items", "pfQuestBrowserItems", pfBrowser, "BOTTOMLEFT", 380, 5)
+CreateBrowseWindow("quests", "pfQuestBrowserQuests", pfBrowser, "BOTTOMLEFT", 505, 5)
 
-SelectView(pfBrowser.tabs["units"])
+SelectView(pfBrowser.tabs["questchains"])
 
 pfBrowser.input = CreateFrame("EditBox", "pfQuestBrowserSearch", pfBrowser)
 pfBrowser.input:SetFont(pfUI.font_default, pfUI_config.global.font_size, "OUTLINE")
