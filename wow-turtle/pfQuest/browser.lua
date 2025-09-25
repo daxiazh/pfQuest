@@ -940,7 +940,7 @@ pfBrowser:SetScript("OnUpdate", function()
   end
 end)
 
-pfUI.api.CreateBackdrop(pfBrowser, nil, true, 0.75)
+pfUI.api.CreateBackdrop(pfBrowser, nil, true, 0.95)
 table.insert(UISpecialFrames, "pfQuestBrowser")
 
 pfBrowser.title = pfBrowser:CreateFontString("Status", "LOW", "GameFontNormal")

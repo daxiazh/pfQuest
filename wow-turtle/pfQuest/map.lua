@@ -29,14 +29,22 @@ end)
 -- it also only updates the key if the mouse is over a relevant frame
 local controlkey = CreateFrame("Frame", "pfQuestControlKey", UIParent)
 controlkey:SetScript("OnUpdate", function()
-    if (this.throttle or .2) > GetTime() then
+    local currentTime = GetTime()
+    
+    -- 原有的控制键检测逻辑
+    if (this.throttle or .2) > currentTime then
+        -- 在等待期间也检查单击延迟执行
+        pfMap:ProcessPendingClicks(currentTime)
         return
     else
-        this.throttle = GetTime() + .2
+        this.throttle = currentTime + .2
     end
     if WorldMapFrame:IsShown() and MouseIsOver(WorldMapFrame) or MouseIsOver(pfMap.drawlayer) then
         controlkey.pressed = IsControlKeyDown()
     end
+    
+    -- 处理延迟的单击操作
+    pfMap:ProcessPendingClicks(currentTime)
 end)
 
 local validmaps = setmetatable({}, {
@@ -992,45 +1000,81 @@ function pfMap:DeleteNode(addon, title)
 end
 
 function pfMap:NodeClick()
-    -- 双击检测逻辑
     local currentTime = GetTime()
-    local doubleClickThreshold = 0.5  -- 500毫秒内的两次点击视为双击
+    local doubleClickThreshold = 0.3  -- 300毫秒内的第二次点击视为双击
     
+    -- 检查是否是双击
     if this.lastClickTime and (currentTime - this.lastClickTime) <= doubleClickThreshold then
-        -- 双击：打开任务链查看
+        -- 这是双击，取消之前的单击延迟任务
+        if this.singleClickTimer then
+            this.singleClickTimer = nil
+            this.pendingClick = nil
+        end
+        
+        -- 执行双击操作：打开任务链查看
         if this.questid and ShowQuestChain then
             ShowQuestChain(this.questid)
-            this.lastClickTime = nil  -- 重置点击时间防止三击
-            return
         end
+        
+        this.lastClickTime = nil  -- 重置，防止三击
+        return
     end
     
-    -- 记录点击时间用于双击检测
+    -- 这可能是单击，设置延迟执行
     this.lastClickTime = currentTime
+    this.pendingClick = {
+        isShift = IsShiftKeyDown(),
+        texture = this.texture,
+        questid = this.questid,
+        layer = this.layer,
+        node = this.node,
+        title = this.title,
+        color = this.color
+    }
     
-    if IsShiftKeyDown() then
-        if this.questid and this.texture and this.layer < 5 then
-            -- mark questnode as done
-            pfQuest_history[this.questid] = {time(), UnitLevel("player")}
-        end
+    -- 设置单击延迟执行时间
+    this.singleClickTimer = currentTime + doubleClickThreshold
+end
 
-        if this.node and this.title and this.node[this.title] then
-            -- delete node from map
-            pfMap:DeleteNode(this.node[this.title].addon, this.title)
-        end
+-- 处理所有待执行的单击操作
+function pfMap:ProcessPendingClicks(currentTime)
+    -- 检查所有地图节点框架，查找需要执行的延迟单击
+    if pfMap.nodes then
+        for _, frame in pairs(pfMap.nodes) do
+            if frame.singleClickTimer and currentTime >= frame.singleClickTimer and frame.pendingClick then
+                -- 执行延迟的单击操作
+                local click = frame.pendingClick
+                
+                if click.isShift then
+                    if click.questid and click.texture and click.layer < 5 then
+                        -- mark questnode as done
+                        pfQuest_history[click.questid] = {time(), UnitLevel("player")}
+                    end
 
-        pfQuest.updateQuestGivers = true
-    elseif this.texture and pfQuest.route and ((pfQuest_config["routecluster"] == "1" and this.layer >= 9) or
-        (pfQuest_config["routeender"] == "1" and this.layer == 4) or
-        (pfQuest_config["routestarter"] == "1" and this.layer == 1) or
-        (pfQuest_config["routestarter"] == "1" and this.layer == 2)) then
-        -- set as arrow target priority
-        pfQuest.route.SetTarget((not pfQuest.route.IsTarget(this) and this))
-        pfMap.queue_update = GetTime()
-    else
-        -- switch color
-        pfQuest_colors[this.color] = {str2rgb(this.color .. GetTime())}
-        pfMap.queue_update = GetTime()
+                    if click.node and click.title and click.node[click.title] then
+                        -- delete node from map
+                        pfMap:DeleteNode(click.node[click.title].addon, click.title)
+                    end
+
+                    pfQuest.updateQuestGivers = true
+                elseif click.texture and pfQuest.route and ((pfQuest_config["routecluster"] == "1" and click.layer >= 9) or
+                    (pfQuest_config["routeender"] == "1" and click.layer == 4) or
+                    (pfQuest_config["routestarter"] == "1" and click.layer == 1) or
+                    (pfQuest_config["routestarter"] == "1" and click.layer == 2)) then
+                    -- set as arrow target priority
+                    pfQuest.route.SetTarget((not pfQuest.route.IsTarget(frame) and frame))
+                    pfMap.queue_update = GetTime()
+                else
+                    -- switch color
+                    pfQuest_colors[click.color] = {str2rgb(click.color .. GetTime())}
+                    pfMap.queue_update = GetTime()
+                end
+                
+                -- 清理已处理的点击
+                frame.singleClickTimer = nil
+                frame.pendingClick = nil
+            end
+        end
     end
 end
 
