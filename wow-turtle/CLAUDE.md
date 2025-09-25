@@ -81,3 +81,4 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 支持pfUI界面框架集成
 - 图片资源使用TGA格式，支持透明度
 - 永远不要直接读取 db 目录下的文件, 它们都很大, 你应该通过使用这些文件的代码来了解它们的格式, 而不是读取数据来了解.
+- 你无法测试 lua 代码,因为它们运行在 wow 中, 如果需要你可以要求我来运行, 并把结果反馈给你.

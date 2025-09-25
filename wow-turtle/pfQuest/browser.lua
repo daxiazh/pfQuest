@@ -15,6 +15,294 @@ local refloot = pfDB["refloot"]["data"]
 local quests = pfDB["quests"]["data"]
 local zones = pfDB["zones"]["loc"]
 
+-- ==============================================================
+
+-- 格式化任务名称（带颜色）
+local function FormatQuestTitle(questTitle)
+    return "|cffffcc00" .. questTitle .. "|r"
+end
+
+-- 格式化单个道具名称（带颜色和方括号）
+local function FormatItemName(itemId, itemQuality)
+    local itemName = pfDB["items"] and pfDB["items"]["loc"] and pfDB["items"]["loc"][itemId] or "未知物品"
+    local itemColor = "|c" ..
+                      string.format("%02x%02x%02x%02x", 255,
+        ITEM_QUALITY_COLORS[itemQuality].r * 255,
+        ITEM_QUALITY_COLORS[itemQuality].g * 255,
+        ITEM_QUALITY_COLORS[itemQuality].b * 255)
+    return itemColor .. "[" .. itemName .. "]|r"
+end
+
+-- 将任务链扁平化为线性列表
+local function FlattenQuestChain(questChain, result, depth)
+    result = result or {}
+    depth = depth or 0
+    
+    if not questChain then return result end
+    
+    -- 添加当前任务到结果
+    local questEntry = {
+        questId = questChain.questId,
+        title = questChain.title,
+        rewards = questChain.rewards or {},
+        depth = depth
+    }
+    table.insert(result, questEntry)
+    
+    -- 递归处理子任务
+    if questChain.children then
+        for _, child in pairs(questChain.children) do
+            FlattenQuestChain(child, result, depth + 1)
+        end
+    end
+    
+    return result
+end
+
+-- 查找完整任务链，用于任务链浏览器
+-- @param questId 起始任务ID
+-- @param visited 已访问的任务ID集合，防止循环引用
+-- @param depth 递归深度，防止无限递归
+-- @return 任务链条目，包含 questId, title, rewards, children 字段
+local function FindQuestChain(questId, visited, depth)
+    if not questId then
+        return nil
+    end
+    depth = depth or 0
+    if depth > 15 then  -- 增加深度限制到15
+        return nil
+    end
+    visited = visited or {}
+    if visited[questId] then
+        return nil
+    end
+    visited[questId] = true
+
+    -- 创建任务节点
+    local questTitle = (pfDB.quests.loc[questId] and pfDB.quests.loc[questId].T) or "未知任务"
+    
+    local questNode = {
+        questId = questId,
+        title = questTitle,
+        rewards = {},
+        children = {},
+        isExpanded = false  -- 用于控制展开/折叠状态
+    }
+
+    -- 检查当前任务装备奖励
+    local questRewardsData = pfDB["quest-rewards"] and pfDB["quest-rewards"]["data"]
+    local itemPropsData = pfDB["item-props"] and pfDB["item-props"]["data"]
+    if questRewardsData and questRewardsData[questId] and itemPropsData then
+        for _, itemId in pairs(questRewardsData[questId]) do
+            local itemProps = itemPropsData[itemId]
+            if itemProps then
+                local quality = itemProps[1] or 0
+                local itemName = pfDB.items.loc[itemId] or ("物品" .. itemId)
+                table.insert(questNode.rewards, {
+                    itemId = itemId, 
+                    name = itemName, 
+                    quality = quality
+                })
+            end
+        end
+    end
+
+    -- 递归查找后续任务
+    local baseQuests = pfDB["quests"] and pfDB["quests"]["data"]
+    if baseQuests then
+        for qid, questData in pairs(baseQuests) do
+            if questData["pre"] then
+                for _, prequest in pairs(questData["pre"]) do
+                    if prequest == questId then
+                        local childNode = FindQuestChain(qid, visited, depth + 1)
+                        if childNode then
+                            table.insert(questNode.children, childNode)
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    return questNode
+end
+
+-- 将任务链转换为扁平化的搜索结果
+-- @param questId 起始任务ID
+-- @return 搜索结果表，键为索引，值为任务条目
+local function GetQuestChainSearchResults(questId)
+    local results = {}
+    local questChain = FindQuestChain(questId)
+    
+    if questChain then
+        -- 扁平化任务链
+        local flattenedQuests = FlattenQuestChain(questChain)
+        local resultIndex = 1
+        
+        -- 转换为搜索结果格式
+        for i, questEntry in ipairs(flattenedQuests) do
+            -- 任务行：显示任务名称和ID
+            local indent = string.rep("  ", questEntry.depth)
+            local questText = indent .. FormatQuestTitle(questEntry.title .. " [" .. questEntry.questId .. "]")
+            
+            results[resultIndex] = {
+                questId = questEntry.questId,
+                title = questEntry.title,
+                displayText = questText,
+                depth = questEntry.depth,
+                rewards = questEntry.rewards,
+                isQuest = true
+            }
+            resultIndex = resultIndex + 1
+            
+            -- 奖励行：如果有装备奖励，单独显示
+            if questEntry.rewards and table.getn(questEntry.rewards) > 0 then
+                local rewardIndent = string.rep("  ", questEntry.depth + 1)
+                local rewardText = rewardIndent .. "奖励: "
+                
+                for j, reward in pairs(questEntry.rewards) do
+                    if j > 1 then rewardText = rewardText .. " " end
+                    rewardText = rewardText .. FormatItemName(reward.itemId, reward.quality)
+                end
+                
+                results[resultIndex] = {
+                    questId = questEntry.questId,
+                    title = "奖励",
+                    displayText = rewardText,
+                    depth = questEntry.depth + 1,
+                    rewards = questEntry.rewards,
+                    isReward = true
+                }
+                resultIndex = resultIndex + 1
+            end
+        end
+    end
+    
+    return results
+end
+
+-- 创建支持装备tooltip的任务链按钮
+local function QuestChainResultButtonCreate(i, resultType)
+  local f = CreateFrame("Button", nil, pfBrowser.tabs[resultType].list)
+  f:SetPoint("TOPLEFT", pfBrowser.tabs[resultType].list, "TOPLEFT", 10, -i*30 + 5)
+  f:SetPoint("BOTTOMRIGHT", pfBrowser.tabs[resultType].list, "TOPRIGHT", 10, -i*30 - 15)
+  f:Hide()
+  f:SetID(i)
+
+  f.btype = resultType
+  f.pfResultButton = true
+
+  f.tex = f:CreateTexture("BACKGROUND")
+  f.tex:SetAllPoints(f)
+  f.tex:SetTexture(1,1,1, ( compat.mod(i,2) == 1 and .02 or .04))
+
+  -- text properties
+  f.text = f:CreateFontString("Caption", "LOW", "GameFontWhite")
+  f.text:SetFont(pfUI.font_default, pfUI_config.global.font_size, "OUTLINE")
+  f.text:SetAllPoints(f)
+  f.text:SetJustifyH("LEFT")
+  f.idText = f:CreateFontString("ID", "LOW", "GameFontDisable")
+  f.idText:SetPoint("LEFT", f, "LEFT", 30, 0)
+
+  -- favourite button (隐藏，任务链不需要收藏功能)
+  f.fav = CreateFrame("Button", nil, f)
+  f.fav:SetHitRectInsets(-3,-3,-3,-3)
+  f.fav:SetPoint("LEFT", 0, 0)
+  f.fav:SetWidth(16)
+  f.fav:SetHeight(16)
+  f.fav.icon = f.fav:CreateTexture("OVERLAY")
+  f.fav.icon:SetTexture(pfQuestConfig.path.."\\img\\fav")
+  f.fav.icon:SetAllPoints(f.fav)
+  f.fav:Hide()  -- 隐藏收藏按钮
+
+  -- 特殊的鼠标悬停处理
+  f:SetScript("OnEnter", function()
+    this.tex:SetTexture(1,1,1,.1)
+    
+    if this.questEntry and this.questEntry.isReward and this.questEntry.rewards then
+      -- 奖励行：检测鼠标位置显示对应装备tooltip
+      local mouseX = GetCursorPosition() / UIParent:GetEffectiveScale()
+      local frameX = this:GetLeft()
+      local frameWidth = this:GetWidth()
+      local textStart = frameX + 30  -- 文本起始位置
+      
+      -- 简单检测：根据鼠标位置估算是哪个装备
+      local relativeX = mouseX - textStart
+      local charWidth = 8  -- 估算字符宽度
+      local estimatedCharPos = relativeX / charWidth
+      
+      -- 查找对应的装备
+      local targetReward = nil
+      local charCount = string.len("奖励: ")
+      
+      for _, reward in pairs(this.questEntry.rewards) do
+        local rewardName = pfDB["items"] and pfDB["items"]["loc"] and pfDB["items"]["loc"][reward.itemId] or "未知物品"
+        local rewardLen = string.len("[" .. rewardName .. "]") + 1  -- +1 for space
+        
+        if estimatedCharPos >= charCount and estimatedCharPos <= charCount + rewardLen then
+          targetReward = reward
+          break
+        end
+        charCount = charCount + rewardLen
+      end
+      
+      if targetReward then
+        GameTooltip:SetOwner(this, "ANCHOR_LEFT", -10, -5)
+        GameTooltip:SetHyperlink("item:" .. targetReward.itemId .. pfQuestCompat.itemsuffix)
+        GameTooltip:Show()
+      end
+    elseif this.questEntry and this.questEntry.isQuest then
+      -- 任务行：显示任务tooltip
+      pfDatabase:ShowExtendedTooltip(this.id, GameTooltip, this, "ANCHOR_LEFT", -10, -5)
+    end
+  end)
+
+  f:SetScript("OnLeave", function()
+    if compat.mod(this:GetID(),2) == 1 then
+      this.tex:SetTexture(1,1,1,.02)
+    else
+      this.tex:SetTexture(1,1,1,.04)
+    end
+    GameTooltip:Hide()
+  end)
+
+  f:SetScript("OnClick", function()
+    if this.questEntry and this.questEntry.isQuest then
+      -- 只有任务行才能点击跳转地图
+      local meta = { ["addon"] = "PFDB" }
+      local maps = pfDatabase:SearchQuestID(this.id, meta)
+      pfMap:ShowMapID(pfDatabase:GetBestMap(maps))
+    end
+  end)
+
+  -- bind functions
+  f.Reload = function(self)
+    self.idText:SetText("ID: " .. self.id)
+
+    if pfQuest_config.showids == "1" then
+      self.idText:Show()
+    else
+      self.idText:Hide()
+    end
+
+    -- 任务链显示
+    if self.questEntry then
+      self.text:SetText(self.questEntry.displayText)
+      self.text:SetTextColor(1,1,1)
+    else
+      self.text:SetText(self.name or "未知任务链")
+      self.text:SetTextColor(.5,.5,.5)
+    end
+
+    self.text:SetWidth(self.text:GetStringWidth())
+    self:Show()
+  end
+
+  return f
+end
+
+-- ==============================================================
+
 local function ShowTooltip()
   if not this.tooltips then return end
   GameTooltip_SetDefaultAnchor(GameTooltip, this)
@@ -38,8 +326,12 @@ end
 local function ResultButtonEnter()
   this.tex:SetTexture(1,1,1,.1)
 
+  -- questchains
+  if this.btype == "questchains" then
+    pfDatabase:ShowExtendedTooltip(this.id, GameTooltip, this, "ANCHOR_LEFT", -10, -5)
+
   -- quest
-  if this.btype == "quests" then
+  elseif this.btype == "quests" then
     pfDatabase:ShowExtendedTooltip(this.id, GameTooltip, this, "ANCHOR_LEFT", -10, -5)
 
   -- item
@@ -131,7 +423,11 @@ end
 local function ResultButtonClick()
   local meta = { ["addon"] = "PFDB" }
 
-  if this.btype == "items" then
+  if this.btype == "questchains" then
+    -- 任务链点击：跳转到地图
+    local maps = pfDatabase:SearchQuestID(this.id, meta)
+    pfMap:ShowMapID(pfDatabase:GetBestMap(maps))
+  elseif this.btype == "items" then
     local link = "item:"..this.id..pfQuestCompat.itemsuffix
     local text = ( this.itemColor or "|cffffffff" ) .."|H" .. link .. "|h["..this.name.."]|h|r"
     SetItemRef(link, text, arg1)
@@ -360,7 +656,16 @@ local function ResultButtonReload(self)
   end
 
   -- actions by search type
-  if self.btype == "quests" then
+  if self.btype == "questchains" then
+    -- 任务链显示
+    if self.questEntry then
+      self.text:SetText(self.questEntry.displayText)
+      self.text:SetTextColor(1,1,1)
+    else
+      self.text:SetText(self.name or "未知任务链")
+      self.text:SetTextColor(.5,.5,.5)
+    end
+  elseif self.btype == "quests" then
     self.name = pfDB[self.btype]["loc"][self.id]["T"]
     self.text:SetText("|cffffcc00|Hquest:0:0:0:0|h[" .. self.name .. "]|h|r")
   elseif self.btype == "units" or self.btype == "objects" then
@@ -391,6 +696,8 @@ local function ResultButtonReload(self)
   self.text:SetWidth(self.text:GetStringWidth())
   self:Show()
 end
+
+-- ==============================================================
 
 local function ResultButtonCreate(i, resultType)
   local f = CreateFrame("Button", nil, pfBrowser.tabs[resultType].list)
@@ -490,7 +797,11 @@ end
 -- sets the browser result values when they change
 local function RefreshView(i, key, caption)
   pfBrowser.tabs[key].list:Hide()
-  pfBrowser.tabs[key].list:SetHeight(i * 30 )
+  
+  pfBrowser.tabs[key].list:SetHeight(i * 30)
+  
+  -- ==============================================================
+  
   pfBrowser.tabs[key].list:Show()
   pfBrowser.tabs[key].list:GetParent():SetScrollChild(pfBrowser.tabs[key].list)
   pfBrowser.tabs[key].list:GetParent():SetVerticalScroll(0)
@@ -509,7 +820,13 @@ local function RefreshView(i, key, caption)
     pfBrowser.tabs[key].list.warn:Hide()
   end
 
-  pfBrowser.tabs[key].button:SetText(pfQuest_Loc[caption] .. " " .. "|cffaaaaaa(" .. (i >= search_limit and "*" or i) .. ")")
+-- ==============================================================
+
+  local buttonText = (caption == "QuestChains" and "任务链" or pfQuest_Loc[caption]) .. " " .. "|cffaaaaaa(" .. (i >= search_limit and "*" or i) .. ")"
+  pfBrowser.tabs[key].button:SetText(buttonText)
+  
+  -- ==============================================================
+  
   for j=i+1, table.getn(pfBrowser.tabs[key].buttons) do
     if pfBrowser.tabs[key].buttons[j] then
       pfBrowser.tabs[key].buttons[j]:Hide()
@@ -536,7 +853,7 @@ local function CreateBrowseWindow(fname, name, parent, anchor, x, y)
 
   parent.tabs[fname].button = CreateFrame("Button", name .. "Button", parent)
   parent.tabs[fname].button:SetPoint(anchor, x, y)
-  parent.tabs[fname].button:SetWidth(153)
+  parent.tabs[fname].button:SetWidth(122)
   parent.tabs[fname].button:SetHeight(30)
   parent.tabs[fname].button:SetScript("OnClick", function()
     SelectView(parent.tabs[fname])
@@ -562,6 +879,13 @@ local function CreateBrowseWindow(fname, name, parent, anchor, x, y)
       pfQuest_Loc["Quests"],
       pfQuest_Loc["Display related quests"],
     })
+    -- ==============================================================
+  elseif fname == "questchains" then
+    EnableTooltips(parent.tabs[fname].button, {
+      "任务链",
+      "通过任务ID搜索，显示完整任务链路和装备奖励",
+    })
+    -- ==============================================================
   end
 
   pfUI.api.SkinButton(parent.tabs[fname].button)
@@ -704,9 +1028,12 @@ EnableTooltips(pfBrowser.clean, {
 pfUI.api.SkinButton(pfBrowser.clean)
 
 CreateBrowseWindow("units", "pfQuestBrowserUnits", pfBrowser, "BOTTOMLEFT", 5, 5)
-CreateBrowseWindow("objects", "pfQuestBrowserObjects", pfBrowser, "BOTTOMLEFT", 164, 5)
-CreateBrowseWindow("items", "pfQuestBrowserItems", pfBrowser, "BOTTOMRIGHT", -164, 5)
-CreateBrowseWindow("quests", "pfQuestBrowserQuests", pfBrowser, "BOTTOMRIGHT", -5, 5)
+CreateBrowseWindow("objects", "pfQuestBrowserObjects", pfBrowser, "BOTTOMLEFT", 130, 5)
+CreateBrowseWindow("items", "pfQuestBrowserItems", pfBrowser, "BOTTOMLEFT", 255, 5)
+CreateBrowseWindow("quests", "pfQuestBrowserQuests", pfBrowser, "BOTTOMLEFT", 380, 5)
+-- ==============================================================
+CreateBrowseWindow("questchains", "pfQuestBrowserQuestChains", pfBrowser, "BOTTOMLEFT", 505, 5)
+-- ==============================================================
 
 SelectView(pfBrowser.tabs["units"])
 
@@ -792,21 +1119,47 @@ pfBrowser.input:SetScript("OnTextChanged", function()
 
   local custom = string.find(text, "^custom:")
   text = string.gsub(text, "^custom:", "")
+  
+  -- ==============================================================
 
-  for _, caption in ipairs({"Units","Objects","Items","Quests"}) do
+  for _, caption in ipairs({"Units","Objects","Items","Quests","QuestChains"}) do
     local searchType = strlower(caption)
 
-    local data = (strlen(text) >= 3 or custom) and pfDatabase:GetIDByName(text, searchType, true, custom) or pfBrowser_fav[searchType]
-
+    local data = {}
     local i = 0
-    for id, text in pairs(data) do
-      i = i + 1
 
-      if i >= search_limit then break end
-      pfBrowser.tabs[searchType].buttons[i] = pfBrowser.tabs[searchType].buttons[i] or ResultButtonCreate(i, searchType)
-      pfBrowser.tabs[searchType].buttons[i].id = id
-      pfBrowser.tabs[searchType].buttons[i].name = text
-      pfBrowser.tabs[searchType].buttons[i]:Reload()
+    if searchType == "questchains" then
+      -- 任务链搜索：支持纯数字ID搜索
+      if text and string.match(text, "^%d+$") then
+        local questId = tonumber(text)
+        data = GetQuestChainSearchResults(questId)
+      end
+      
+      for index, questEntry in pairs(data) do
+        i = i + 1
+        if i >= search_limit then break end
+        
+        pfBrowser.tabs[searchType].buttons[i] = pfBrowser.tabs[searchType].buttons[i] or QuestChainResultButtonCreate(i, searchType)
+        local btn = pfBrowser.tabs[searchType].buttons[i]
+        btn.id = questEntry.questId
+        btn.name = questEntry.title
+        btn.questEntry = questEntry  -- 保存完整的任务条目信息
+        btn:Reload()
+      end
+    else
+      -- 原有搜索逻辑
+      data = (strlen(text) >= 3 or custom) and pfDatabase:GetIDByName(text, searchType, true, custom) or pfBrowser_fav[searchType]
+      
+      for id, text in pairs(data) do
+        i = i + 1
+
+        if i >= search_limit then break end
+        pfBrowser.tabs[searchType].buttons[i] = pfBrowser.tabs[searchType].buttons[i] or ResultButtonCreate(i, searchType)
+        pfBrowser.tabs[searchType].buttons[i].id = id
+        pfBrowser.tabs[searchType].buttons[i].name = text
+        pfBrowser.tabs[searchType].buttons[i]:Reload()
+      end
+  -- ==============================================================
     end
 
     RefreshView(i, searchType, caption)
