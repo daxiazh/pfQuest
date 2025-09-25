@@ -88,20 +88,6 @@ local function FormatItemName(itemId, itemQuality)
     return itemColor .. "[" .. itemName .. "]|r"
 end
 
--- 检查任务节点是否有价值（自身或后续有奖励）
-local function HasValueInTree(questNode)
-    if questNode.rewards then
-        return true
-    end
-    if questNode.children then
-        for _, childNode in pairs(questNode.children) do
-            if HasValueInTree(childNode) then
-                return true
-            end
-        end
-    end
-    return false
-end
 
 -- =============================================================================
 
@@ -248,11 +234,14 @@ local function FindRewards(questId, visited, depth)
             end
         end
         if next(children) then
-            questNode.children = children
+            questNode.children = children            
         end
     end
 
-    return questNode
+    if rewards or questNode.children then
+        return questNode
+    end
+    return nil
 end
 
 -- ******************************************
@@ -561,17 +550,7 @@ function pfMap:ShowTooltip(meta, tooltip)
 
             -- 显示后续任务链的奖励
             if questNode.children then
-                -- 检查是否有任何后续任务有奖励
-                local hasAnyReward = false
-                for _, childNode in pairs(questNode.children) do
-                    if HasValueInTree(childNode) then
-                        hasAnyReward = true
-                        break
-                    end
-                end
-                
-                if hasAnyReward then
-                    tooltip:AddLine("|cff00ff00 --- 后续任务链奖励 ---")
+                tooltip:AddLine("|cff00ff00 --- 后续任务链奖励 ---")
 
                 -- 收集所有奖励路径
                 local function CollectRewardPaths(questNode, currentPath, allPaths)
@@ -630,10 +609,7 @@ function pfMap:ShowTooltip(meta, tooltip)
                     
                     local displayedCount = 0
                     
-                    -- 检查当前节点是否有价值
-                    if not HasValueInTree(questNode) then
-                        return 0
-                    end
+                    -- 现在 questNode.children 已经只包含有价值的节点，无需额外检查
                     
                     -- 构建当前层级的前缀符号
                     local currentPrefix = prefix
@@ -660,7 +636,7 @@ function pfMap:ShowTooltip(meta, tooltip)
                                 singleChild = child
                             end
 
-                            if childCount == 1 and HasValueInTree(singleChild) then
+                            if childCount == 1 and singleChild then
                                 return FindNextRewardNode(singleChild, pathNodes)
                             end
                         end
@@ -678,9 +654,7 @@ function pfMap:ShowTooltip(meta, tooltip)
                         if questNode.children then
                             local children = {}
                             for _, childNode in pairs(questNode.children) do
-                                if HasValueInTree(childNode) then
-                                    table.insert(children, childNode)
-                                end
+                                table.insert(children, childNode)
                             end
 
                             for i, childNode in ipairs(children) do
@@ -713,9 +687,7 @@ function pfMap:ShowTooltip(meta, tooltip)
                             if rewardNode.children then
                                 local children = {}
                                 for _, childNode in pairs(rewardNode.children) do
-                                    if HasValueInTree(childNode) then
-                                        table.insert(children, childNode)
-                                    end
+                                    table.insert(children, childNode)
                                 end
 
                                 for i, childNode in ipairs(children) do
@@ -738,9 +710,7 @@ function pfMap:ShowTooltip(meta, tooltip)
                     if questNode.children then
                         local children = {}
                         for _, childNode in pairs(questNode.children) do
-                            if HasValueInTree(childNode) then
-                                table.insert(children, childNode)
-                            end
+                            table.insert(children, childNode)
                         end
 
                         for i, childNode in ipairs(children) do
@@ -761,7 +731,6 @@ function pfMap:ShowTooltip(meta, tooltip)
 
                 -- 显示任务树奖励路径
                 DisplayRewardPaths(questNode)
-                end
             end
         end
 
