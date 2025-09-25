@@ -155,6 +155,8 @@ local ITEM_SUBCLASS_ARMOR_SHIELD = 6
 local REWARD_CHILD = 'child'
 local QUEST_REWARD = "quest_reward"
 
+-- 奖励筛选相关函数已移动到 utils.lua 中
+
 -- 递归检查任务链是否有装备奖励，返回树状数据结构
 -- @param questId 任务ID
 -- @param visited 已访问的任务ID集合，防止循环引用
@@ -195,7 +197,10 @@ local function FindRewards(questId, visited, depth)
             local itemProps = itemPropsData[itemId]
             if itemProps then
                 local quality = itemProps[1]
-                table.insert(validRewards, {itemId, quality})
+                -- 应用奖励筛选
+                if RewardMatchesFilter(itemId, quality) then
+                    table.insert(validRewards, {itemId, quality})
+                end
             end
         end
         if table.getn(validRewards) > 0 then
@@ -224,7 +229,7 @@ local function FindRewards(questId, visited, depth)
         end
     end
 
-    if rewards or questNode.children then
+    if questNode.rewards or questNode.children then
         return questNode
     end
     return nil

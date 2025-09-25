@@ -1391,7 +1391,7 @@ local function HasRewardsInChain(questId, visited, depth)
     end
     visited[questId] = true
 
-    -- 检查当前任务是否有奖励
+    -- 检查当前任务是否有匹配筛选的奖励
     local questRewardsData = pfDB["quest-rewards"] and pfDB["quest-rewards"]["data"]
     local itemPropsData = pfDB["item-props"]["data"]
     local rewards = questRewardsData[questId]
@@ -1399,8 +1399,11 @@ local function HasRewardsInChain(questId, visited, depth)
         for _, itemId in pairs(rewards) do
             local itemProps = itemPropsData[itemId]
             if itemProps then
-                -- 找到有效奖励，立即返回true
-                return true
+                local quality = itemProps[1]
+                -- 应用奖励筛选，只有匹配的奖励才算有效
+                if RewardMatchesFilter(itemId, quality) then
+                    return true
+                end
             end
         end
     end
