@@ -146,59 +146,6 @@ local ITEM_SUBCLASS_ARMOR_SHIELD = 6
 local REWARD_CHILD = 'child'
 local QUEST_REWARD = "quest_reward"
 
--- 快速检查任务链中是否有装备奖励（提前返回版本）
--- @param questId 任务ID
--- @param visited 已访问的任务ID集合，防止循环引用
--- @param depth 递归深度，防止无限递归
--- @return boolean 如果任务链中有任何装备奖励返回true，否则返回false
-local function HasRewardsInChain(questId, visited, depth)
-    if not questId then
-        return false
-    end
-    depth = depth or 0
-    if depth > 10 then
-        return false
-    end
-    visited = visited or {}
-    if visited[questId] then
-        return false
-    end
-    visited[questId] = true
-
-    -- 检查当前任务是否有奖励
-    local questRewardsData = pfDB["quest-rewards"] and pfDB["quest-rewards"]["data"]
-    local itemPropsData = pfDB["item-props"]["data"]
-    local rewards = questRewardsData[questId]
-    if rewards then
-        for _, itemId in pairs(rewards) do
-            local itemProps = itemPropsData[itemId]
-            if itemProps then
-                -- 找到有效奖励，立即返回true
-                return true
-            end
-        end
-    end
-
-    -- 递归检查后续任务链
-    local baseQuests = pfDB["quests"] and pfDB["quests"]["data"]
-    if baseQuests then
-        for qid, questData in pairs(baseQuests) do
-            if questData["pre"] then
-                for _, prequest in pairs(questData["pre"]) do
-                    if prequest == questId then
-                        -- 递归检查子任务，如果有奖励立即返回true
-                        if HasRewardsInChain(qid, visited, depth + 1) then
-                            return true
-                        end
-                    end
-                end
-            end
-        end
-    end
-
-    return false
-end
-
 -- 递归检查任务链是否有装备奖励，返回树状数据结构
 -- @param questId 任务ID
 -- @param visited 已访问的任务ID集合，防止循环引用
@@ -219,9 +166,10 @@ local function FindRewards(questId, visited, depth)
     visited[questId] = true
 
     -- 创建任务节点
-    local questTitle = string.format("%s[%d]",
-        (pfDB.quests.loc[questId] and pfDB.quests.loc[questId].T) or "未知任务", questId)
-
+    local questTitle = string.format("%s[%d]", 
+        (pfDB.quests.loc[questId] and pfDB.quests.loc[questId].T) or "未知任务", 
+        questId)
+    
     local questNode = {
         type = "quest",
         title = questTitle,
@@ -582,42 +530,32 @@ function pfMap:ShowTooltip(meta, tooltip)
 
             -- 显示后续任务链的奖励
             if questNode.children then
-                -- 快速检查是否有后续奖励，避免不必要的计算
-                local hasAnyRewards = false
-                for _, childNode in pairs(questNode.children) do
-                    if HasRewardsInChain(childNode.questId) then
-                        hasAnyRewards = true
-                        break
-                    end
-                end
-                
-                if hasAnyRewards then
-                    tooltip:AddLine("|cff00ff00 --- 后续任务链奖励 ---")
+                tooltip:AddLine("|cff00ff00 --- 后续任务链奖励 ---")
 
                 -- 收集所有奖励路径
                 local function CollectRewardPaths(questNode, currentPath, allPaths)
                     currentPath = currentPath or {}
                     allPaths = allPaths or {}
-
+                    
                     -- 添加当前任务到路径
                     local newPath = {}
                     for i, v in ipairs(currentPath) do
                         table.insert(newPath, v)
                     end
                     table.insert(newPath, questNode)
-
+                    
                     -- 如果当前任务有奖励，保存路径
                     if questNode.rewards then
                         table.insert(allPaths, newPath)
                     end
-
+                    
                     -- 递归处理子任务
                     if questNode.children then
                         for _, childNode in pairs(questNode.children) do
                             CollectRewardPaths(childNode, newPath, allPaths)
                         end
                     end
-
+                    
                     return allPaths
                 end
 
@@ -635,68 +573,67 @@ function pfMap:ShowTooltip(meta, tooltip)
                     end
                     return false
                 end
-
+                
                 -- 格式化装备列表为一行显示
                 local function FormatEquipmentLine(rewards)
                     local equipmentItems = {}
-                    local maxItems = 4 -- 最多显示4件装备
+                    local maxItems = 4  -- 最多显示4件装备
                     local itemsToShow = math.min(table.getn(rewards), maxItems)
-
+                    
                     for i = 1, itemsToShow do
                         local reward = rewards[i]
                         local itemId = reward[1]
                         local itemQuality = reward[2]
-                        local itemName = pfDB["items"] and pfDB["items"]["loc"] and pfDB["items"]["loc"][itemId] or
-                                             "未知物品"
+                        local itemName = pfDB["items"] and pfDB["items"]["loc"] and pfDB["items"]["loc"][itemId] or "未知物品"
                         local itemColor = "|c" ..
-                                              string.format("%02x%02x%02x%02x", 255,
-                                ITEM_QUALITY_COLORS[itemQuality].r * 255, ITEM_QUALITY_COLORS[itemQuality].g * 255,
-                                ITEM_QUALITY_COLORS[itemQuality].b * 255)
+                                          string.format("%02x%02x%02x%02x", 255,
+                            ITEM_QUALITY_COLORS[itemQuality].r * 255,
+                            ITEM_QUALITY_COLORS[itemQuality].g * 255,
+                            ITEM_QUALITY_COLORS[itemQuality].b * 255)
                         table.insert(equipmentItems, "[" .. itemColor .. itemName .. "|r]")
                     end
-
+                    
                     local result = table.concat(equipmentItems, " ")
                     if table.getn(rewards) > maxItems then
                         result = result .. " |cff888888...还有" .. (table.getn(rewards) - maxItems) .. "件|r"
                     end
                     return result
                 end
-
+                
                 -- 递归显示任务树（树状结构）
                 local function DisplayQuestTree(questNode, depth, isLast, prefix, maxDepth)
                     if depth > maxDepth then
                         return 0
                     end
-
+                    
                     local displayedCount = 0
-
+                    
                     -- 检查当前节点是否有价值
                     if not HasValueInTree(questNode) then
                         return 0
                     end
-
+                    
                     -- 构建当前层级的前缀符号
                     local currentPrefix = prefix
                     local treeSymbol = isLast and "└─ " or "├─ "
                     local nextPrefix = prefix .. (isLast and "   " or "│  ")
-
+                    
                     -- 如果当前任务有直接奖励，显示它
                     if questNode.rewards then
                         local equipmentLine = FormatEquipmentLine(questNode.rewards)
-                        tooltip:AddLine(currentPrefix .. treeSymbol .. "|cffffcc00" .. questNode.title .. "|r: " ..
-                                            equipmentLine, .9, .9, .9)
+                        tooltip:AddLine(currentPrefix .. treeSymbol .. "|cffffcc00" .. questNode.title .. "|r: " .. equipmentLine, .9, .9, .9)
                         displayedCount = displayedCount + 1
                     else
                         -- 如果没有直接奖励但有后续奖励，构建路径压缩显示
                         local pathNodes = {questNode}
                         local currentNode = questNode
-
+                        
                         -- 收集连续的无奖励任务
                         while currentNode.children and not currentNode.rewards do
                             local hasMultipleChildren = false
                             local nextNode = nil
                             local childCount = 0
-
+                            
                             for _, childNode in pairs(currentNode.children) do
                                 childCount = childCount + 1
                                 if childCount > 1 then
@@ -705,12 +642,12 @@ function pfMap:ShowTooltip(meta, tooltip)
                                 end
                                 nextNode = childNode
                             end
-
+                            
                             -- 如果有多个子任务，停止压缩
                             if hasMultipleChildren then
                                 break
                             end
-
+                            
                             -- 如果下个任务有奖励或没有子任务，停止压缩
                             if not nextNode or nextNode.rewards then
                                 if nextNode then
@@ -718,11 +655,11 @@ function pfMap:ShowTooltip(meta, tooltip)
                                 end
                                 break
                             end
-
+                            
                             table.insert(pathNodes, nextNode)
                             currentNode = nextNode
                         end
-
+                        
                         -- 构建路径压缩显示
                         if table.getn(pathNodes) > 1 then
                             local pathTitles = {}
@@ -730,18 +667,17 @@ function pfMap:ShowTooltip(meta, tooltip)
                                 -- 保留任务ID和任务名
                                 table.insert(pathTitles, node.title)
                             end
-
+                            
                             local lastNode = pathNodes[table.getn(pathNodes)]
                             if lastNode.rewards then
                                 local equipmentLine = FormatEquipmentLine(lastNode.rewards)
                                 local pathText = table.concat(pathTitles, " → ")
-                                tooltip:AddLine(currentPrefix .. treeSymbol .. "|cffffcc00" .. pathText .. "|r: " ..
-                                                    equipmentLine, .9, .9, .9)
+                                tooltip:AddLine(currentPrefix .. treeSymbol .. "|cffffcc00" .. pathText .. "|r: " .. equipmentLine, .9, .9, .9)
                                 displayedCount = displayedCount + 1
                             end
                         end
                     end
-
+                    
                     -- 递归显示子任务（如果当前任务没有被路径压缩处理）
                     if questNode.children and questNode.rewards then
                         local children = {}
@@ -750,24 +686,22 @@ function pfMap:ShowTooltip(meta, tooltip)
                                 table.insert(children, childNode)
                             end
                         end
-
+                        
                         for i, childNode in ipairs(children) do
                             local isChildLast = (i == table.getn(children))
-                            displayedCount = displayedCount +
-                                                 DisplayQuestTree(childNode, depth + 1, isChildLast, nextPrefix,
-                                    maxDepth)
+                            displayedCount = displayedCount + DisplayQuestTree(childNode, depth + 1, isChildLast, nextPrefix, maxDepth)
                         end
                     end
-
+                    
                     return displayedCount
                 end
-
+                
                 -- 显示任务树主函数
                 local function DisplayRewardPaths(questNode)
-                    local maxDepth = 3 -- 最多显示3层深度
-                    local maxDisplay = 5 -- 最多显示5个分支
+                    local maxDepth = 3  -- 最多显示3层深度
+                    local maxDisplay = 5  -- 最多显示5个分支
                     local displayedCount = 0
-
+                    
                     if questNode.children then
                         local children = {}
                         for _, childNode in pairs(questNode.children) do
@@ -775,27 +709,25 @@ function pfMap:ShowTooltip(meta, tooltip)
                                 table.insert(children, childNode)
                             end
                         end
-
+                        
                         for i, childNode in ipairs(children) do
                             if displayedCount >= maxDisplay then
                                 break
                             end
-
+                            
                             local isLast = (i == table.getn(children))
                             displayedCount = displayedCount + DisplayQuestTree(childNode, 1, isLast, "", maxDepth)
                         end
-
+                        
                         -- 如果还有更多分支，显示提示
                         if table.getn(children) > maxDisplay then
-                            tooltip:AddLine("|cff888888...还有" .. (table.getn(children) - maxDisplay) ..
-                                                "个任务路径|r", .6, .6, .6)
+                            tooltip:AddLine("|cff888888...还有" .. (table.getn(children) - maxDisplay) .. "个任务路径|r", .6, .6, .6)
                         end
                     end
                 end
 
-                    -- 显示任务树奖励路径
-                    DisplayRewardPaths(questNode)
-                end
+                -- 显示任务树奖励路径
+                DisplayRewardPaths(questNode)
             end
         end
 
@@ -828,48 +760,6 @@ function pfMap:ShowTooltip(meta, tooltip)
                     "%|cff555555]", r, g, b)
         end
     end
-
-    -- ******************************************
-    -- Show quest chain equipment rewards
-    -- ******************************************
-    if false and meta["questid"] and HasEquipmentRewards(meta["questid"]) then
-        local rewards = pfDB["quest-rewards"] and pfDB["quest-rewards"]["data"] and
-                            pfDB["quest-rewards"]["data"][meta["questid"]]
-        if rewards then
-            tooltip:AddLine("|cffff66ff链任务装备奖励:|r", 1, 0.4, 0.8)
-            local equipmentCount = 0
-            for _, itemId in pairs(rewards) do
-                local itemProps = pfDB["item-props"] and pfDB["item-props"]["data"] and
-                                      pfDB["item-props"]["data"][itemId]
-                if itemProps then
-                    local quality, class, subclass = itemProps[1], itemProps[2], itemProps[3]
-                    if class == ITEM_CLASS_ARMOR or class == ITEM_CLASS_WEAPON then
-                        equipmentCount = equipmentCount + 1
-                        if equipmentCount <= 3 then -- 只显示前3件装备
-                            local itemName = pfDB["items"] and pfDB["items"]["loc"] and pfDB["items"]["loc"][itemId] or
-                                                 "未知物品"
-                            local qualityColors = {
-                                [0] = "|cff9d9d9d",
-                                [1] = "|cffffffff",
-                                [2] = "|cff1eff00",
-                                [3] = "|cff0070dd",
-                                [4] = "|cffa335ee",
-                                [5] = "|cffff8000",
-                                [6] = "|cffe6cc80"
-                            }
-                            local qualityColor = qualityColors[quality] or "|cffffffff"
-                            tooltip:AddLine("|cffaaaaaa- |r" .. qualityColor .. itemName .. "|r", 0.8, 0.8, 0.8)
-                        end
-                    end
-                end
-            end
-            if equipmentCount > 3 then
-                tooltip:AddLine("|cffaaaaaa- |r|cff888888还有 " .. (equipmentCount - 3) .. " 件装备...|r", 0.6,
-                    0.6, 0.6)
-            end
-        end
-    end
-    -- ******************************************
 
     tooltip:Show()
 end
@@ -1316,15 +1206,6 @@ function pfMap:UpdateNode(frame, node, color, obj, distance)
         else
             frame.pic:Hide()
         end
-
-        -- ******************************************
-        -- Check for equipment rewards in quest chain
-        -- ******************************************
-        local hasEquipment = frame.questid and HasEquipmentRewards(frame.questid)
-        if hasEquipment then
-            r, g, b = 1, 0.4, 0.8 -- Pink color for equipment rewards
-        end
-        -- ******************************************
 
         if obj == "minimap" and pfQuest_config["cutoutminimap"] == "1" then
             frame.tex:SetTexture(pfQuestConfig.path .. "\\img\\nodecut")

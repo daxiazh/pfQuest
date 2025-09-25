@@ -1,6 +1,6 @@
 -- 任务奖励数据 (自动生成)
 -- 格式: [questId] = { itemId1, itemId2, ... }
-
+pfDB["quest-rewards"] = {}
 pfDB["quest-rewards"]["data"] = {
     [6] = {6076, 60, 3070},
     [8] = {4604, 159},
