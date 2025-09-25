@@ -195,7 +195,7 @@ function RewardFilter.CreateConfigWindow()
   frame:Hide()
   
   -- 背景
-  pfUI.api.CreateBackdrop(frame, nil, nil, .8)
+  pfUI.api.CreateBackdrop(frame, nil, nil, 1.1)
   
   -- 标题栏
   local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
@@ -219,7 +219,7 @@ function RewardFilter.CreateConfigWindow()
   desc:SetText("选择在地图上使用红色图标来显示的任务奖励类型")
   desc:SetTextColor(1, 1, 1)
   
-  local yPos = -50
+  local yPos = -70
   frame.checkboxes = {}
   
   -- 武器分组
