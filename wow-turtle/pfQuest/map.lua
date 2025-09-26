@@ -531,161 +531,129 @@ function pfMap:ShowTooltip(meta, tooltip)
         end
 
         -- ==========================================================================
-        -- 查找任务链中的道具奖励
-        local questNode = FindRewards(meta["questid"])
+        if meta["QTYPE"] ~= "ITEM_OBJECTIVE_LOOT" then -- 场景中对于生物的tooltips不显示任务奖励， 太大了
+            -- 查找任务链中的道具奖励
+            local questNode = FindRewards(meta["questid"])
 
-        -- 显示任务链的奖励
-        if questNode then
-            -- 先显示当前任务的奖励（如果存在）
-            if questNode.rewards then
-                tooltip:AddLine("|cff00ff00 --- 当前任务奖励 ---")
-                for _, reward in ipairs(questNode.rewards) do
-                    local itemId = reward[1]
-                    local itemQuality = reward[2]
-                 
-                    tooltip:AddLine("    " .. FormatItemName(itemId, itemQuality), .8, .8, .8)
-                end
-            end
-
-            -- 显示后续任务链的奖励
-            if questNode.children then
-                tooltip:AddLine("|cff00ff00 --- 后续任务链奖励 ---")
-
-                -- 收集所有奖励路径
-                local function CollectRewardPaths(questNode, currentPath, allPaths)
-                    currentPath = currentPath or {}
-                    allPaths = allPaths or {}
-                    
-                    -- 添加当前任务到路径
-                    local newPath = {}
-                    for i, v in ipairs(currentPath) do
-                        table.insert(newPath, v)
-                    end
-                    table.insert(newPath, questNode)
-                    
-                    -- 如果当前任务有奖励，保存路径
-                    if questNode.rewards then
-                        table.insert(allPaths, newPath)
-                    end
-                    
-                    -- 递归处理子任务
-                    if questNode.children then
-                        for _, childNode in pairs(questNode.children) do
-                            CollectRewardPaths(childNode, newPath, allPaths)
-                        end
-                    end
-                    
-                    return allPaths
-                end
-
-                
-
-                -- 格式化装备列表为一行显示（精简版）
-                local function FormatEquipmentLine(rewards)
-                    local equipmentItems = {}
-                    local maxItems = 3  -- 最多显示3件装备，进一步减少
-                    local itemsToShow = math.min(table.getn(rewards), maxItems)
-                    
-                    for i = 1, itemsToShow do
-                        local reward = rewards[i]
+            -- 显示任务链的奖励
+            if questNode then
+                -- 先显示当前任务的奖励（如果存在）
+                if questNode.rewards then
+                    tooltip:AddLine("|cff00ff00 --- 当前任务奖励 ---")
+                    for _, reward in ipairs(questNode.rewards) do
                         local itemId = reward[1]
                         local itemQuality = reward[2]
-                        table.insert(equipmentItems, FormatItemName(itemId, itemQuality))
-                    end
                     
-                    local result = table.concat(equipmentItems, " ")
-                    if table.getn(rewards) > maxItems then
-                        result = result .. " |cff888888+还有" .. (table.getn(rewards) - maxItems) .. "件|r"
+                        tooltip:AddLine("    " .. FormatItemName(itemId, itemQuality), .8, .8, .8)
                     end
-                    return result
                 end
-                
-                -- 递归显示任务树（树状结构），只显示有奖励的关键节点
-                local function DisplayQuestTree(questNode, depth, isLast, prefix, maxDepth)
-                    if depth > maxDepth then
-                        return 0
-                    end
-                    
-                    local displayedCount = 0
-                    
-                    -- 现在 questNode.children 已经只包含有价值的节点，无需额外检查
-                    
-                    -- 构建当前层级的前缀符号
-                    local currentPrefix = prefix
-                    local treeSymbol = isLast and "└─ " or "├─ "
-                    local nextPrefix = prefix .. (isLast and "   " or "│  ")
-                    
-                    -- 寻找下一个有奖励的任务节点（跳过中间无奖励的任务）
-                    local function FindNextRewardNode(startNode, pathNodes)
-                        pathNodes = pathNodes or {}
 
-                        if startNode.rewards then
-                            table.insert(pathNodes, startNode)
-                            return startNode, pathNodes
+                -- 显示后续任务链的奖励
+                if questNode.children then
+                    tooltip:AddLine("|cff00ff00 --- 后续任务链奖励 ---")
+
+                    -- 收集所有奖励路径
+                    local function CollectRewardPaths(questNode, currentPath, allPaths)
+                        currentPath = currentPath or {}
+                        allPaths = allPaths or {}
+                        
+                        -- 添加当前任务到路径
+                        local newPath = {}
+                        for i, v in ipairs(currentPath) do
+                            table.insert(newPath, v)
                         end
-
-                        if startNode.children then
-                            table.insert(pathNodes, startNode)
-
-                            -- 如果只有一个子任务，继续寻找
-                            local childCount = 0
-                            local singleChild = nil
-                            for _, child in pairs(startNode.children) do
-                                childCount = childCount + 1
-                                singleChild = child
-                            end
-
-                            if childCount == 1 and singleChild then
-                                return FindNextRewardNode(singleChild, pathNodes)
-                            end
+                        table.insert(newPath, questNode)
+                        
+                        -- 如果当前任务有奖励，保存路径
+                        if questNode.rewards then
+                            table.insert(allPaths, newPath)
                         end
-
-                        return nil, pathNodes
-                    end
-                    
-                    -- 如果当前任务有直接奖励，显示它
-                    if questNode.rewards then
-                        local equipmentLine = FormatEquipmentLine(questNode.rewards)
-                        tooltip:AddLine(currentPrefix .. treeSymbol .. FormatQuestTitle(questNode.title) .. ": " .. equipmentLine, .9, .9, .9)
-                        displayedCount = displayedCount + 1
-
-                        -- 递归显示子任务
+                        
+                        -- 递归处理子任务
                         if questNode.children then
-                            local children = {}
                             for _, childNode in pairs(questNode.children) do
-                                table.insert(children, childNode)
-                            end
-
-                            for i, childNode in ipairs(children) do
-                                local isChildLast = (i == table.getn(children))
-                                displayedCount = displayedCount + DisplayQuestTree(childNode, depth + 1, isChildLast, nextPrefix, maxDepth)
+                                CollectRewardPaths(childNode, newPath, allPaths)
                             end
                         end
-                    else
-                        -- 如果当前任务没有奖励，寻找下一个有奖励的任务
-                        local rewardNode, pathNodes = FindNextRewardNode(questNode, {})
+                        
+                        return allPaths
+                    end
 
-                        if rewardNode and table.getn(pathNodes) > 1 then
-                            -- 构建简化的路径显示
-                            local firstTask = pathNodes[1].title
-                            local lastTask = pathNodes[table.getn(pathNodes)].title
-                            local skipCount = table.getn(pathNodes) - 2
+                    
 
-                            local pathText
-                            if skipCount > 0 then
-                                pathText = FormatQuestTitle(firstTask) .. " |cff888888[跳过" .. skipCount .. "步]|r → " .. FormatQuestTitle(lastTask)
-                            else
-                                pathText = FormatQuestTitle(firstTask) .. " → " .. FormatQuestTitle(lastTask)
+                    -- 格式化装备列表为一行显示（精简版）
+                    local function FormatEquipmentLine(rewards)
+                        local equipmentItems = {}
+                        local maxItems = 3  -- 最多显示3件装备，进一步减少
+                        local itemsToShow = math.min(table.getn(rewards), maxItems)
+                        
+                        for i = 1, itemsToShow do
+                            local reward = rewards[i]
+                            local itemId = reward[1]
+                            local itemQuality = reward[2]
+                            table.insert(equipmentItems, FormatItemName(itemId, itemQuality))
+                        end
+                        
+                        local result = table.concat(equipmentItems, " ")
+                        if table.getn(rewards) > maxItems then
+                            result = result .. " |cff888888+还有" .. (table.getn(rewards) - maxItems) .. "件|r"
+                        end
+                        return result
+                    end
+                    
+                    -- 递归显示任务树（树状结构），只显示有奖励的关键节点
+                    local function DisplayQuestTree(questNode, depth, isLast, prefix, maxDepth)
+                        if depth > maxDepth then
+                            return 0
+                        end
+                        
+                        local displayedCount = 0
+                        
+                        -- 现在 questNode.children 已经只包含有价值的节点，无需额外检查
+                        
+                        -- 构建当前层级的前缀符号
+                        local currentPrefix = prefix
+                        local treeSymbol = isLast and "└─ " or "├─ "
+                        local nextPrefix = prefix .. (isLast and "   " or "│  ")
+                        
+                        -- 寻找下一个有奖励的任务节点（跳过中间无奖励的任务）
+                        local function FindNextRewardNode(startNode, pathNodes)
+                            pathNodes = pathNodes or {}
+
+                            if startNode.rewards then
+                                table.insert(pathNodes, startNode)
+                                return startNode, pathNodes
                             end
 
-                            local equipmentLine = FormatEquipmentLine(rewardNode.rewards)
-                            tooltip:AddLine(currentPrefix .. treeSymbol .. pathText .. ": " .. equipmentLine, .9, .9, .9)
+                            if startNode.children then
+                                table.insert(pathNodes, startNode)
+
+                                -- 如果只有一个子任务，继续寻找
+                                local childCount = 0
+                                local singleChild = nil
+                                for _, child in pairs(startNode.children) do
+                                    childCount = childCount + 1
+                                    singleChild = child
+                                end
+
+                                if childCount == 1 and singleChild then
+                                    return FindNextRewardNode(singleChild, pathNodes)
+                                end
+                            end
+
+                            return nil, pathNodes
+                        end
+                        
+                        -- 如果当前任务有直接奖励，显示它
+                        if questNode.rewards then
+                            local equipmentLine = FormatEquipmentLine(questNode.rewards)
+                            tooltip:AddLine(currentPrefix .. treeSymbol .. FormatQuestTitle(questNode.title) .. ": " .. equipmentLine, .9, .9, .9)
                             displayedCount = displayedCount + 1
 
-                            -- 继续处理奖励节点的子任务
-                            if rewardNode.children then
+                            -- 递归显示子任务
+                            if questNode.children then
                                 local children = {}
-                                for _, childNode in pairs(rewardNode.children) do
+                                for _, childNode in pairs(questNode.children) do
                                     table.insert(children, childNode)
                                 end
 
@@ -694,42 +662,76 @@ function pfMap:ShowTooltip(meta, tooltip)
                                     displayedCount = displayedCount + DisplayQuestTree(childNode, depth + 1, isChildLast, nextPrefix, maxDepth)
                                 end
                             end
+                        else
+                            -- 如果当前任务没有奖励，寻找下一个有奖励的任务
+                            local rewardNode, pathNodes = FindNextRewardNode(questNode, {})
+
+                            if rewardNode and table.getn(pathNodes) > 1 then
+                                -- 构建简化的路径显示
+                                local firstTask = pathNodes[1].title
+                                local lastTask = pathNodes[table.getn(pathNodes)].title
+                                local skipCount = table.getn(pathNodes) - 2
+
+                                local pathText
+                                if skipCount > 0 then
+                                    pathText = FormatQuestTitle(firstTask) .. " |cff888888[跳过" .. skipCount .. "步]|r → " .. FormatQuestTitle(lastTask)
+                                else
+                                    pathText = FormatQuestTitle(firstTask) .. " → " .. FormatQuestTitle(lastTask)
+                                end
+
+                                local equipmentLine = FormatEquipmentLine(rewardNode.rewards)
+                                tooltip:AddLine(currentPrefix .. treeSymbol .. pathText .. ": " .. equipmentLine, .9, .9, .9)
+                                displayedCount = displayedCount + 1
+
+                                -- 继续处理奖励节点的子任务
+                                if rewardNode.children then
+                                    local children = {}
+                                    for _, childNode in pairs(rewardNode.children) do
+                                        table.insert(children, childNode)
+                                    end
+
+                                    for i, childNode in ipairs(children) do
+                                        local isChildLast = (i == table.getn(children))
+                                        displayedCount = displayedCount + DisplayQuestTree(childNode, depth + 1, isChildLast, nextPrefix, maxDepth)
+                                    end
+                                end
+                            end
                         end
+                        
+                        return displayedCount
                     end
                     
-                    return displayedCount
-                end
-                
-                -- 显示任务树主函数（精简版）
-                local function DisplayRewardPaths(questNode)
-                    local maxDepth = 2  -- 最多显示2层深度，减少深度
-                    local maxDisplay = 3  -- 最多显示3个分支，减少显示数量
-                    local displayedCount = 0
+                    -- 显示任务树主函数（精简版）
+                    local function DisplayRewardPaths(questNode)
+                        local maxDepth = 2  -- 最多显示2层深度，减少深度
+                        local maxDisplay = 3  -- 最多显示3个分支，减少显示数量
+                        local displayedCount = 0
 
-                    if questNode.children then
-                        local children = {}
-                        for _, childNode in pairs(questNode.children) do
-                            table.insert(children, childNode)
-                        end
-
-                        for i, childNode in ipairs(children) do
-                            if displayedCount >= maxDisplay then
-                                break
+                        if questNode.children then
+                            local children = {}
+                            for _, childNode in pairs(questNode.children) do
+                                table.insert(children, childNode)
                             end
 
-                            local isLast = (i == table.getn(children))
-                            displayedCount = displayedCount + DisplayQuestTree(childNode, 1, isLast, "", maxDepth)
-                        end
+                            for i, childNode in ipairs(children) do
+                                if displayedCount >= maxDisplay then
+                                    break
+                                end
 
-                        -- 如果还有更多分支，显示精简提示
-                        if table.getn(children) > maxDisplay then
-                            tooltip:AddLine("|cff888888...还有" .. (table.getn(children) - maxDisplay) .. "个任务路径|r", .6, .6, .6)
+                                local isLast = (i == table.getn(children))
+                                displayedCount = displayedCount + DisplayQuestTree(childNode, 1, isLast, "", maxDepth)
+                            end
+
+                            -- 如果还有更多分支，显示精简提示
+                            if table.getn(children) > maxDisplay then
+                                tooltip:AddLine("|cff888888...还有" .. (table.getn(children) - maxDisplay) .. "个任务路径|r", .6, .6, .6)
+                            end
                         end
                     end
-                end
 
-                -- 显示任务树奖励路径
-                DisplayRewardPaths(questNode)
+                    -- 显示任务树奖励路径
+                    DisplayRewardPaths(questNode)
+                end
             end
         end
 
